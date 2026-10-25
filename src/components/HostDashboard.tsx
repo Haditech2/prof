@@ -155,7 +155,7 @@ export const HostDashboard: React.FC<HostDashboardProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-[#F6FAF7] pt-24 pb-20 px-4 md:px-8">
+    <div className="min-h-screen bg-[#F6FAF7] pt-28 md:pt-36 pb-20 px-4 md:px-8">
       <div className="max-w-7xl mx-auto space-y-8">
         
         {/* Header Bar */}

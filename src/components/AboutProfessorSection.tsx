@@ -211,7 +211,7 @@ export const AboutProfessorSection: React.FC<AboutProfessorSectionProps> = ({
   ];
 
   return (
-    <div className="min-h-screen bg-[#F6FAF7] text-[#0F1F17] pt-24 pb-24 px-4 md:px-8 relative overflow-hidden">
+    <div className="min-h-screen bg-[#F6FAF7] text-[#0F1F17] pt-28 md:pt-36 pb-24 px-4 md:px-8 relative overflow-hidden">
       {/* Ambient background glows */}
       <div className="absolute top-10 right-10 w-[600px] h-[600px] bg-[#E7F3EC] blur-[150px] rounded-full pointer-events-none" />
       <div className="absolute bottom-20 left-10 w-[500px] h-[500px] bg-[#F2E3B3]/30 blur-[140px] rounded-full pointer-events-none" />

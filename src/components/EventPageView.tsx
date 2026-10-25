@@ -236,10 +236,10 @@ export const EventPageView: React.FC<EventPageViewProps> = ({
   }
 
   return (
-    <div className="min-h-screen bg-[#F6FAF7] text-[#0F1F17] pt-[68px] pb-24">
+    <div className="min-h-screen bg-[#F6FAF7] text-[#0F1F17] pt-20 md:pt-28 pb-24">
       
       {/* Top Vanity Share Bar */}
-      <div className="bg-[#0B6B3A] text-white py-3 px-4 sticky top-[68px] z-30 shadow-md">
+      <div className="bg-[#0B6B3A] text-white py-3 px-4 sticky top-18 sm:top-20 md:top-28 z-30 shadow-md">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3 text-xs">
           <div className="flex items-center space-x-2">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />

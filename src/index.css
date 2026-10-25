@@ -2,32 +2,138 @@
 
 @layer base {
   :root {
-    /* NSUK institutional palette */
-    --nsuk-green: #0B6B3A;
-    --nsuk-green-deep: #064E2B;
-    --nsuk-green-ink: #043A20;
-    --nsuk-green-soft: #E7F3EC;
-    --nsuk-green-mist: #F6FAF7;
-    --nsuk-gold: #C9A227;
-    --nsuk-gold-soft: #F2E3B3;
-    --ink: #0F1F17;
-    --ink-muted: #5B6B63;
-    --line: #E3ECE6;
+    /* ========================================================================= */
+    /* 1. COLOR PALETTE: NSUK INSTITUTIONAL BRAND & SEMANTIC TOKENS              */
+    /* ========================================================================= */
+    
+    /* NSUK Emerald & Forest Greens */
+    --color-primary-950: #022415;
+    --color-primary-900: #043A20;
+    --color-primary-800: #064E2B;
+    --color-primary-700: #0B6B3A; /* Core Institutional Green */
+    --color-primary-600: #0E8347;
+    --color-primary-500: #12A157;
+    --color-primary-200: #C2E4D0;
+    --color-primary-100: #E7F3EC;
+    --color-primary-50:  #F6FAF7;
 
-    /* legacy aliases (used by older components) */
-    --bg-ivory: #F6FAF7;
-    --gold-primary: #C9A227;
-    --gold-light: #F2E3B3;
-    --emerald-primary: #0B6B3A;
+    /* Regal Convocation Gold & Warm Sand */
+    --color-gold-900: #684E0B;
+    --color-gold-800: #8A6A12;
+    --color-gold-700: #A8841A;
+    --color-gold-600: #B8921F;
+    --color-gold-500: #C9A227; /* Core Accent Gold */
+    --color-gold-400: #DFC79B;
+    --color-gold-300: #EBD9B8;
+    --color-gold-200: #F2E3B3;
+    --color-gold-100: #F9F2DC;
+    --color-gold-50:  #FDFBF7;
+
+    /* Neutral & Editorial Ink Surfaces */
+    --color-ink-950: #09130E;
+    --color-ink-900: #0F1F17; /* Core Dark Body Text */
+    --color-ink-800: #1D2E25;
+    --color-ink-700: #2E4037;
+    --color-ink-600: #47554F; /* Secondary Text */
+    --color-ink-500: #6B7B73; /* Muted & Placeholder Text */
+    --color-ink-400: #9AA8A0;
+    --color-ink-300: #CAD7CE;
+    --color-ink-200: #E3ECE6; /* Subtle Hairline Borders */
+    --color-ink-100: #F0F5F2;
+    --color-ink-50:  #FFFFFF; /* Pure White Card Surfaces */
+
+    /* Semantic Status Feedback */
+    --color-success-700: #065F46;
+    --color-success-500: #10B981;
+    --color-success-50:  #ECFDF5;
+
+    --color-warning-700: #92400E;
+    --color-warning-500: #F59E0B;
+    --color-warning-50:  #FFFBEB;
+
+    --color-error-700:   #991B1B;
+    --color-error-500:   #EF4444;
+    --color-error-50:    #FEF2F2;
+
+    --color-info-700:    #1E40AF;
+    --color-info-500:    #3B82F6;
+    --color-info-50:     #EFF6FF;
+
+    /* Legacy Backwards-Compatible Aliases */
+    --nsuk-green: var(--color-primary-700);
+    --nsuk-green-deep: var(--color-primary-800);
+    --nsuk-green-ink: var(--color-primary-900);
+    --nsuk-green-soft: var(--color-primary-100);
+    --nsuk-green-mist: var(--color-primary-50);
+    --nsuk-gold: var(--color-gold-500);
+    --nsuk-gold-soft: var(--color-gold-200);
+    --ink: var(--color-ink-900);
+    --ink-muted: var(--color-ink-600);
+    --line: var(--color-ink-200);
+    --bg-ivory: var(--color-primary-50);
+    --gold-primary: var(--color-gold-500);
+    --gold-light: var(--color-gold-200);
+    --emerald-primary: var(--color-primary-700);
+
+    /* ========================================================================= */
+    /* 2. SPACING SCALE (8px Standard Rhythm)                                    */
+    /* ========================================================================= */
+    --space-1:  0.25rem; /* 4px (half-step) */
+    --space-2:  0.5rem;  /* 8px */
+    --space-3:  0.75rem; /* 12px */
+    --space-4:  1rem;    /* 16px */
+    --space-5:  1.25rem; /* 20px */
+    --space-6:  1.5rem;  /* 24px */
+    --space-8:  2rem;    /* 32px */
+    --space-10: 2.5rem;  /* 40px */
+    --space-12: 3rem;    /* 48px */
+    --space-16: 4rem;    /* 64px */
+    --space-20: 5rem;    /* 80px */
+    --space-24: 6rem;    /* 96px */
+
+    /* ========================================================================= */
+    /* 3. BORDER RADIUS TOKENS                                                   */
+    /* ========================================================================= */
+    --radius-xs: 0.25rem; /* 4px */
+    --radius-sm: 0.5rem;  /* 8px */
+    --radius-md: 0.75rem; /* 12px */
+    --radius-lg: 1rem;    /* 16px */
+    --radius-xl: 1.25rem; /* 20px */
+    --radius-2xl: 1.5rem; /* 24px */
+    --radius-3xl: 2rem;   /* 32px */
+    --radius-full: 9999px;
+
+    /* ========================================================================= */
+    /* 4. SHADOW & ELEVATION TOKENS                                              */
+    /* ========================================================================= */
+    --shadow-xs: 0 1px 2px rgba(6, 78, 43, 0.04);
+    --shadow-sm: 0 1px 3px rgba(6, 78, 43, 0.06), 0 1px 2px rgba(6, 78, 43, 0.04);
+    --shadow-md: 0 4px 6px -1px rgba(6, 78, 43, 0.07), 0 2px 4px -2px rgba(6, 78, 43, 0.05);
+    --shadow-lg: 0 10px 15px -3px rgba(6, 78, 43, 0.08), 0 4px 6px -4px rgba(6, 78, 43, 0.04);
+    --shadow-xl: 0 20px 25px -5px rgba(6, 78, 43, 0.12), 0 8px 10px -6px rgba(6, 78, 43, 0.04);
+    --shadow-card: 0 1px 3px rgba(6, 78, 43, 0.04), 0 12px 32px -12px rgba(6, 78, 43, 0.12);
+    --shadow-card-hover: 0 4px 8px rgba(6, 78, 43, 0.06), 0 24px 48px -16px rgba(6, 78, 43, 0.22);
+    --shadow-primary: 0 8px 20px -8px rgba(11, 107, 58, 0.6);
+    --shadow-gold: 0 8px 20px -8px rgba(201, 162, 39, 0.65);
+
+    /* ========================================================================= */
+    /* 5. MOTION DURATIONS & EASING                                              */
+    /* ========================================================================= */
+    --duration-fast: 150ms;
+    --duration-normal: 200ms;
+    --duration-slow: 300ms;
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   html {
     scroll-behavior: smooth;
+    font-size: 16px;
   }
 
   body {
     background-color: #FFFFFF;
-    color: var(--ink);
+    color: var(--color-ink-900);
     font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
@@ -36,11 +142,35 @@
 
   ::selection {
     background-color: rgba(11, 107, 58, 0.18);
-    color: #043A20;
+    color: var(--color-primary-900);
   }
 }
 
-/* NSUK surfaces */
+/* ========================================================================= */
+/* ACCESSIBILITY & PREFERS-REDUCED-MOTION                                    */
+/* ========================================================================= */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.focus-ring {
+  outline: none;
+}
+.focus-ring:focus-visible {
+  outline: 2px solid var(--color-primary-700);
+  outline-offset: 2px;
+}
+
+/* ========================================================================= */
+/* NSUK INSTITUTIONAL SURFACES & CARDS                                       */
+/* ========================================================================= */
 .nsuk-pattern {
   background-image: radial-gradient(rgba(11, 107, 58, 0.09) 1px, transparent 1px);
   background-size: 22px 22px;
@@ -52,28 +182,28 @@
 }
 
 .nsuk-card {
-  background: #FFFFFF;
-  border: 1px solid var(--line);
-  border-radius: 1.25rem;
-  box-shadow: 0 1px 2px rgba(6, 78, 43, 0.04), 0 12px 32px -12px rgba(6, 78, 43, 0.12);
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.2s ease;
+  background: var(--color-ink-50);
+  border: 1px solid var(--color-ink-200);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-card);
+  transition: transform var(--duration-slow) var(--ease-out), box-shadow var(--duration-slow) ease, border-color var(--duration-normal) ease;
 }
 
 .nsuk-card-hover:hover {
   transform: translateY(-4px);
   border-color: rgba(11, 107, 58, 0.35);
-  box-shadow: 0 2px 4px rgba(6, 78, 43, 0.05), 0 24px 48px -16px rgba(6, 78, 43, 0.22);
+  box-shadow: var(--shadow-card-hover);
 }
 
 .nsuk-kicker {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--space-2);
   font-size: 0.6875rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.18em;
-  color: var(--nsuk-green);
+  color: var(--color-primary-700);
 }
 
 .nsuk-kicker::before {
@@ -81,14 +211,18 @@
   width: 1.5rem;
   height: 2px;
   border-radius: 2px;
-  background: var(--nsuk-gold);
+  background: var(--color-gold-500);
 }
 
+/* ========================================================================= */
+/* BUTTONS & TACTILE INTERACTIONS                                            */
+/* ========================================================================= */
 .btn-green {
-  background: linear-gradient(135deg, #0B6B3A 0%, #064E2B 100%);
+  background: linear-gradient(135deg, var(--color-primary-700) 0%, var(--color-primary-800) 100%);
   color: #fff;
-  box-shadow: 0 8px 20px -8px rgba(11, 107, 58, 0.6);
-  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+  box-shadow: var(--shadow-primary);
+  min-height: 44px;
+  transition: transform var(--duration-normal) ease, box-shadow var(--duration-normal) ease, filter var(--duration-normal) ease;
 }
 
 .btn-green:hover {
@@ -97,11 +231,16 @@
   box-shadow: 0 12px 26px -8px rgba(11, 107, 58, 0.7);
 }
 
+.btn-green:active {
+  transform: translateY(0) scale(0.98);
+}
+
 .btn-gold {
-  background: linear-gradient(135deg, #E2BE4A 0%, #C9A227 100%);
-  color: #043A20;
-  box-shadow: 0 8px 20px -8px rgba(201, 162, 39, 0.7);
-  transition: transform 0.2s ease, filter 0.2s ease;
+  background: linear-gradient(135deg, #E2BE4A 0%, var(--color-gold-500) 100%);
+  color: var(--color-primary-900);
+  box-shadow: var(--shadow-gold);
+  min-height: 44px;
+  transition: transform var(--duration-normal) ease, filter var(--duration-normal) ease;
 }
 
 .btn-gold:hover {
@@ -109,6 +248,19 @@
   filter: brightness(1.06);
 }
 
+.btn-gold:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* Touch targets >= 44px utility */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* ========================================================================= */
+/* KEYFRAME ANIMATIONS                                                       */
+/* ========================================================================= */
 @keyframes float-soft {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-8px); }
@@ -124,97 +276,40 @@
 }
 
 .animate-fade-up {
-  animation: fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: fade-up 0.5s var(--ease-out) both;
 }
 
-/* Luxury Editorial Typography */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.25s var(--ease-out) both;
+}
+
+@keyframes scale-up {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.animate-scale-up {
+  animation: scale-up 0.3s var(--ease-out) both;
+}
+
+/* ========================================================================= */
+/* TYPOGRAPHY UTILITIES                                                      */
+/* ========================================================================= */
 .font-serif-luxury {
   font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
-}
-
-.font-playfair {
-  font-family: 'Playfair Display', Georgia, serif;
 }
 
 .font-cinzel {
   font-family: 'Cinzel', Georgia, serif;
 }
 
-.font-script {
-  font-family: 'Great Vibes', cursive;
-}
-
-.font-calligraphy {
-  font-family: 'Alex Brush', cursive;
-}
-
-.font-arabic {
-  font-family: 'Amiri', serif;
-}
-
 .font-sans-modern {
   font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
-}
-
-/* Editorial Surface Tokens */
-.surface-ivory {
-  background-color: var(--bg-ivory);
-}
-
-.surface-card {
-  background-color: #FFFFFF;
-  border: 1px solid var(--border-hairline);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02), 0 8px 24px -4px rgba(0, 0, 0, 0.04);
-}
-
-.surface-card-hover {
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
-}
-
-.surface-card-hover:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 16px 32px -6px rgba(0, 0, 0, 0.08);
-  border-color: rgba(197, 168, 105, 0.4);
-}
-
-.surface-dark-card {
-  background-color: var(--surface-dark);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 12px 36px -8px rgba(0, 0, 0, 0.4);
-}
-
-.hairline-divider {
-  border-color: rgba(197, 168, 105, 0.25);
-}
-
-/* Purposeful Gold Emphasis */
-.gold-accent-text {
-  color: #C5A869;
-}
-
-.gold-gradient-text {
-  background: linear-gradient(135deg, #A88647 0%, #D8C28A 50%, #947437 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.gold-gradient-bg {
-  background: linear-gradient(135deg, #C5A869 0%, #DFC79B 50%, #A88647 100%);
-}
-
-.editorial-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.375rem;
-  padding: 0.25rem 0.75rem;
-  border-radius: 9999px;
-  font-size: 0.6875rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-  background-color: rgba(197, 168, 105, 0.1);
-  color: #12382C;
-  border: 1px solid rgba(197, 168, 105, 0.3);
 }
 
 /* Custom Scrollbar */
@@ -224,7 +319,7 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #F6FAF7;
+  background: var(--color-primary-50);
 }
 
 ::-webkit-scrollbar-thumb {
@@ -233,18 +328,5 @@
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #0B6B3A;
-}
-
-/* Micro-transitions */
-.interactive-scale {
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
-}
-
-.interactive-scale:hover {
-  transform: scale(1.015);
-}
-
-.interactive-scale:active {
-  transform: scale(0.985);
+  background: var(--color-primary-700);
 }
