@@ -52,10 +52,12 @@ export const InvitationStudio: React.FC<InvitationStudioProps> = ({
 
   // Sample curated portrait photos
   const samplePhotos = [
-    { label: 'Prof. Rashidah Official Academic Portrait', url: '/images/prof-rashidah-olanrewaju.jpg' },
-    { label: 'Senate Assembly & Symposia', url: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=800&q=80' },
-    { label: 'Women in AI & Robotics Lab', url: 'https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=800&q=80' },
-    { label: 'Auditorium Podium of Honor', url: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=800&q=80' }
+    { label: 'Official Academic Robes', url: '/images/prof-rashidah-olanrewaju.jpg' },
+    { label: 'Senate Courtyard Regalia', url: '/images/prof-rashidah-courtyard-regalia.jpg' },
+    { label: 'Director Desk · EDC Complex', url: '/images/prof-rashidah-executive-desk.jpg' },
+    { label: 'Campus Garden Portrait', url: '/images/prof-rashidah-garden-portrait.jpg' },
+    { label: 'NURA-X Intentional Intelligence', url: '/images/nura-x-intentional-intelligence.jpg' },
+    { label: 'Official Proclamation Flyer', url: '/images/inaugural-lecture-flyer-portrait.jpg' }
   ];
 
   // Helper to commit state with history tracking

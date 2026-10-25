@@ -94,6 +94,76 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
           </button>
         </div>
 
+        {/* Quick Direct Download of Official Print Assets */}
+        <div className="mx-6 mt-6 p-4 rounded-2xl bg-white border border-[#C9A227]/40 shadow-xs">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#0B6B3A]">
+              <Sparkles className="w-4 h-4 text-[#C9A227]" />
+              <span>Official University Proclamation Assets</span>
+            </div>
+            <span className="text-[10px] text-[#6B7B73] font-mono">Original Press Files</span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <a
+              href="/images/inaugural-lecture-flyer-portrait.jpg"
+              download="nsuk-65th-inaugural-lecture-official-flyer.jpg"
+              className="p-3 rounded-xl border border-[#E3ECE6] hover:border-[#0B6B3A] bg-[#F6FAF7] hover:bg-white transition-all flex items-center gap-3 group"
+            >
+              <img
+                src="/images/inaugural-lecture-flyer-portrait.jpg"
+                alt="Flyer thumbnail"
+                className="w-10 h-14 object-cover rounded-md border shrink-0"
+              />
+              <div className="min-w-0 text-left">
+                <div className="text-xs font-bold text-[#0F1F17] group-hover:text-[#0B6B3A] truncate">Official Portrait Flyer</div>
+                <div className="text-[10px] text-[#5B6B63]">Vertical Proclamation</div>
+                <div className="text-[10px] text-[#C9A227] font-semibold mt-0.5 flex items-center gap-1">
+                  <Download className="w-3 h-3" /> Download High-Res
+                </div>
+              </div>
+            </a>
+
+            <a
+              href="/images/inaugural-poster-65th.jpg"
+              download="nsuk-65th-inaugural-banner-landscape.jpg"
+              className="p-3 rounded-xl border border-[#E3ECE6] hover:border-[#0B6B3A] bg-[#F6FAF7] hover:bg-white transition-all flex items-center gap-3 group"
+            >
+              <img
+                src="/images/inaugural-poster-65th.jpg"
+                alt="Landscape banner thumbnail"
+                className="w-14 h-10 object-cover rounded-md border shrink-0"
+              />
+              <div className="min-w-0 text-left">
+                <div className="text-xs font-bold text-[#0F1F17] group-hover:text-[#0B6B3A] truncate">Convocation Banner</div>
+                <div className="text-[10px] text-[#5B6B63]">Landscape Commemorative</div>
+                <div className="text-[10px] text-[#C9A227] font-semibold mt-0.5 flex items-center gap-1">
+                  <Download className="w-3 h-3" /> Download High-Res
+                </div>
+              </div>
+            </a>
+
+            <a
+              href="/images/nura-x-intentional-intelligence.jpg"
+              download="nsuk-nura-x-intentional-intelligence.jpg"
+              className="p-3 rounded-xl border border-[#E3ECE6] hover:border-[#0B6B3A] bg-[#F6FAF7] hover:bg-white transition-all flex items-center gap-3 group"
+            >
+              <img
+                src="/images/nura-x-intentional-intelligence.jpg"
+                alt="NURA-X thumbnail"
+                className="w-10 h-10 object-cover rounded-full border shrink-0"
+              />
+              <div className="min-w-0 text-left">
+                <div className="text-xs font-bold text-[#0F1F17] group-hover:text-[#0B6B3A] truncate">NURA-X AI Emblem</div>
+                <div className="text-[10px] text-[#5B6B63]">Intentional Intelligence</div>
+                <div className="text-[10px] text-[#C9A227] font-semibold mt-0.5 flex items-center gap-1">
+                  <Download className="w-3 h-3" /> Download High-Res
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+
         {/* Modal Body: Split Controls & Live Preview */}
         <div className="p-6 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
@@ -103,7 +173,7 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
             {/* Aspect Ratio Selection */}
             <div>
               <label className="text-xs font-semibold uppercase tracking-wider text-[#0B6B3A] block mb-2">
-                1. Select Dimensions & Ratio
+                1. Customizable Digital Card Ratio
               </label>
               <div className="grid grid-cols-2 gap-2">
                 {[

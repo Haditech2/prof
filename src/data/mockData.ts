@@ -165,28 +165,40 @@ export const INITIAL_EVENTS: EventData[] = [
         author: 'NSUK Media & Communications'
       },
       {
-        id: 'inaug-g-poster',
-        url: '/images/inaugural-poster-65th.jpg',
-        caption: 'Official 65th Inaugural Lecture Invitation Poster',
+        id: 'inaug-g-nurax',
+        url: '/images/nura-x-intentional-intelligence.jpg',
+        caption: 'NURA-X: Intentional Intelligence Official AI Initiative Emblem',
+        author: 'Intelligent Software Engineering Research Group (ISERG)'
+      },
+      {
+        id: 'inaug-g-desk',
+        url: '/images/prof-rashidah-executive-desk.jpg',
+        caption: 'Director at Executive Desk — Entrepreneurship Development Centre (EDC)',
+        author: 'NSUK Information & Protocol'
+      },
+      {
+        id: 'inaug-g-courtyard',
+        url: '/images/prof-rashidah-courtyard-regalia.jpg',
+        caption: 'Full Academic Regalia at University Senate Courtyard',
+        author: 'Mufasa Photography'
+      },
+      {
+        id: 'inaug-g-garden',
+        url: '/images/prof-rashidah-garden-portrait.jpg',
+        caption: 'Professor Rashidah Funke Olanrewaju at NSUK Main Campus',
+        author: 'NSUK Media'
+      },
+      {
+        id: 'inaug-g-flyer-portrait',
+        url: '/images/inaugural-lecture-flyer-portrait.jpg',
+        caption: 'Official 65th Inaugural Lecture Proclamation Poster',
         author: 'Office of the Vice-Chancellor, NSUK'
       },
       {
-        id: 'inaug-g2',
-        url: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=800&q=80',
-        caption: 'Academic Senate Assembly & Research Symposia',
-        author: 'University Archives'
-      },
-      {
-        id: 'inaug-g3',
-        url: 'https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=800&q=80',
-        caption: 'Mentoring Young Women in Artificial Intelligence & Robotics',
-        author: 'ISERG Laboratory'
-      },
-      {
-        id: 'inaug-g4',
-        url: 'https://images.unsplash.com/photo-1577495508048-b635879837f1?auto=format&fit=crop&w=800&q=80',
-        caption: 'Delivering Keynote on AI Ethics & National Digital Transformation',
-        author: 'National Computing Conference'
+        id: 'inaug-g-poster-landscape',
+        url: '/images/inaugural-poster-65th.jpg',
+        caption: 'Convocation Invitation Commemorative Banner',
+        author: 'NSUK Ceremonials Committee'
       }
     ],
     isPublic: true,

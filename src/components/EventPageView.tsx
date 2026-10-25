@@ -752,21 +752,45 @@ export const EventPageView: React.FC<EventPageViewProps> = ({
                         </div>
 
                         <div className="flex flex-wrap items-center gap-2 text-[11px] text-gray-500 justify-center sm:justify-start">
-                          <span>Or try sample:</span>
+                          <span className="font-semibold text-[#0F1F17]">Official Presets:</span>
+                          <button
+                            type="button"
+                            onClick={() => setGuestPhotoUrl('/images/prof-rashidah-courtyard-regalia.jpg')}
+                            className="underline text-[#0B6B3A] font-semibold hover:text-[#C9A227]"
+                          >
+                            Courtyard Regalia
+                          </button>
+                          <span>•</span>
+                          <button
+                            type="button"
+                            onClick={() => setGuestPhotoUrl('/images/prof-rashidah-executive-desk.jpg')}
+                            className="underline text-[#0B6B3A] font-semibold hover:text-[#C9A227]"
+                          >
+                            Executive Desk
+                          </button>
+                          <span>•</span>
+                          <button
+                            type="button"
+                            onClick={() => setGuestPhotoUrl('/images/prof-rashidah-garden-portrait.jpg')}
+                            className="underline text-[#0B6B3A] font-semibold hover:text-[#C9A227]"
+                          >
+                            Campus Garden
+                          </button>
+                          <span>•</span>
+                          <button
+                            type="button"
+                            onClick={() => setGuestPhotoUrl('/images/nura-x-intentional-intelligence.jpg')}
+                            className="underline text-[#0B6B3A] font-semibold hover:text-[#C9A227]"
+                          >
+                            NURA-X AI Emblem
+                          </button>
+                          <span>•</span>
                           <button
                             type="button"
                             onClick={() => setGuestPhotoUrl('/images/vc-saadatu-hassan-liman.jpg')}
                             className="underline text-[#0B6B3A] font-semibold hover:text-[#C9A227]"
                           >
-                            VC Prof. Sa'adatu Liman
-                          </button>
-                          <span>•</span>
-                          <button
-                            type="button"
-                            onClick={() => setGuestPhotoUrl('https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80')}
-                            className="underline text-[#0B6B3A] font-semibold hover:text-[#C9A227]"
-                          >
-                            Dean / Fellow
+                            VC Sa'adatu Liman
                           </button>
                         </div>
                       </div>

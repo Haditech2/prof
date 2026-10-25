@@ -60,6 +60,9 @@ export function App() {
   // State for homepage live "I Will Be There" DP generator
   const [homepageFlyerRsvp, setHomepageFlyerRsvp] = useState<RSVPResponse>(INITIAL_RSVPS[0]);
 
+  // State for homepage biography photo switcher
+  const [spotlightPhotoIdx, setSpotlightPhotoIdx] = useState(0);
+
   // Navigation View State
   const [activeView, setActiveView] = useState<'landing' | 'about-professor' | 'event' | 'dashboard'>('landing');
 
@@ -218,10 +221,10 @@ export function App() {
               </div>
             </section>
 
-            {/* 3. Four pillars */}
+            {/* 3. Four pillars & NURA-X Flagship Feature */}
             <section className="py-16 px-4 sm:px-6 lg:px-8">
-              <div className="max-w-7xl mx-auto">
-                <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10">
+              <div className="max-w-7xl mx-auto space-y-10">
+                <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
                   <div>
                     <span className="nsuk-kicker">The Discourse</span>
                     <h2 className="mt-3 font-serif-luxury text-4xl md:text-5xl font-bold text-[#0F1F17] leading-tight">
@@ -231,6 +234,38 @@ export function App() {
                   <p className="text-sm text-[#5B6B63] max-w-sm">
                     Two decades of research, distilled into one inaugural address.
                   </p>
+                </div>
+
+                {/* NURA-X Flagship Feature Box */}
+                <div className="rounded-3xl bg-gradient-to-br from-[#064E2B] via-[#043A20] to-[#0B6B3A] p-6 sm:p-8 text-white relative overflow-hidden border border-[#C9A227]/40 shadow-xl">
+                  <div className="absolute inset-0 nsuk-pattern-light opacity-30 pointer-events-none" />
+                  <div className="relative grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+                    <div className="md:col-span-3 flex justify-center">
+                      <div className="relative w-28 h-28 sm:w-36 sm:h-36 rounded-full p-1 bg-gradient-to-tr from-[#C9A227] via-white to-[#DFC79B] shadow-2xl">
+                        <img
+                          src="/images/nura-x-intentional-intelligence.jpg"
+                          alt="NURA-X Intentional Intelligence Emblem"
+                          className="w-full h-full object-cover rounded-full"
+                        />
+                      </div>
+                    </div>
+                    <div className="md:col-span-9 space-y-2 text-center md:text-left">
+                      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#C9A227]/20 text-[#F2E3B3] text-[10px] sm:text-xs font-bold uppercase tracking-widest border border-[#C9A227]/30">
+                        <Sparkles className="w-3.5 h-3.5 text-[#E2BE4A]" /> Flagship AI Initiative · Inaugural Address
+                      </div>
+                      <h3 className="font-serif-luxury text-2xl sm:text-3xl font-bold leading-tight">
+                        NURA-X: Intentional Intelligence
+                      </h3>
+                      <p className="text-sm text-white/85 max-w-2xl leading-relaxed">
+                        A sovereign paradigm conceived by Professor Rashidah Funke Olanrewaju to anchor artificial intelligence in digital trust, algorithmic integrity, and human flourishing across Nigerian and African institutions.
+                      </p>
+                      <div className="pt-2 flex flex-wrap gap-4 text-xs text-[#F2E3B3] font-medium justify-center md:justify-start">
+                        <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-[#E2BE4A]" /> Digital Trust &amp; Cryptology</span>
+                        <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-[#E2BE4A]" /> Neural Vision &amp; Language</span>
+                        <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-[#E2BE4A]" /> Human-Centric AI Policy</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -257,41 +292,89 @@ export function App() {
               </div>
             </section>
 
-            {/* 4. Biography spotlight */}
+            {/* 4. Biography spotlight with Interactive Portrait Gallery */}
             <section className="py-20 px-4 sm:px-6 lg:px-8 bg-[#F6FAF7] relative overflow-hidden">
               <div className="absolute inset-0 nsuk-pattern opacity-50 pointer-events-none" />
               <div className="relative max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-                <div className="lg:col-span-5 flex justify-center">
+                
+                {/* Left Column: Interactive Portrait Frame */}
+                <div className="lg:col-span-5 flex flex-col items-center">
                   <div className="relative w-full max-w-[340px]">
                     <div className="absolute -inset-3 rounded-[32px] border-2 border-dashed border-[#0B6B3A]/25" />
+                    
+                    {/* Active Portrait */}
                     <div className="relative rounded-[28px] overflow-hidden shadow-2xl aspect-[4/5] bg-white">
                       <img
-                        src="/images/prof-rashidah-olanrewaju.jpg"
+                        src={[
+                          '/images/prof-rashidah-executive-desk.jpg',
+                          '/images/prof-rashidah-courtyard-regalia.jpg',
+                          '/images/prof-rashidah-garden-portrait.jpg',
+                          '/images/prof-rashidah-olanrewaju.jpg',
+                          '/images/inaugural-lecture-flyer-portrait.jpg'
+                        ][spotlightPhotoIdx]}
                         alt="Professor Rashidah Funke Olanrewaju"
-                        className="w-full h-full object-cover object-top"
+                        className="w-full h-full object-cover object-top transition-all duration-500"
                       />
                       <div className="absolute inset-x-0 bottom-0 p-5 bg-gradient-to-t from-[#043A20]/90 to-transparent text-white">
-                        <div className="text-[10px] uppercase tracking-[0.18em] text-[#F2E3B3] font-bold">Inaugural Lecturer</div>
-                        <div className="font-serif-luxury text-xl font-bold">Prof. R. F. Olanrewaju</div>
+                        <div className="text-[10px] uppercase tracking-[0.18em] text-[#F2E3B3] font-bold">
+                          {[
+                            'Director at Executive Desk · EDC',
+                            'Senate Courtyard Regalia',
+                            'Main Campus Garden',
+                            'Official Academic Robes',
+                            'Official Proclamation Poster'
+                          ][spotlightPhotoIdx]}
+                        </div>
+                        <div className="font-serif-luxury text-lg font-bold">Prof. R. F. Olanrewaju</div>
                       </div>
                     </div>
+
+                    {/* Thumbnail Switcher Pills */}
+                    <div className="mt-4 flex items-center justify-center gap-2 p-1.5 rounded-2xl bg-white border border-[#E3ECE6] shadow-xs">
+                      {[
+                        { url: '/images/prof-rashidah-executive-desk.jpg', label: 'Executive Office' },
+                        { url: '/images/prof-rashidah-courtyard-regalia.jpg', label: 'Courtyard' },
+                        { url: '/images/prof-rashidah-garden-portrait.jpg', label: 'Garden' },
+                        { url: '/images/prof-rashidah-olanrewaju.jpg', label: 'Robes' },
+                        { url: '/images/inaugural-lecture-flyer-portrait.jpg', label: 'Flyer' }
+                      ].map((item, pIdx) => (
+                        <button
+                          key={pIdx}
+                          onClick={() => setSpotlightPhotoIdx(pIdx)}
+                          title={item.label}
+                          className={`relative w-11 h-11 rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${
+                            spotlightPhotoIdx === pIdx
+                              ? 'border-[#0B6B3A] ring-2 ring-[#C9A227]/50 scale-105'
+                              : 'border-transparent opacity-60 hover:opacity-100'
+                          }`}
+                        >
+                          <img
+                            src={item.url}
+                            alt={item.label}
+                            className="w-full h-full object-cover object-top"
+                          />
+                        </button>
+                      ))}
+                    </div>
+
                   </div>
                 </div>
 
+                {/* Right Column: Citation */}
                 <div className="lg:col-span-7">
                   <span className="nsuk-kicker">Academic Citation</span>
                   <h2 className="mt-3 font-serif-luxury text-4xl md:text-5xl font-bold text-[#0F1F17] leading-tight">
                     A leading voice in AI, software &amp; cryptology.
                   </h2>
                   <p className="mt-4 text-[15px] text-[#5B6B63] leading-relaxed max-w-xl">
-                    Professor of Computer Science &amp; AI at NSUK. Trained at UPM (B.Sc.) and IIUM (M.Sc., Ph.D.), Malaysia.
+                    Professor of Computer Science &amp; AI at NSUK. Trained at Fed Poly Kaduna (Diploma), UPM Malaysia (B.Sc. Hons) and IIUM Malaysia (M.Sc., Ph.D.). Director of the Entrepreneurship Development Centre (EDC).
                   </p>
 
                   <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
                     {[
                       { k: 'Pedigree', v: 'Ph.D. Computer Eng.', s: 'IIUM, Malaysia' },
                       { k: 'Leadership', v: 'Director, EDC', s: '10,000+ students' },
-                      { k: 'Distinction', v: 'FNCS · MIET', s: 'Chartered Fellow' }
+                      { k: 'Distinction', v: 'FCRIDE · SMIEEE', s: 'Chartered Fellow' }
                     ].map((c) => (
                       <div key={c.k} className="nsuk-card p-4">
                         <div className="text-[10px] uppercase tracking-[0.16em] font-bold text-[#C9A227]">{c.k}</div>
@@ -310,14 +393,14 @@ export function App() {
                       }}
                       className="btn-green inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-semibold"
                     >
-                      Full Profile <ArrowRight className="w-4 h-4" />
+                      Full Profile &amp; Pedigree <ArrowRight className="w-4 h-4" />
                     </button>
                     <button
                       id="bio-invitation"
                       onClick={() => setIsDownloadModalOpen(true)}
                       className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-semibold bg-white border border-[#E3ECE6] text-[#0F1F17] hover:border-[#0B6B3A] transition-colors"
                     >
-                      <Download className="w-4 h-4 text-[#0B6B3A]" /> Invitation Card
+                      <Download className="w-4 h-4 text-[#0B6B3A]" /> Official Proclamation Poster
                     </button>
                   </div>
                 </div>

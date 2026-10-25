@@ -34,6 +34,7 @@ export const AboutProfessorSection: React.FC<AboutProfessorSectionProps> = ({
   event: _event
 }) => {
   const [activeTab, setActiveTab] = useState<'lecture' | 'biography' | 'career' | 'contributions' | 'gallery'>('lecture');
+  const [selectedAboutPhoto, setSelectedAboutPhoto] = useState('/images/prof-rashidah-olanrewaju.jpg');
   
   // Tributes / felicitations guestbook state
   const [tributes, setTributes] = useState([
@@ -119,6 +120,13 @@ export const AboutProfessorSection: React.FC<AboutProfessorSectionProps> = ({
       institution: 'Universiti Putra Malaysia (UPM)',
       location: 'Selangor, Malaysia',
       highlight: 'Graduated with honours; foundational software specifications and intelligent systems.'
+    },
+    {
+      degree: 'National Diploma (ND)',
+      field: 'Science & Engineering Foundations',
+      institution: 'Federal Polytechnics, Kaduna',
+      location: 'Kaduna State, Nigeria',
+      highlight: 'Foundational polytechnic diploma marking the beginning of her distinguished engineering journey.'
     }
   ];
 
@@ -157,7 +165,13 @@ export const AboutProfessorSection: React.FC<AboutProfessorSectionProps> = ({
 
   const scientificContributions = [
     {
-      title: 'Artificial Intelligence & Machine Learning',
+      title: 'NURA-X: Intentional Intelligence Paradigm',
+      description: 'Pioneered the NURA-X model anchoring artificial intelligence in digital trust, algorithmic fairness, and human flourishing for developing societies.',
+      icon: Sparkles,
+      stat: 'Flagship Initiative'
+    },
+    {
+      title: 'Applied AI & Machine Learning',
       description: 'Adaptive neural network optimization and computer vision algorithms tailored for automated decision systems.',
       icon: Cpu,
       stat: '100+ Publications'
@@ -189,24 +203,34 @@ export const AboutProfessorSection: React.FC<AboutProfessorSectionProps> = ({
       category: 'Official Portrait'
     },
     {
+      url: '/images/nura-x-intentional-intelligence.jpg',
+      caption: 'NURA-X: Intentional Intelligence Official AI Initiative Emblem',
+      category: 'AI Initiative'
+    },
+    {
+      url: '/images/prof-rashidah-executive-desk.jpg',
+      caption: 'Director at Executive Desk — Entrepreneurship Development Centre (EDC)',
+      category: 'Leadership & EDC'
+    },
+    {
+      url: '/images/prof-rashidah-courtyard-regalia.jpg',
+      caption: 'Full Academic Regalia at University Senate Courtyard',
+      category: 'Ceremonial Regalia'
+    },
+    {
+      url: '/images/prof-rashidah-garden-portrait.jpg',
+      caption: 'Professor Rashidah Funke Olanrewaju at NSUK Main Campus',
+      category: 'Campus Chronicle'
+    },
+    {
+      url: '/images/inaugural-lecture-flyer-portrait.jpg',
+      caption: 'Official 65th Inaugural Lecture Proclamation Poster',
+      category: 'Proclamation Poster'
+    },
+    {
       url: '/images/inaugural-poster-65th.jpg',
-      caption: 'Official 65th Inaugural Lecture Invitation Poster',
-      category: 'Official Poster'
-    },
-    {
-      url: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=800&q=80',
-      caption: 'University Senate Hall & Assembly Proceedings',
-      category: 'University Senate'
-    },
-    {
-      url: 'https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=800&q=80',
-      caption: 'Intelligent Software Engineering Research Group (ISERG) Lab',
-      category: 'Research & Innovation'
-    },
-    {
-      url: 'https://images.unsplash.com/photo-1577495508048-b635879837f1?auto=format&fit=crop&w=800&q=80',
-      caption: 'Keynote Discourse on AI Ethics & Digital Transformation',
-      category: 'Keynote Discourse'
+      caption: 'Official 65th Inaugural Lecture Invitation Banner',
+      category: 'Official Banner'
     }
   ];
 
@@ -312,7 +336,7 @@ export const AboutProfessorSection: React.FC<AboutProfessorSectionProps> = ({
 
             </div>
 
-            {/* Right: Framed Academic Portrait */}
+            {/* Right: Framed Academic Portrait with Switcher */}
             <div className="lg:col-span-5 flex flex-col items-center">
               <div className="relative group w-full max-w-[320px]">
                 <div className="absolute -inset-2 bg-gradient-to-r from-[#C9A227]/30 via-white/10 to-[#C9A227]/30 rounded-3xl blur-xl opacity-75 group-hover:opacity-100 transition duration-700" />
@@ -320,7 +344,7 @@ export const AboutProfessorSection: React.FC<AboutProfessorSectionProps> = ({
                 <div className="relative rounded-t-[130px] rounded-b-3xl border-2 border-white/60 p-2 bg-[#043A20] shadow-2xl overflow-hidden">
                   <div className="w-full h-80 sm:h-96 rounded-t-[120px] rounded-b-2xl overflow-hidden relative">
                     <img
-                      src="/images/prof-rashidah-olanrewaju.jpg"
+                      src={selectedAboutPhoto}
                       alt="Professor Rashidah Funke Olanrewaju"
                       className="w-full h-full object-cover object-top hover:scale-105 transition-transform duration-700"
                     />
@@ -328,6 +352,30 @@ export const AboutProfessorSection: React.FC<AboutProfessorSectionProps> = ({
                   <div className="absolute bottom-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-[#043A20]/90 border border-white/20 text-[9px] uppercase tracking-widest text-[#F2E3B3] font-bold backdrop-blur-md shadow-lg whitespace-nowrap">
                     Inaugural Lecturer • 2026
                   </div>
+                </div>
+
+                {/* Thumbnails to Switch Hero Portrait */}
+                <div className="mt-3 flex items-center justify-center gap-1.5 p-1.5 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 shadow-xs">
+                  {[
+                    { url: '/images/prof-rashidah-olanrewaju.jpg', label: 'Robes' },
+                    { url: '/images/prof-rashidah-courtyard-regalia.jpg', label: 'Courtyard' },
+                    { url: '/images/prof-rashidah-executive-desk.jpg', label: 'Executive' },
+                    { url: '/images/prof-rashidah-garden-portrait.jpg', label: 'Garden' },
+                    { url: '/images/inaugural-lecture-flyer-portrait.jpg', label: 'Flyer' }
+                  ].map((p, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setSelectedAboutPhoto(p.url)}
+                      title={p.label}
+                      className={`relative w-9 h-9 rounded-lg overflow-hidden border-2 transition-all cursor-pointer ${
+                        selectedAboutPhoto === p.url
+                          ? 'border-[#E2BE4A] ring-2 ring-[#E2BE4A]/60 scale-105'
+                          : 'border-white/30 opacity-60 hover:opacity-100'
+                      }`}
+                    >
+                      <img src={p.url} alt={p.label} className="w-full h-full object-cover object-top" />
+                    </button>
+                  ))}
                 </div>
               </div>
             </div>
@@ -422,6 +470,40 @@ export const AboutProfessorSection: React.FC<AboutProfessorSectionProps> = ({
                   <p className="text-xs text-[#5B6B63] leading-relaxed font-sans-modern">
                     Bridging theoretical computer science with digital entrepreneurship and youth incubation for self-sustaining economic growth.
                   </p>
+                </div>
+              </div>
+
+              {/* Official Proclamation Poster Showcase */}
+              <div className="rounded-3xl border border-[#C9A227]/40 bg-gradient-to-br from-[#F6FAF7] to-[#E7F3EC] p-6 flex flex-col md:flex-row items-center gap-6 shadow-sm">
+                <div className="w-full md:w-48 aspect-[3/4] rounded-2xl overflow-hidden shadow-lg border-2 border-[#C9A227]/50 shrink-0 bg-white">
+                  <img
+                    src="/images/inaugural-lecture-flyer-portrait.jpg"
+                    alt="Official 65th Inaugural Lecture Proclamation Poster"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="space-y-2 text-center md:text-left">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-[#C9A227]/40 text-[#0B6B3A] text-[10px] font-bold uppercase tracking-wider">
+                    <Sparkles className="w-3.5 h-3.5 text-[#C9A227]" />
+                    <span>Official University Senate Proclamation</span>
+                  </div>
+                  <h3 className="font-serif-luxury text-xl font-bold text-[#0F1F17]">
+                    The 65th Inaugural Lecture Proclamation
+                  </h3>
+                  <p className="text-xs text-[#5B6B63] leading-relaxed max-w-xl">
+                    By direction of the Vice-Chancellor, Professor Sa'adatu Hassan Liman, and the University Senate, this public inaugural address constitutes a formal elevation and scholarly milestone in the academic calendar of Nasarawa State University.
+                  </p>
+                  <div className="pt-2 flex flex-wrap gap-2 justify-center md:justify-start">
+                    <a
+                      href="/images/inaugural-lecture-flyer-portrait.jpg"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-4 py-2 rounded-full bg-[#0B6B3A] text-white text-xs font-bold uppercase tracking-wider hover:bg-[#064E2B] transition-all flex items-center gap-1.5"
+                    >
+                      <Download className="w-3.5 h-3.5 text-[#F2E3B3]" />
+                      <span>View Full Resolution Flyer</span>
+                    </a>
+                  </div>
                 </div>
               </div>
 
@@ -541,6 +623,33 @@ export const AboutProfessorSection: React.FC<AboutProfessorSectionProps> = ({
                 <h2 className="text-2xl sm:text-3xl font-serif-luxury font-bold text-[#0F1F17]">
                   Institutional Stewardship & Service
                 </h2>
+              </div>
+
+              {/* Featured EDC Executive Leadership Spotlight */}
+              <div className="rounded-3xl border border-[#C9A227]/40 bg-gradient-to-br from-white to-[#F6FAF7] p-6 flex flex-col md:flex-row items-center gap-6 shadow-sm">
+                <div className="w-full md:w-56 h-72 rounded-2xl overflow-hidden shadow-lg border-2 border-[#C9A227]/50 shrink-0 bg-white">
+                  <img
+                    src="/images/prof-rashidah-executive-desk.jpg"
+                    alt="Professor Rashidah at Executive Desk EDC"
+                    className="w-full h-full object-cover object-top"
+                  />
+                </div>
+                <div className="space-y-3 text-center md:text-left">
+                  <span className="text-[10px] uppercase tracking-widest text-[#0B6B3A] font-bold block">
+                    Executive Leadership · EDC Complex
+                  </span>
+                  <h3 className="font-serif-luxury text-xl sm:text-2xl font-bold text-[#0F1F17]">
+                    Director, Entrepreneurship Development Centre (EDC)
+                  </h3>
+                  <p className="text-xs text-[#5B6B63] leading-relaxed max-w-xl">
+                    Leading the university's flagship entrepreneurship ecosystem, Professor Rashidah Funke Olanrewaju has driven transformative industry linkages, technology incubation, and patent commercialization, equipping over 10,000 university students with market-ready STEM and enterprise capabilities.
+                  </p>
+                  <div className="flex flex-wrap gap-2 justify-center md:justify-start text-[11px] font-semibold text-[#0B6B3A]">
+                    <span className="px-3 py-1 rounded-full bg-[#E7F3EC]">10,000+ Students Mentored</span>
+                    <span className="px-3 py-1 rounded-full bg-[#E7F3EC]">Incubation Clusters</span>
+                    <span className="px-3 py-1 rounded-full bg-[#E7F3EC]">FinTech Security</span>
+                  </div>
+                </div>
               </div>
 
               {/* Roles Cards */}

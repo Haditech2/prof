@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { EventData } from '../types';
 import {
   ArrowRight,
@@ -20,12 +20,47 @@ interface HeroSectionProps {
   onDownloadCardClick: () => void;
 }
 
+const heroPhotos = [
+  {
+    url: '/images/prof-rashidah-olanrewaju.jpg',
+    badge: 'Official Robes',
+    caption: 'Official Academic Robes · NSUK',
+    alt: 'Professor Rashidah Funke Olanrewaju in Official Academic Robes'
+  },
+  {
+    url: '/images/prof-rashidah-courtyard-regalia.jpg',
+    badge: 'Senate Courtyard',
+    caption: 'University Senate Courtyard · Full Regalia',
+    alt: 'Professor Rashidah in Full Academic Regalia at University Senate Courtyard'
+  },
+  {
+    url: '/images/prof-rashidah-executive-desk.jpg',
+    badge: 'Director Desk',
+    caption: 'Director, Entrepreneurship Development Centre (EDC)',
+    alt: 'Professor Rashidah at Executive Desk EDC'
+  },
+  {
+    url: '/images/prof-rashidah-garden-portrait.jpg',
+    badge: 'Campus Garden',
+    caption: 'NSUK Main Campus Garden Portrait',
+    alt: 'Professor Rashidah Funke Olanrewaju at NSUK Garden'
+  },
+  {
+    url: '/images/inaugural-lecture-flyer-portrait.jpg',
+    badge: 'Proclamation Poster',
+    caption: 'Official 65th Inaugural Proclamation Poster',
+    alt: 'Official 65th Inaugural Lecture Proclamation Poster'
+  }
+];
+
 export const HeroSection: React.FC<HeroSectionProps> = ({
   onOpenRsvp,
   onOpenDpGenerator,
   onReadProfileClick,
   onDownloadCardClick
 }) => {
+  const [selectedHeroPhoto, setSelectedHeroPhoto] = useState(heroPhotos[0]);
+
   return (
     <section className="relative overflow-hidden bg-[#FAFBF9] pt-28 md:pt-36 pb-16 lg:pb-24 border-b border-[#E3ECE6]">
       {/* Subtle, refined institutional lattice background (No generic AI blur blobs) */}
@@ -77,30 +112,46 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             {/* Academic Credentials & Honors */}
             <div className="space-y-1.5 pt-1 border-t border-[#E3ECE6] max-w-xl mx-auto lg:mx-0">
               <p className="text-xs sm:text-[13px] font-semibold tracking-wide text-[#043A20]">
-                Citp, FCRIDE, SMIEEE, MIET, MNCS, MAITP, MIAENG, MWIE, Fellow Erasmus+
+                Citp, FCRIDE, SMIEEE, M. WIE, MIET (UK), ARISE, MCR (Malaysia), MNCS, IAENG, Fellow Erasmus+
               </p>
               <p className="text-xs font-mono text-[#5B6B63] tracking-wide">
-                PhD, MSc.IE, DIS (IIUM), BSc. (Hons.) (UPM)
+                Diploma (Fed Poly Kaduna) · BSc (Hons) (UPM) · DIS, MSc.IE, PhD Eng (IIUM Malaysia)
               </p>
               <p className="text-xs sm:text-sm text-[#47554F] font-medium pt-1">
                 Professor of Computer Science &amp; Artificial Intelligence <br />
-                <span className="text-[#0B6B3A] font-semibold">Director, Entrepreneurship Development Centre (EDC), NSUK</span>
+                <span className="text-[#0B6B3A] font-semibold">Director, Entrepreneurship Development Centre (EDC), Nasarawa State University</span>
               </p>
             </div>
 
-            {/* Lecture Discourse Plaque */}
+            {/* Lecture Discourse Plaque with NURA-X Emblem */}
             <div className="relative rounded-2xl bg-white border border-[#C9A227]/50 p-5 sm:p-6 shadow-sm text-left max-w-xl mx-auto lg:mx-0">
-              <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-[0.18em] text-[#8A6A12] mb-2">
+              <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-[0.18em] text-[#8A6A12] mb-3">
                 <span className="flex items-center gap-1.5">
                   <BookOpen className="w-3.5 h-3.5 text-[#C9A227]" />
                   <span>Inaugural Lecture Topic</span>
                 </span>
                 <span className="font-mono text-[10px] text-[#6B7B73]">Convocation Address</span>
               </div>
-              <h2 className="font-serif-luxury text-xl sm:text-2xl text-[#0F1F17] italic font-bold leading-snug">
-                “INTENTIONAL INTELLIGENCE: <br className="hidden sm:inline" />
-                From Digital Trust to Human Flourishing”
-              </h2>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 border-[#C9A227] p-0.5 overflow-hidden shrink-0 shadow-md bg-white group">
+                  <img
+                    src="/images/nura-x-intentional-intelligence.jpg"
+                    alt="NURA-X Intentional Intelligence Emblem"
+                    className="w-full h-full object-cover rounded-full group-hover:scale-105 transition-transform"
+                  />
+                  <div className="absolute inset-0 rounded-full ring-1 ring-inset ring-black/10 pointer-events-none" />
+                </div>
+                <div>
+                  <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-[#E7F3EC] text-[#0B6B3A] text-[10px] font-bold uppercase tracking-wider mb-1">
+                    <Sparkles className="w-3 h-3 text-[#C9A227]" />
+                    <span>NURA-X · Intentional Intelligence</span>
+                  </div>
+                  <h2 className="font-serif-luxury text-lg sm:text-2xl text-[#0F1F17] italic font-bold leading-snug">
+                    “INTENTIONAL INTELLIGENCE: <br className="hidden sm:inline" />
+                    From Digital Trust to Human Flourishing”
+                  </h2>
+                </div>
+              </div>
             </div>
 
             {/* Clear Primary Actions */}
@@ -129,13 +180,13 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 className="inline-flex items-center gap-1.5 px-4 py-3.5 rounded-full text-xs font-semibold text-[#5B6B63] hover:text-[#0B6B3A] transition-colors cursor-pointer"
               >
                 <Download className="w-4 h-4" />
-                <span>Official Invitation</span>
+                <span>Official Proclamation</span>
               </button>
             </div>
 
           </div>
 
-          {/* Right Column: Prestigious Archival Portrait */}
+          {/* Right Column: Prestigious Archival Portrait with Switcher */}
           <div className="lg:col-span-5 flex flex-col items-center">
             <div className="relative w-full max-w-[360px]">
               
@@ -143,13 +194,18 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               <div className="relative rounded-2xl bg-white border-2 border-[#C9A227]/40 p-2.5 shadow-xl">
                 <div className="relative rounded-xl overflow-hidden aspect-[3/4] bg-[#043A20]">
                   <img
-                    src="/images/prof-rashidah-olanrewaju.jpg"
-                    alt="Professor Rashidah Funke Olanrewaju in Official Academic Robes"
-                    className="w-full h-full object-cover object-top"
+                    src={selectedHeroPhoto.url}
+                    alt={selectedHeroPhoto.alt}
+                    className="w-full h-full object-cover object-top transition-all duration-500"
                   />
                   
                   {/* Subtle Corner Vignette */}
                   <div className="absolute inset-0 ring-1 ring-inset ring-black/10 pointer-events-none" />
+
+                  {/* Photo Label Tag */}
+                  <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-[9px] font-bold uppercase tracking-wider text-white">
+                    {selectedHeroPhoto.badge}
+                  </div>
                 </div>
 
                 {/* Engraved Academic Brass Nameplate */}
@@ -161,16 +217,38 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     Prof. Rashidah Funke Olanrewaju
                   </div>
                   <div className="text-[10px] text-[#5B6B63] font-medium">
-                    Nasarawa State University, Keffi
+                    {selectedHeroPhoto.caption}
                   </div>
                 </div>
               </div>
 
+              {/* Photo Switcher Thumbnails */}
+              <div className="mt-3 flex items-center justify-center gap-1.5 p-1.5 rounded-xl bg-white border border-[#E3ECE6] shadow-xs">
+                {heroPhotos.map((photo, pIdx) => (
+                  <button
+                    key={pIdx}
+                    onClick={() => setSelectedHeroPhoto(photo)}
+                    title={photo.badge}
+                    className={`relative w-10 h-10 rounded-lg overflow-hidden border-2 transition-all cursor-pointer ${
+                      selectedHeroPhoto.url === photo.url
+                        ? 'border-[#0B6B3A] ring-2 ring-[#C9A227]/50 scale-105'
+                        : 'border-transparent opacity-65 hover:opacity-100'
+                    }`}
+                  >
+                    <img
+                      src={photo.url}
+                      alt={photo.badge}
+                      className="w-full h-full object-cover object-top"
+                    />
+                  </button>
+                ))}
+              </div>
+
               {/* Biography Link Button */}
-              <div className="text-center mt-3">
+              <div className="text-center mt-2">
                 <button
                   onClick={onReadProfileClick}
-                  className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#0B6B3A] hover:text-[#043A20] transition-colors p-2 cursor-pointer"
+                  className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#0B6B3A] hover:text-[#043A20] transition-colors p-1.5 cursor-pointer"
                 >
                   <span>Read Academic Biography &amp; Pedigree</span>
                   <ArrowRight className="w-3.5 h-3.5" />

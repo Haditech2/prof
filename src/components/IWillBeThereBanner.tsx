@@ -66,9 +66,11 @@ export const IWillBeThereBanner: React.FC<IWillBeThereBannerProps> = ({
   // Preset sample delegates
   const presetAvatars = [
     { label: "Prof. Sa'adatu Liman (VC)", url: '/images/vc-saadatu-hassan-liman.jpg', name: "Prof. Sa'adatu Hassan Liman", role: "Vice-Chancellor, NSUK" },
-    { label: "Prof. Rashidah Olanrewaju", url: '/images/prof-rashidah-olanrewaju.jpg', name: "Prof. Rashidah Funke Olanrewaju", role: "Inaugural Lecturer" },
-    { label: "Dean of Computing", url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80', name: "Prof. Olayemi Durosinmi", role: "Dean, Faculty of Computing" },
-    { label: "International Fellow", url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80', name: "Prof. Teddy Mantoro, SMIEEE", role: "International Research Collaborator" }
+    { label: "Prof. Rashidah (Courtyard)", url: '/images/prof-rashidah-courtyard-regalia.jpg', name: "Prof. Rashidah Funke Olanrewaju", role: "Inaugural Lecturer" },
+    { label: "Prof. Rashidah (Executive)", url: '/images/prof-rashidah-executive-desk.jpg', name: "Prof. Rashidah Funke Olanrewaju", role: "Director, EDC NSUK" },
+    { label: "Prof. Rashidah (Garden)", url: '/images/prof-rashidah-garden-portrait.jpg', name: "Prof. Rashidah Funke Olanrewaju", role: "Inaugural Lecturer" },
+    { label: "Prof. Rashidah (Official)", url: '/images/prof-rashidah-olanrewaju.jpg', name: "Prof. Rashidah Funke Olanrewaju", role: "Inaugural Lecturer" },
+    { label: "NURA-X AI Research Group", url: '/images/nura-x-intentional-intelligence.jpg', name: "NURA-X AI Research Group", role: "Intelligent Software Engineering (ISERG)" }
   ];
 
   // Capture canvas logic
