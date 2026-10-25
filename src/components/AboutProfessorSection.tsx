@@ -100,18 +100,25 @@ export const AboutProfessorSection: React.FC<AboutProfessorSectionProps> = ({
       highlight: 'Dissertation on intelligent algorithmic systems and digital cryptology.'
     },
     {
-      degree: 'Master of Science (M.Sc.)',
-      field: 'Computer and Information Engineering',
+      degree: 'Master of Science (MSc.IE)',
+      field: 'Information Engineering',
       institution: 'International Islamic University Malaysia (IIUM)',
       location: 'Kuala Lumpur, Malaysia',
       highlight: 'Advanced machine learning architectures and software fault-tolerance.'
     },
     {
-      degree: 'Bachelor of Science (B.Sc. Hons)',
-      field: 'Software Engineering',
+      degree: 'Diploma in Islamic Studies (DIS)',
+      field: 'Islamic Thought & Ethical Foundations',
+      institution: 'International Islamic University Malaysia (IIUM)',
+      location: 'Kuala Lumpur, Malaysia',
+      highlight: 'Ethical governance, scholarship, and values-driven technological application.'
+    },
+    {
+      degree: 'Bachelor of Science with Honours (B.Sc. Hons.)',
+      field: 'Computer & Information Technology',
       institution: 'Universiti Putra Malaysia (UPM)',
       location: 'Selangor, Malaysia',
-      highlight: 'Graduated with distinction; foundational software specifications.'
+      highlight: 'Graduated with honours; foundational software specifications and intelligent systems.'
     }
   ];
 
@@ -179,7 +186,12 @@ export const AboutProfessorSection: React.FC<AboutProfessorSectionProps> = ({
     {
       url: '/images/prof-rashidah-olanrewaju.jpg',
       caption: 'Official Academic Portrait — Professor Rashidah Funke Olanrewaju',
-      category: 'Academic Regalia'
+      category: 'Official Portrait'
+    },
+    {
+      url: '/images/inaugural-poster-65th.jpg',
+      caption: 'Official 65th Inaugural Lecture Invitation Poster',
+      category: 'Official Poster'
     },
     {
       url: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=800&q=80',
@@ -224,7 +236,7 @@ export const AboutProfessorSection: React.FC<AboutProfessorSectionProps> = ({
               <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10">
                 <GraduationCap className="w-3.5 h-3.5 text-[#F2E3B3]" />
                 <span className="text-[11px] uppercase tracking-[0.22em] font-semibold text-[#F2E3B3]">
-                  NSUK Inaugural Lecture Series
+                  65th NSUK Inaugural Lecture
                 </span>
               </div>
 
@@ -234,14 +246,17 @@ export const AboutProfessorSection: React.FC<AboutProfessorSectionProps> = ({
                   Professor Rashidah <br />
                   <span className="italic font-normal text-[#F2E3B3]">Funke Olanrewaju</span>
                 </h1>
-                <p className="text-xs text-white/60 font-mono tracking-widest uppercase mt-2">
-                  B.Sc. (Hons) UPM • M.Sc. IIUM • Ph.D. IIUM • FNCS • MIET
+                <p className="text-xs text-[#F2E3B3]/90 font-mono tracking-wider mt-2">
+                  Citp, FCRIDE, SMIEEE, MIET, MNCS, MAITP, MIAENG, MWIE, Fellow Erasmus+
+                </p>
+                <p className="text-xs text-white/70 font-mono tracking-widest uppercase mt-1">
+                  PhD, MSc.IE, DIS (IIUM), BSc. (Hons.) (UPM)
                 </p>
               </div>
 
               {/* Roles Summary */}
               <p className="text-xs sm:text-sm text-white/80 font-sans-modern leading-relaxed max-w-xl">
-                Professor of Computer Science & AI • Director, Entrepreneurship Development Centre (EDC) • Head, Intelligent Software Engineering Research Group (ISERG), NSUK.
+                Professor of Computer Science &amp; Artificial Intelligence • Director, Entrepreneurship Development Centre (EDC) • Head, Intelligent Software Engineering Research Group (ISERG), NSUK.
               </p>
 
               {/* Discourse Title Pill Card */}
@@ -251,19 +266,19 @@ export const AboutProfessorSection: React.FC<AboutProfessorSectionProps> = ({
                     <BookOpen className="w-3.5 h-3.5" />
                     <span>Inaugural Discourse</span>
                   </span>
-                  <span className="text-white/60 font-mono text-[10px]">November 26, 2026</span>
+                  <span className="text-white/60 font-mono text-[10px]">Wednesday, 25 November 2026</span>
                 </div>
                 <h3 className="text-sm sm:text-base font-serif-luxury font-bold text-white italic leading-snug">
-                  "Intelligent Horizons: Navigating Artificial Intelligence, Cyber Resiliency, and Software Innovation for National Transformation"
+                  "INTENTIONAL INTELLIGENCE: From Digital Trust to Human Flourishing"
                 </h3>
                 <div className="flex flex-wrap items-center gap-4 text-[11px] text-white/70 pt-1 border-t border-white/10">
                   <span className="flex items-center space-x-1">
                     <MapPin className="w-3 h-3 text-[#F2E3B3]" />
-                    <span>1,000-Seat Main Auditorium, NSUK</span>
+                    <span>Assembly Hall, Main Campus, NSUK</span>
                   </span>
                   <span className="flex items-center space-x-1">
                     <Calendar className="w-3 h-3 text-[#F2E3B3]" />
-                    <span>10:00 AM Prompt</span>
+                    <span>2:00 PM Prompt</span>
                   </span>
                 </div>
               </div>
@@ -417,7 +432,7 @@ export const AboutProfessorSection: React.FC<AboutProfessorSectionProps> = ({
                     Ceremonial Protocol
                   </span>
                   <p className="text-xs text-[#0F1F17] mt-0.5">
-                    Academic robes required for Senate members. Guests are requested to be seated by 09:45 AM prompt before the University Mace entrance.
+                    Academic robes required for Senate members. Guests are requested to be seated in the Assembly Hall by 01:45 PM prompt before the University Mace entrance at 2:00 PM.
                   </p>
                 </div>
                 <button
@@ -555,18 +570,19 @@ export const AboutProfessorSection: React.FC<AboutProfessorSectionProps> = ({
               {/* Affiliations */}
               <div className="pt-4 border-t border-[#E3ECE6]">
                 <h3 className="text-xs uppercase tracking-widest text-[#0B6B3A] font-bold mb-3">
-                  Professional Fellowships & Councils
+                  Professional Fellowships &amp; Councils
                 </h3>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                   {[
-                    'Fellow, Nigeria Computer Society (FNCS)',
-                    'Member, IET (United Kingdom)',
-                    'IEEE Women in Engineering',
-                    'Malaysia Society of Cryptology',
-                    'IAENG International Member',
-                    'IEEE Senior Member Pool',
-                    'Computer Professionals Reg. Council (CPN)',
-                    'ISERG Lead Principal Investigator'
+                    'Citp (Chartered IT Practitioner)',
+                    'FCRIDE (Research & Info Dev)',
+                    'SMIEEE (Senior Member IEEE)',
+                    'MIET (United Kingdom)',
+                    'MNCS (Nigeria Computer Society)',
+                    'MAITP (Association of IT Prof.)',
+                    'MIAENG (Intl. Assoc. Engineers)',
+                    'MWIE (Women in Engineering)',
+                    'Fellow Erasmus+ (European Union)'
                   ].map((body, idx) => (
                     <div
                       key={idx}

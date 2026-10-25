@@ -204,7 +204,7 @@ export const IWillBeThereBanner: React.FC<IWillBeThereBannerProps> = ({
   const shareToWhatsApp = () => {
     const shareUrl = typeof window !== 'undefined' ? `${window.location.origin}/#event` : 'https://nsuk.edu.ng/inaugural';
     const text = encodeURIComponent(
-      `🎓 *I WILL BE THERE!* 🎓\n\nI am honoured to confirm my attendance at the *37th Inaugural Lecture* of *Professor Rashidah Funke Olanrewaju, Ph.D., FNCS, MIET* at Nasarawa State University, Keffi (NSUK).\n\n📖 *Lecture Theme:* "Intelligent Horizons: Navigating Artificial Intelligence, Cyber Resiliency & Software Innovation for National Transformation"\n📅 *Date:* Thursday, 26th November 2026\n⏰ *Time:* 10:00 AM Prompt\n📍 *Venue:* 1,000-Seat Main Auditorium, NSUK\n\nJoin the assembly and generate your personalized "I Will Be There" DP Flyer here:\n👉 ${shareUrl}`
+      `🎓 *I WILL BE THERE!* 🎓\n\nI am honoured to confirm my attendance at the *65th Inaugural Lecture* of *Professor Rashidah Funke Olanrewaju* at Nasarawa State University, Keffi (NSUK).\n\n📖 *Lecture Theme:* "INTENTIONAL INTELLIGENCE: From Digital Trust to Human Flourishing"\n📅 *Date:* Wednesday, 25 November 2026\n⏰ *Time:* 2:00 PM Prompt\n📍 *Venue:* Assembly Hall, Main Campus, Nasarawa State University, Keffi\n\nJoin the assembly and generate your personalized "I Will Be There" DP Flyer here:\n👉 ${shareUrl}`
     );
     window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
   };
@@ -536,7 +536,7 @@ export const IWillBeThereBanner: React.FC<IWillBeThereBannerProps> = ({
             </div>
 
             <div className={`text-[8px] sm:text-[9px] uppercase tracking-[0.25em] font-mono font-semibold ${themeStyles.instSubColor}`}>
-              37th Inaugural Lecture Ceremony
+              65th Inaugural Lecture Ceremony
             </div>
 
             {/* 3D Gilded Metallic Proclamation Ribbon */}
@@ -617,7 +617,7 @@ export const IWillBeThereBanner: React.FC<IWillBeThereBannerProps> = ({
                   Prof. Rashidah Funke Olanrewaju
                 </h4>
                 <p className="text-[9px] font-mono opacity-80 truncate text-gray-300">
-                  Ph.D., FNCS, MIET • Professor of Computer Science &amp; AI
+                  Citp, FCRIDE, SMIEEE, MIET • Prof. of Computer Science &amp; AI
                 </p>
               </div>
             </div>
@@ -635,7 +635,7 @@ export const IWillBeThereBanner: React.FC<IWillBeThereBannerProps> = ({
                 Discourse Theme:
               </span>
               <p className={`font-serif-luxury italic text-[10px] sm:text-[11px] leading-snug line-clamp-2 ${themeStyles.themePlaqueText}`}>
-                "Intelligent Horizons: Navigating Artificial Intelligence, Cyber Resiliency &amp; Software Innovation for National Transformation"
+                "INTENTIONAL INTELLIGENCE: From Digital Trust to Human Flourishing"
               </p>
             </div>
 
@@ -643,12 +643,12 @@ export const IWillBeThereBanner: React.FC<IWillBeThereBannerProps> = ({
             <div className="flex flex-wrap items-center justify-between text-[8px] sm:text-[9px] font-mono pt-1 border-t border-[#C9A227]/30 px-1">
               <div className={`flex items-center space-x-1 ${themeStyles.footerTextColor}`}>
                 <Calendar className="w-3 h-3 text-[#C9A227] shrink-0" />
-                <span>Thu, 26 Nov 2026 • 10:00 AM</span>
+                <span>Wed, 25 Nov 2026 • 2:00 PM</span>
               </div>
 
               <div className={`flex items-center space-x-1 ${themeStyles.footerTextColor}`}>
                 <MapPin className="w-3 h-3 text-[#C9A227] shrink-0" />
-                <span>Main Auditorium, NSUK</span>
+                <span>Assembly Hall, Main Campus, NSUK</span>
               </div>
 
               <div className="font-bold text-[#C9A227]">

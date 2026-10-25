@@ -20,7 +20,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenDownloadModal 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12 border-b border-white/10">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-6 text-center lg:text-left">
           <div>
-            <div className="text-[11px] uppercase tracking-[0.18em] text-[#E2BE4A] font-bold">26 November 2026 · NSUK</div>
+            <div className="text-[11px] uppercase tracking-[0.18em] text-[#E2BE4A] font-bold">Wednesday, 25 November 2026 · 2:00 PM · NSUK</div>
             <h2 className="mt-2 font-serif-luxury text-3xl md:text-4xl font-bold">Be part of this historic moment.</h2>
           </div>
           <button
@@ -42,11 +42,11 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenDownloadModal 
             </div>
             <div>
               <div className="font-serif-luxury text-lg font-bold">Prof. Rashidah Funke Olanrewaju</div>
-              <div className="text-xs text-white/60">Ph.D., FNCS, MIET · Nasarawa State University, Keffi</div>
+              <div className="text-xs text-white/60">Citp, FCRIDE, SMIEEE, MIET · Nasarawa State University, Keffi</div>
             </div>
           </div>
           <p className="mt-4 text-white/60 max-w-sm text-[13px]">
-            Faculty of Computing · Entrepreneurship Development Centre · ISERG
+            Professor of Computer Science &amp; AI · Director, EDC · Head, ISERG
           </p>
         </div>
 
@@ -65,7 +65,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenDownloadModal 
         <div>
           <h4 className="text-[11px] uppercase tracking-[0.16em] text-[#E2BE4A] font-bold mb-4">Contact</h4>
           <ul className="space-y-3 text-white/75">
-            <li className="flex items-start gap-2"><MapPin className="w-4 h-4 mt-0.5 text-[#E2BE4A] shrink-0" /> Main Auditorium, NSUK, Keffi</li>
+            <li className="flex items-start gap-2"><MapPin className="w-4 h-4 mt-0.5 text-[#E2BE4A] shrink-0" /> Assembly Hall, Main Campus, NSUK, Keffi</li>
             <li className="flex items-center gap-2"><Mail className="w-4 h-4 text-[#E2BE4A]" /> inaugural@nsuk.edu.ng</li>
             <li className="flex items-center gap-2"><Phone className="w-4 h-4 text-[#E2BE4A]" /> +234 803 700 8821</li>
           </ul>

@@ -39,7 +39,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           <div className="lg:col-span-7 text-center lg:text-left animate-fade-up">
             <div className="inline-flex items-center gap-2 pl-1.5 pr-4 py-1.5 rounded-full bg-[#E7F3EC] border border-[#0B6B3A]/15 mb-6">
               <span className="px-2 py-0.5 rounded-full bg-[#0B6B3A] text-white text-[10px] font-bold uppercase tracking-wider">
-                37th
+                65th
               </span>
               <span className="text-xs font-semibold text-[#064E2B]">NSUK Inaugural Lecture Series</span>
             </div>
@@ -49,8 +49,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               <span className="block text-[#0B6B3A] italic font-semibold">Funke Olanrewaju</span>
             </h1>
 
-            <p className="mt-4 text-sm font-semibold tracking-wide text-[#5B6B63]">
-              Ph.D., FNCS, MIET <span className="text-[#C9A227] mx-1.5">◆</span> Professor of Computer Science &amp; AI
+            <p className="mt-3 text-xs sm:text-sm font-semibold tracking-wide text-[#5B6B63]">
+              Citp, FCRIDE, SMIEEE, MIET, MNCS, MAITP, MIAENG, MWIE, Fellow Erasmus+
+            </p>
+            <p className="mt-1 text-xs text-[#0B6B3A] font-mono font-bold tracking-wide">
+              PhD, MSc.IE, DIS (IIUM), BSc. (Hons.) (UPM) <span className="text-[#C9A227] mx-1">◆</span> Professor of Computer Science &amp; AI
             </p>
 
             {/* Lecture theme */}
@@ -60,8 +63,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 <div className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.16em] text-[#0B6B3A]">
                   <BookOpen className="w-3.5 h-3.5" /> Lecture Theme
                 </div>
-                <p className="mt-1.5 font-serif-luxury text-xl sm:text-2xl leading-snug text-[#0F1F17] italic">
-                  “Intelligent Horizons: Navigating AI, Cyber Resiliency &amp; Software Innovation for National Transformation”
+                <p className="mt-1.5 font-serif-luxury text-xl sm:text-2xl leading-snug text-[#0F1F17] italic font-bold">
+                  “INTENTIONAL INTELLIGENCE: From Digital Trust to Human Flourishing”
                 </p>
               </div>
             </div>
@@ -141,7 +144,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 </div>
                 <div>
                   <div className="text-[10px] uppercase tracking-wider text-[#5B6B63] font-bold">Fellow</div>
-                  <div className="text-sm font-bold text-[#0F1F17]">FNCS · MIET</div>
+                  <div className="text-sm font-bold text-[#0F1F17]">SMIEEE · FCRIDE</div>
                 </div>
               </div>
 
@@ -161,9 +164,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         <div className="max-w-5xl mx-auto rounded-3xl bg-gradient-to-r from-[#0B6B3A] to-[#064E2B] text-white shadow-[0_24px_60px_-20px_rgba(6,78,43,0.6)] p-2">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-1">
             {[
-              { icon: Calendar, label: 'Date', value: 'Thu, 26 Nov 2026' },
-              { icon: Clock, label: 'Time', value: '10:00 AM prompt' },
-              { icon: MapPin, label: 'Venue', value: 'Main Auditorium, NSUK' }
+              { icon: Calendar, label: 'Date', value: 'Wed, 25 Nov 2026' },
+              { icon: Clock, label: 'Time', value: '2:00 PM prompt' },
+              { icon: MapPin, label: 'Venue', value: 'Assembly Hall, Main Campus, NSUK' }
             ].map((d) => (
               <div key={d.label} className="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/5 transition-colors">
                 <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-[#F2E3B3] shrink-0">

@@ -204,7 +204,7 @@ export function App() {
                     <h2 className="mt-2 font-serif-luxury text-3xl md:text-4xl font-bold leading-tight">
                       The Senate assembles soon.
                     </h2>
-                    <p className="mt-2 text-sm text-white/70">Thursday, 26 November 2026 · 10:00 AM</p>
+                    <p className="mt-2 text-sm text-white/70">Wednesday, 25 November 2026 · 2:00 PM</p>
                   </div>
                   <div className="lg:col-span-8">
                     <CountdownSection
@@ -336,12 +336,13 @@ export function App() {
                   <div className="absolute left-[27px] md:left-1/2 top-2 bottom-2 w-px bg-gradient-to-b from-[#0B6B3A] via-[#C9A227] to-[#0B6B3A] md:-translate-x-1/2" />
                   <div className="space-y-6">
                     {[
-                      { time: '09:30', title: 'Senate Robing & Procession', location: 'Senate Chamber' },
-                      { time: '10:00', title: 'Anthems & Invocation', location: 'Main Auditorium' },
-                      { time: '10:30', title: 'Reading of Citation', location: 'Podium of Honour' },
-                      { time: '11:00', title: 'Inaugural Lecture', location: 'Auditorium Lectern' },
-                      { time: '12:30', title: 'Formal Admission by VC', location: 'High Table' },
-                      { time: '13:15', title: 'Banquet & Reception', location: 'Banquet Pavilion' }
+                      { time: '13:15', title: 'Academic Senate Robing & Procession', location: 'Senate Chamber to Assembly Hall' },
+                      { time: '13:45', title: 'Arrival & Seating of Dignitaries', location: 'Assembly Hall Sanctuary' },
+                      { time: '14:00', title: 'Anthems & Constitution of Assembly', location: 'Assembly Hall Podium' },
+                      { time: '14:20', title: 'Reading of Academic Citation', location: 'Podium of Honour' },
+                      { time: '14:35', title: '65th Inaugural Lecture Delivery', location: 'Assembly Hall Lectern' },
+                      { time: '15:50', title: 'Formal Admission & Plaque Presentation', location: 'High Table Dais' },
+                      { time: '16:30', title: 'Inaugural Banquet & Academic Reception', location: 'University Banquet Pavilion' }
                     ].map((item, index) => {
                       const left = index % 2 === 0;
                       return (

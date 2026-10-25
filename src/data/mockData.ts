@@ -61,9 +61,9 @@ export const PRESET_THEMES: InvitationThemePreset[] = [
 
 export const AI_TEXT_PRESETS: Record<string, string[]> = {
   inaugural: [
-    "The Vice-Chancellor, on behalf of the University Senate and Governing Council, cordially requests the honour of your presence at the Inaugural Lecture entitled: 'Intelligent Horizons: Navigating Artificial Intelligence, Cyber Resiliency, and Software Innovation for National Transformation' to be delivered by Professor Rashidah Funke Olanrewaju.",
-    "A celebration of academic distinction, pioneering research, and scholarly triumph. Join the University Senate as Professor Rashidah Funke Olanrewaju presents her seminal contributions to Artificial Intelligence, Software Engineering, and National Development.",
-    "Academic excellence illuminated. You are warmly invited to witness the milestone Inaugural Lecture marking the zenith of scholarly leadership, cybersecurity innovations, and educational mentorship by Professor Rashidah Funke Olanrewaju."
+    "The Vice-Chancellor, Professor Sa'adatu Hassan Liman (Fellow UNESCO, ACLS, FIIFP, CBER, NIPR (Hon)), cordially invites you to the 65th Inaugural Lecture entitled: 'INTENTIONAL INTELLIGENCE: From Digital Trust to Human Flourishing' to be delivered by Professor Rashidah Funke Olanrewaju (Citp, FCRIDE, SMIEEE, MIET, MNCS, MAITP, MIAENG, MWIE, Fellow Erasmus+ • PhD, MSc.IE, DIS (IIUM), BSc. (Hons.) (UPM)), Professor of Computer Science and Artificial Intelligence & Director, Entrepreneurship Development Centre, Nasarawa State University, Keffi.",
+    "A celebration of academic distinction, pioneering AI research, and scholarly leadership. Join the University Senate as Professor Rashidah Funke Olanrewaju delivers the 65th Inaugural Lecture on 'INTENTIONAL INTELLIGENCE: From Digital Trust to Human Flourishing'.",
+    "Academic excellence illuminated. You are warmly invited to witness the 65th Inaugural Lecture marking the zenith of scholarly leadership and AI innovation by Professor Rashidah Funke Olanrewaju on Wednesday, 25 November 2026 at 2:00 p.m."
   ]
 };
 
@@ -71,25 +71,25 @@ export const INITIAL_EVENTS: EventData[] = [
   {
     id: 'event-prof-rashidah-inaugural',
     slug: 'prof-rashidah-inaugural-lecture',
-    title: 'The Inaugural Lecture of Professor Rashidah Funke Olanrewaju',
+    title: 'The 65th Inaugural Lecture of Professor Rashidah Funke Olanrewaju',
     category: 'inaugural',
-    hosts: 'The Vice-Chancellor & University Senate, Nasarawa State University, Keffi',
-    celebrants: 'Professor Rashidah Funke Olanrewaju, Ph.D., FNCS, MIET',
-    date: '2026-11-26',
-    startTime: '10:00',
-    endTime: '14:00',
+    hosts: 'The Vice-Chancellor, Professor Sa\'adatu Hassan Liman & University Senate, NSUK',
+    celebrants: 'Professor Rashidah Funke Olanrewaju (Citp, FCRIDE, SMIEEE, MIET, MNCS, MAITP, MIAENG, MWIE, Fellow Erasmus+ | PhD, MSc.IE, DIS (IIUM), BSc. (Hons.) (UPM))',
+    date: '2026-11-25',
+    startTime: '14:00',
+    endTime: '17:30',
     timezone: 'Africa/Lagos (GMT+1)',
-    venueName: '1,000-Seat University Main Auditorium, NSUK',
+    venueName: 'Assembly Hall, Main Campus, Nasarawa State University, Keffi',
     address: 'Main Campus, Keffi, Nasarawa State, Nigeria',
     mapUrl: 'https://maps.google.com/?q=Nasarawa+State+University+Keffi',
     dressCode: 'Academic Regalia for Faculty / Formal Corporate or Regal Traditional for Guests',
     dressCodeNote: 'Academic robes, hoods, and caps for University Senate and visiting professors. Black tie or corporate traditional attire for dignitaries.',
-    dressCodeColors: ['#0E1726', '#C5A869', '#12382C', '#FAF8F5'],
-    rsvpDeadline: '2026-11-15',
+    dressCodeColors: ['#043A20', '#C9A227', '#0B6B3A', '#FAF7F0'],
+    rsvpDeadline: '2026-11-20',
     contactPhone: '+234 803 700 8821',
     contactEmail: 'inaugural@nsuk.edu.ng',
-    description: 'The Vice-Chancellor on behalf of the University Senate cordially invites the academic community, industry leaders, global researchers, and the general public to the milestone Inaugural Lecture entitled: "Intelligent Horizons: Navigating Artificial Intelligence, Cyber Resiliency, and Software Innovation for National Transformation" to be delivered by Professor Rashidah Funke Olanrewaju.',
-    instructions: 'Senate Procession convenes at the Senate Building Foyer at 09:30 AM prompt. Guests must be seated by 09:45 AM. Presentation of Digital Pass or QR Code required at the VIP entrance.',
+    description: 'The Vice-Chancellor, Professor Sa\'adatu Hassan Liman (Fellow UNESCO, ACLS, FIIFP, CBER, NIPR (Hon)) cordially invites the university community, researchers, industry partners, and the general public to the 65th Inaugural Lecture entitled: "INTENTIONAL INTELLIGENCE: From Digital Trust to Human Flourishing" to be delivered by Professor Rashidah Funke Olanrewaju, Professor of Computer Science and Artificial Intelligence & Director, Entrepreneurship Development Centre, Nasarawa State University, Keffi.',
+    instructions: 'Senate Procession convenes at the Senate Building Foyer at 01:15 PM prompt. Guests and dignitaries must be seated in the Assembly Hall by 01:45 PM prompt. Presentation of Digital Pass or QR Code required at the VIP entrance.',
     
     themeId: 'inaugural-prestige',
     fontPreset: 'cinzel',
@@ -98,8 +98,8 @@ export const INITIAL_EVENTS: EventData[] = [
     photoFilter: 'natural',
     photoScale: 1.0,
     photoPosition: { x: 0, y: 0 },
-    accentColor: '#C5A869',
-    backgroundColor: '#0E1726',
+    accentColor: '#C9A227',
+    backgroundColor: '#043A20',
     textColor: '#F8FAFC',
     borderStyle: 'ornate-gold',
     
@@ -109,53 +109,66 @@ export const INITIAL_EVENTS: EventData[] = [
     schedule: [
       {
         id: 'inaug-1',
-        time: '09:30',
+        time: '13:15',
         title: 'Academic Senate Robing & Procession',
-        location: 'Senate Chamber to Auditorium',
+        location: 'Senate Chamber to Assembly Hall',
         description: 'Assembly of the Vice-Chancellor, Registrar, Deans, Professors, and University Mace bearer in full academic regalia.'
       },
       {
         id: 'inaug-2',
-        time: '10:00',
-        title: 'National & University Anthems / Welcome Remarks',
-        location: 'Main Auditorium Sanctuary',
-        description: 'Opening invocation, formal constitution of the Inaugural Assembly by the Vice-Chancellor.'
+        time: '13:45',
+        title: 'Arrival & Seating of Dignitaries',
+        location: 'Assembly Hall Sanctuary',
+        description: 'Distinguished guests, royal fathers, and scholars seated.'
       },
       {
         id: 'inaug-3',
-        time: '10:30',
-        title: 'Academic Citation of Professor Rashidah Funke Olanrewaju',
-        location: 'Podium of Honor',
-        description: 'Reading of the distinguished scholar\'s curriculum vitae, academic pedigree, research discoveries, and international honors.'
+        time: '14:00',
+        title: 'Anthems & Formal Constitution of the Assembly',
+        location: 'Assembly Hall Podium',
+        description: 'National and University Anthems, opening invocation, formal constitution of the 65th Inaugural Assembly by the Vice-Chancellor, Professor Sa\'adatu Hassan Liman.'
       },
       {
         id: 'inaug-4',
-        time: '11:00',
-        title: 'Delivery of the Inaugural Lecture',
-        location: 'Auditorium Lectern',
-        description: '"Intelligent Horizons: Navigating Artificial Intelligence, Cyber Resiliency, and Software Innovation for National Transformation".'
+        time: '14:20',
+        title: 'Academic Citation of Professor Rashidah Funke Olanrewaju',
+        location: 'Podium of Honor',
+        description: 'Reading of the distinguished scholar\'s curriculum vitae, academic pedigree, research achievements, and international fellowships.'
       },
       {
         id: 'inaug-5',
-        time: '12:30',
-        title: 'Vice-Chancellor\'s Formal Admission & Standing Ovation',
-        location: 'High Table Dais',
-        description: 'Formal reception of the Inaugural Lecturer into the Distinguished College of University Professors and presentation of the Commemorative Plaque.'
+        time: '14:35',
+        title: 'Delivery of the 65th Inaugural Lecture',
+        location: 'Assembly Hall Lectern',
+        description: '"INTENTIONAL INTELLIGENCE: From Digital Trust to Human Flourishing" by Professor Rashidah Funke Olanrewaju.'
       },
       {
         id: 'inaug-6',
-        time: '13:15',
+        time: '15:50',
+        title: 'Formal Admission by VC & Standing Ovation',
+        location: 'High Table Dais',
+        description: 'Formal reception of the Inaugural Lecturer into the Distinguished College of University Professors and presentation of the Commemorative Plaque by the Vice-Chancellor.'
+      },
+      {
+        id: 'inaug-7',
+        time: '16:30',
         title: 'Inaugural Banquet & Academic Reception',
         location: 'University Banquet Pavilion',
-        description: 'Buffet dining, toasts, cultural musical serenades, and goodwill presentations from international delegates.'
+        description: 'Buffet dining, toasts, felicitations, and goodwill presentations from international delegates.'
       }
     ],
     gallery: [
       {
         id: 'inaug-g1',
         url: '/images/prof-rashidah-olanrewaju.jpg',
-        caption: 'Professor Rashidah Funke Olanrewaju in Official Academic Portrait',
+        caption: 'Official Academic Portrait — Professor Rashidah Funke Olanrewaju',
         author: 'NSUK Media & Communications'
+      },
+      {
+        id: 'inaug-g-poster',
+        url: '/images/inaugural-poster-65th.jpg',
+        caption: 'Official 65th Inaugural Lecture Invitation Poster',
+        author: 'Office of the Vice-Chancellor, NSUK'
       },
       {
         id: 'inaug-g2',
