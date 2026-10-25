@@ -69,20 +69,18 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* ========================================================================= */}
-        {/* TOP INSTITUTIONAL PROCLAMATION BANNER                                     */}
+        {/* TOP INSTITUTIONAL PROCLAMATION BANNER (Streamlined)                       */}
         {/* ========================================================================= */}
-        <div className="max-w-4xl mx-auto text-center mb-8 sm:mb-12 animate-fade-in">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-[#C9A227]/40 shadow-xs mb-3">
-            <span className="w-2 h-2 rounded-full bg-[#0B6B3A]" />
-            <span className="font-cinzel text-[11px] sm:text-xs font-bold uppercase tracking-[0.2em] text-[#064E2B]">
-              Nasarawa State University, Keffi
+        <div className="max-w-3xl mx-auto text-center mb-8 animate-fade-in">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white border border-[#C9A227]/40 shadow-xs mb-2.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#0B6B3A]" />
+            <span className="font-cinzel text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] text-[#064E2B]">
+              Nasarawa State University, Keffi · 65th Inaugural Lecture
             </span>
           </div>
 
-          <p className="text-xs sm:text-sm text-[#47554F] max-w-2xl mx-auto leading-relaxed font-sans">
-            The Vice-Chancellor, <strong className="text-[#0F1F17] font-semibold">Professor Sa'adatu Hassan Liman</strong>{' '}
-            <span className="text-[11px] text-[#6B7B73] hidden sm:inline">(Fellow UNESCO, ACLS, FIIFP, CBER, NIPR (Hon))</span>,{' '}
-            cordially invites the university community and general public to the:
+          <p className="text-xs sm:text-[13px] text-[#47554F] max-w-xl mx-auto font-sans">
+            Office of the Vice-Chancellor, <strong className="text-[#0F1F17] font-semibold">Prof. Sa'adatu Hassan Liman</strong>, cordially invites the academic community to the inaugural address of:
           </p>
         </div>
 
@@ -92,61 +90,55 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
           
           {/* Left Column: Scholarly Milestone & Discourse Topic */}
-          <div className="lg:col-span-7 text-center lg:text-left space-y-6">
+          <div className="lg:col-span-7 text-center lg:text-left space-y-5">
             
-            {/* 65th Inaugural Lecture Milestone Header */}
+            {/* Professorial Headline */}
             <div>
-              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-md bg-[#043A20] text-[#F2E3B3] font-cinzel text-xs sm:text-sm font-bold tracking-[0.22em] uppercase shadow-sm">
-                <span>✦</span>
-                <span>65th Inaugural Lecture</span>
-                <span>✦</span>
-              </div>
-
-              {/* Professorial Headline */}
-              <h1 className="mt-4 font-serif-luxury font-bold text-[#0F1F17] text-4xl sm:text-5xl lg:text-6xl leading-[1.05] tracking-tight">
+              <span className="text-[11px] font-bold uppercase tracking-[0.22em] text-[#8A6A12] font-cinzel">
+                Inaugural Lecturer
+              </span>
+              <h1 className="mt-1 font-serif-luxury font-bold text-[#0F1F17] text-4xl sm:text-5xl lg:text-6xl leading-[1.05] tracking-tight">
                 Professor Rashidah <br />
                 <span className="text-[#0B6B3A] italic font-normal">Funke Olanrewaju</span>
               </h1>
             </div>
 
             {/* Academic Credentials & Honors */}
-            <div className="space-y-1.5 pt-1 border-t border-[#E3ECE6] max-w-xl mx-auto lg:mx-0">
+            <div className="space-y-1 pt-1 border-t border-[#E3ECE6] max-w-xl mx-auto lg:mx-0">
               <p className="text-xs sm:text-[13px] font-semibold tracking-wide text-[#043A20]">
-                Citp, FCRIDE, SMIEEE, M. WIE, MIET (UK), ARISE, MCR (Malaysia), MNCS, IAENG, Fellow Erasmus+
+                Citp, FCRIDE, SMIEEE, M. WIE, MIET (UK), ARISE, MCR (Malaysia), MNCS, IAENG
               </p>
               <p className="text-xs font-mono text-[#5B6B63] tracking-wide">
-                Diploma (Fed Poly Kaduna) · BSc (Hons) (UPM) · DIS, MSc.IE, PhD Eng (IIUM Malaysia)
+                ND (Kaduna) · BSc Hons (UPM) · DIS, MSc.IE, PhD Eng (IIUM)
               </p>
-              <p className="text-xs sm:text-sm text-[#47554F] font-medium pt-1">
-                Professor of Computer Science &amp; Artificial Intelligence <br />
-                <span className="text-[#0B6B3A] font-semibold">Director, Entrepreneurship Development Centre (EDC), Nasarawa State University</span>
+              <p className="text-xs sm:text-sm text-[#47554F] font-medium pt-0.5">
+                Professor of Computer Science &amp; AI · <span className="text-[#0B6B3A] font-semibold">Director, EDC, NSUK</span>
               </p>
             </div>
 
             {/* Lecture Discourse Plaque with NURA-X Emblem */}
-            <div className="relative rounded-2xl bg-white border border-[#C9A227]/50 p-5 sm:p-6 shadow-sm text-left max-w-xl mx-auto lg:mx-0">
-              <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-[0.18em] text-[#8A6A12] mb-3">
+            <div className="relative rounded-2xl bg-white border border-[#C9A227]/50 p-4 sm:p-5 shadow-sm text-left max-w-xl mx-auto lg:mx-0">
+              <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-[0.18em] text-[#8A6A12] mb-2.5">
                 <span className="flex items-center gap-1.5">
                   <BookOpen className="w-3.5 h-3.5 text-[#C9A227]" />
                   <span>Inaugural Lecture Topic</span>
                 </span>
                 <span className="font-mono text-[10px] text-[#6B7B73]">Convocation Address</span>
               </div>
-              <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 border-[#C9A227] p-0.5 overflow-hidden shrink-0 shadow-md bg-white group">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-3.5">
+                <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-full border-2 border-[#C9A227] p-0.5 overflow-hidden shrink-0 shadow-md bg-white">
                   <img
                     src="/images/nura-x-intentional-intelligence.jpg"
                     alt="NURA-X Intentional Intelligence Emblem"
-                    className="w-full h-full object-cover rounded-full group-hover:scale-105 transition-transform"
+                    className="w-full h-full object-cover rounded-full"
                   />
-                  <div className="absolute inset-0 rounded-full ring-1 ring-inset ring-black/10 pointer-events-none" />
                 </div>
                 <div>
-                  <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-[#E7F3EC] text-[#0B6B3A] text-[10px] font-bold uppercase tracking-wider mb-1">
+                  <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#E7F3EC] text-[#0B6B3A] text-[9px] font-bold uppercase tracking-wider mb-1">
                     <Sparkles className="w-3 h-3 text-[#C9A227]" />
                     <span>NURA-X · Intentional Intelligence</span>
                   </div>
-                  <h2 className="font-serif-luxury text-lg sm:text-2xl text-[#0F1F17] italic font-bold leading-snug">
+                  <h2 className="font-serif-luxury text-base sm:text-xl text-[#0F1F17] italic font-bold leading-snug">
                     “INTENTIONAL INTELLIGENCE: <br className="hidden sm:inline" />
                     From Digital Trust to Human Flourishing”
                   </h2>
@@ -154,33 +146,33 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               </div>
             </div>
 
-            {/* Clear Primary Actions */}
-            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3 pt-2">
+            {/* Clear Primary Actions: 1-3 words, verbs first */}
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3 pt-1">
               <button
                 id="hero-rsvp"
                 onClick={onOpenRsvp}
-                className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full text-xs font-bold uppercase tracking-wider bg-[#0B6B3A] text-white hover:bg-[#064E2B] shadow-md hover:shadow-lg transition-all cursor-pointer active:scale-98 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0B6B3A]"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-xs font-bold uppercase tracking-wider bg-[#0B6B3A] text-white hover:bg-[#064E2B] shadow-md hover:shadow-lg transition-all cursor-pointer active:scale-98 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0B6B3A]"
               >
-                <span>Confirm Attendance (RSVP)</span>
+                <span>Confirm RSVP</span>
                 <ArrowRight className="w-4 h-4 text-[#F2E3B3]" />
               </button>
 
               <button
                 id="hero-dp"
                 onClick={onOpenDpGenerator}
-                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full text-xs font-bold uppercase tracking-wider bg-white text-[#0B6B3A] border-2 border-[#0B6B3A]/30 hover:border-[#0B6B3A] hover:bg-[#F6FAF7] transition-all cursor-pointer active:scale-98 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0B6B3A]"
+                className="inline-flex items-center gap-2 px-5 py-3 rounded-full text-xs font-bold uppercase tracking-wider bg-white text-[#0B6B3A] border-2 border-[#0B6B3A]/30 hover:border-[#0B6B3A] hover:bg-[#F6FAF7] transition-all cursor-pointer active:scale-98 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0B6B3A]"
               >
-                <Sparkles className="w-4 h-4 text-[#C9A227]" />
-                <span>Create "I'll Be There" DP</span>
+                <Sparkles className="w-3.5 h-3.5 text-[#C9A227]" />
+                <span>Generate DP</span>
               </button>
 
               <button
                 id="hero-invite"
                 onClick={onDownloadCardClick}
-                className="inline-flex items-center gap-1.5 px-4 py-3.5 rounded-full text-xs font-semibold text-[#5B6B63] hover:text-[#0B6B3A] transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-4 py-3 rounded-full text-xs font-semibold text-[#5B6B63] hover:text-[#0B6B3A] transition-colors cursor-pointer"
               >
-                <Download className="w-4 h-4" />
-                <span>Official Proclamation</span>
+                <Download className="w-3.5 h-3.5" />
+                <span>View Proclamation</span>
               </button>
             </div>
 

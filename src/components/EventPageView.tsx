@@ -236,11 +236,11 @@ export const EventPageView: React.FC<EventPageViewProps> = ({
   }
 
   return (
-    <div className="min-h-screen bg-[#F6FAF7] text-[#0F1F17] pt-20 md:pt-28 pb-24">
+    <div className="min-h-screen bg-[#F6FAF7] text-[#0F1F17] pt-24 sm:pt-28 pb-24">
       
-      {/* Top Vanity Share Bar */}
-      <div className="bg-[#0B6B3A] text-white py-3 px-4 sticky top-18 sm:top-20 md:top-28 z-30 shadow-md">
-        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3 text-xs">
+      {/* Top Vanity Share Bar (Clean Inline Banner) */}
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 mb-8">
+        <div className="bg-[#043A20] text-white py-3 px-4 sm:px-5 rounded-2xl shadow-sm flex flex-wrap items-center justify-between gap-3 text-xs border border-[#C9A227]/30">
           <div className="flex items-center space-x-2">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
             <span className="font-mono text-[#F2E3B3] hidden sm:inline">nsuk.edu.ng/inaugural/{event.slug}</span>
@@ -250,7 +250,7 @@ export const EventPageView: React.FC<EventPageViewProps> = ({
           <div className="flex items-center space-x-2">
             <button
               onClick={copyToClipboard}
-              className="px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 flex items-center space-x-1.5 transition-all text-xs"
+              className="px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 flex items-center space-x-1.5 transition-all text-xs cursor-pointer"
             >
               {copiedLink ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-[#C9A227]" />}
               <span>{copiedLink ? 'Copied' : 'Copy Link'}</span>
@@ -258,7 +258,7 @@ export const EventPageView: React.FC<EventPageViewProps> = ({
 
             <button
               onClick={shareToWhatsApp}
-              className="px-3 py-1.5 rounded-full bg-emerald-600 hover:bg-emerald-700 font-semibold flex items-center space-x-1.5 transition-all text-xs text-white"
+              className="px-3 py-1.5 rounded-full bg-emerald-600 hover:bg-emerald-700 font-semibold flex items-center space-x-1.5 transition-all text-xs text-white cursor-pointer"
             >
               <Share2 className="w-3.5 h-3.5" />
               <span>Share WhatsApp</span>
@@ -266,7 +266,7 @@ export const EventPageView: React.FC<EventPageViewProps> = ({
 
             <button
               onClick={onBackToStudio}
-              className="px-3 py-1.5 rounded-full bg-[#C9A227] hover:brightness-105 font-semibold text-[#0B6B3A] text-xs transition-all"
+              className="px-3 py-1.5 rounded-full bg-[#C9A227] hover:brightness-105 font-semibold text-[#043A20] text-xs transition-all cursor-pointer"
             >
               Back to Overview
             </button>

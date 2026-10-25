@@ -161,7 +161,15 @@ export function App() {
   return (
     <div className="min-h-screen bg-white text-[#0F1F17] flex flex-col font-sans-modern">
       
-      {/* Top Navbar */}
+      {/* Accessible Skip to Content Link */}
+      <a 
+        href="#main-content" 
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-[#0B6B3A] focus:text-white focus:rounded-full focus:shadow-xl focus:text-xs focus:font-bold focus:outline-none focus:ring-2 focus:ring-[#C9A227]"
+      >
+        Skip to main content
+      </a>
+
+      {/* Standout Floating Frosted Navbar */}
       <Navbar
         currentEvent={currentEvent}
         onNavigate={(view) => {
@@ -173,7 +181,7 @@ export function App() {
       />
 
       {/* Main Routed Content */}
-      <main className="flex-1">
+      <main id="main-content" className="flex-1 focus:outline-none">
         {activeView === 'landing' && (
           <div>
             {/* 1. Hero */}
@@ -391,16 +399,16 @@ export function App() {
                         setActiveView('about-professor');
                         window.scrollTo({ top: 0, behavior: 'smooth' });
                       }}
-                      className="btn-green inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-semibold"
+                      className="btn-green inline-flex items-center gap-2 px-6 py-3 rounded-full text-xs font-bold uppercase tracking-wider"
                     >
-                      Full Profile &amp; Pedigree <ArrowRight className="w-4 h-4" />
+                      <span>View Profile</span> <ArrowRight className="w-3.5 h-3.5" />
                     </button>
                     <button
                       id="bio-invitation"
                       onClick={() => setIsDownloadModalOpen(true)}
-                      className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-semibold bg-white border border-[#E3ECE6] text-[#0F1F17] hover:border-[#0B6B3A] transition-colors"
+                      className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-xs font-bold uppercase tracking-wider bg-white border border-[#E3ECE6] text-[#0F1F17] hover:border-[#0B6B3A] transition-colors"
                     >
-                      <Download className="w-4 h-4 text-[#0B6B3A]" /> Official Proclamation Poster
+                      <Download className="w-3.5 h-3.5 text-[#0B6B3A]" /> <span>View Poster</span>
                     </button>
                   </div>
                 </div>
@@ -455,34 +463,18 @@ export function App() {
                 <div className="absolute inset-0 nsuk-pattern-light pointer-events-none" />
                 <div className="absolute -bottom-32 -left-20 w-96 h-96 rounded-full bg-[#0B6B3A] blur-3xl opacity-60 pointer-events-none" />
                 <div className="relative grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-                  <div className="lg:col-span-5 text-center lg:text-left space-y-5">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#C9A227]/20 text-[#F2E3B3] text-[11px] font-bold uppercase tracking-[0.16em]">
-                      <Sparkles className="w-3.5 h-3.5 text-[#E2BE4A]" /> Official DP Flyer Studio
+                  <div className="lg:col-span-5 text-center lg:text-left space-y-4">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#C9A227]/20 text-[#F2E3B3] text-[10px] font-bold uppercase tracking-[0.16em]">
+                      <Sparkles className="w-3.5 h-3.5 text-[#E2BE4A]" /> Attendee Flyer Studio
                     </div>
-                    <h2 className="font-serif-luxury text-4xl md:text-5xl font-bold leading-tight">
-                      Tell everyone <br /><span className="text-[#E2BE4A] italic">“I’ll Be There!”</span>
+                    <h2 className="font-serif-luxury text-3xl sm:text-4xl font-bold leading-tight">
+                      Tell everyone you're attending.
                     </h2>
                     <p className="text-sm text-white/75 leading-relaxed max-w-md mx-auto lg:mx-0">
-                      Generate your verified Inaugural Lecture attendee flyer. Personalize your portrait, select your university title, and download in Ultra-HD for WhatsApp Status, LinkedIn &amp; Instagram.
+                      Personalize your official attendee flyer with your photo and designation for WhatsApp Status and LinkedIn.
                     </p>
 
-                    {/* Features checklist */}
-                    <div className="space-y-2.5 pt-2 text-left max-w-sm mx-auto lg:mx-0 text-xs text-white/90">
-                      <div className="flex items-center space-x-2">
-                        <CheckCircle2 className="w-4 h-4 text-[#E2BE4A] shrink-0" />
-                        <span><strong>Instant Retina Export:</strong> 1:1 DP &amp; 9:16 Status</span>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <CheckCircle2 className="w-4 h-4 text-[#E2BE4A] shrink-0" />
-                        <span><strong>3 Luxury Themes:</strong> Emerald, Ivory &amp; Obsidian</span>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <CheckCircle2 className="w-4 h-4 text-[#E2BE4A] shrink-0" />
-                        <span><strong>One-Tap Sharing:</strong> Direct to WhatsApp Status</span>
-                      </div>
-                    </div>
-
-                    <div className="pt-4 flex flex-wrap justify-center lg:justify-start gap-3">
+                    <div className="pt-2 flex flex-wrap justify-center lg:justify-start gap-3">
                       <button
                         id="dp-confirm-rsvp"
                         onClick={() => {
@@ -491,7 +483,7 @@ export function App() {
                         }}
                         className="btn-gold inline-flex items-center gap-2 px-6 py-3 rounded-full text-xs font-bold uppercase tracking-wider"
                       >
-                        Confirm RSVP Pass <ArrowRight className="w-4 h-4" />
+                        <span>Reserve Seat</span> <ArrowRight className="w-3.5 h-3.5" />
                       </button>
                     </div>
                   </div>
@@ -553,9 +545,9 @@ export function App() {
                       setActiveView('event');
                       window.scrollTo({ top: 0, behavior: 'smooth' });
                     }}
-                    className="mt-6 btn-green inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-semibold"
+                    className="mt-6 btn-green inline-flex items-center gap-2 px-6 py-3 rounded-full text-xs font-bold uppercase tracking-wider"
                   >
-                    Add your name <ArrowRight className="w-4 h-4" />
+                    <span>Register Now</span> <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
 
