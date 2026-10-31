@@ -2,13 +2,10 @@ import React, { useState } from 'react';
 import { 
   ArrowRight, 
   Mail, 
-  Phone, 
   MapPin, 
   ArrowUp, 
   CheckCircle2, 
-  Sparkles, 
   ChevronDown, 
-  Globe, 
   ExternalLink 
 } from 'lucide-react';
 
@@ -53,24 +50,20 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenDownloadModal 
   };
 
   return (
-    <footer className="bg-[#032716] text-white relative overflow-hidden">
-      {/* Background delicate university lattice */}
-      <div className="absolute inset-0 nsuk-pattern-light opacity-30 pointer-events-none" />
+    <footer className="bg-[#003330] text-white relative overflow-hidden">
 
       {/* ========================================================================= */}
       {/* 1. PRE-FOOTER CTA BAND                                                    */}
       {/* ========================================================================= */}
-      <div className="relative border-b border-white/10 bg-gradient-to-b from-transparent to-black/20">
+      <div className="relative border-b border-white/10 bg-gradient-to-b from-transparent to-black/25">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
           <div className="flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left">
             <div className="space-y-2 max-w-xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#C9A227]/20 border border-[#C9A227]/40 text-[#F2E3B3] text-[10px] sm:text-xs font-bold uppercase tracking-widest">
-                <Sparkles className="w-3.5 h-3.5 text-[#E2BE4A]" /> Convocation Assembly
-              </div>
-              <h2 className="font-serif-luxury text-3xl sm:text-4xl md:text-5xl font-bold leading-tight">
+              <div className="font-serif-luxury italic text-base text-[#F8E7BE]">Convocation Assembly</div>
+              <h2 className="font-serif-luxury text-3xl sm:text-4xl md:text-5xl font-semibold leading-tight">
                 Witness academic history in the making.
               </h2>
-              <p className="text-sm text-white/75 font-sans">
+              <p className="text-sm text-white/80 font-sans">
                 Wednesday, 25 November 2026 at 2:00 PM prompt · Assembly Hall, Main Campus, Keffi.
               </p>
             </div>
@@ -79,7 +72,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenDownloadModal 
               <button
                 id="footer-cta-rsvp"
                 onClick={() => go('event')}
-                className="px-8 py-4 rounded-full bg-gradient-to-r from-[#E2BE4A] to-[#C9A227] text-[#043A20] font-bold text-xs uppercase tracking-widest shadow-xl hover:brightness-110 active:scale-95 transition-all flex items-center gap-2 cursor-pointer"
+                className="px-8 py-4 rounded-full bg-[#D6A323] text-[#003330] font-medium text-sm shadow-lg hover:brightness-110 active:scale-95 transition-all flex items-center gap-2 cursor-pointer"
               >
                 <span>Reserve Seat</span>
                 <ArrowRight className="w-4 h-4" />
@@ -98,7 +91,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenDownloadModal 
           {/* Column 1: Institutional Crest & Identity (4 Cols) */}
           <div className="lg:col-span-4 space-y-4">
             <div className="flex items-center gap-3.5">
-              <div className="w-12 h-12 rounded-full overflow-hidden bg-white p-0.5 border-2 border-[#C9A227]/50 shadow-md shrink-0">
+              <div className="w-12 h-12 rounded-full overflow-hidden bg-white p-0.5 border-2 border-[#D6A323]/50 shadow-md shrink-0">
                 <img
                   src="/images/nsuk-crest.png"
                   alt="NSUK Crest"
@@ -106,7 +99,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenDownloadModal 
                 />
               </div>
               <div>
-                <div className="text-[10px] font-bold uppercase tracking-widest text-[#E2BE4A] font-cinzel">
+                <div className="text-[11px] font-semibold text-[#D6A323] font-cinzel tracking-wide">
                   Nasarawa State University, Keffi
                 </div>
                 <div className="font-serif-luxury text-base font-bold text-white">
@@ -115,12 +108,12 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenDownloadModal 
               </div>
             </div>
 
-            <p className="text-xs text-white/70 leading-relaxed max-w-sm">
-              Constituted by the University Senate under the stewardship of the Vice-Chancellor, Professor Sa'adatu Hassan Liman. Marking the elevation of Professor Rashidah Funke Olanrewaju.
+            <p className="text-xs text-white/75 leading-relaxed max-w-sm">
+              Constituted by the University Senate under the stewardship of the Vice-Chancellor, <strong className="text-white">Professor Sa'adatu Hassan Liman, Ph.D.</strong> <span className="text-[#FFF4DC]">(Fellow UNESCO, ACLS, FIIFP, Hon. Fellow CBER (Oxford), fnipr)</span>. Marking the elevation of Professor Rashidah Funke Olanrewaju.
             </p>
 
             {/* Live Ceremony Status Badge */}
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/15 text-[11px] text-[#F2E3B3]">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/15 text-[11px] text-[#FFF4DC]">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               <span>Assembly Hall Sanctuary Ready · Senate Confirmed</span>
             </div>
@@ -130,15 +123,15 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenDownloadModal 
           <div className="lg:col-span-2">
             <button
               onClick={() => toggleAccordion('lecture')}
-              className="w-full flex items-center justify-between md:cursor-default text-left font-serif-luxury font-bold text-sm text-[#E2BE4A] uppercase tracking-wider mb-4"
+              className="w-full flex items-center justify-between md:cursor-default text-left font-serif-luxury font-semibold text-sm text-[#D6A323] mb-4"
             >
               <span>The Lecture</span>
               <ChevronDown className={`w-4 h-4 md:hidden transition-transform ${openAccordion === 'lecture' ? 'rotate-180' : ''}`} />
             </button>
-            <ul className={`space-y-2.5 text-xs text-white/75 ${openAccordion === 'lecture' ? 'block' : 'hidden md:block'}`}>
+            <ul className={`space-y-2.5 text-xs text-white/80 ${openAccordion === 'lecture' ? 'block' : 'hidden md:block'}`}>
               <li>
                 <button onClick={() => go('landing')} className="hover:text-white transition-colors cursor-pointer">
-                  Discourse Topic &amp; Theme
+                  Lecture Topic &amp; Theme
                 </button>
               </li>
               <li>
@@ -163,7 +156,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenDownloadModal 
                 <li>
                   <button onClick={onOpenDownloadModal} className="hover:text-white transition-colors cursor-pointer flex items-center gap-1">
                     <span>Press Proclamation</span>
-                    <ExternalLink className="w-3 h-3 text-[#E2BE4A]" />
+                    <ExternalLink className="w-3 h-3 text-[#D6A323]" />
                   </button>
                 </li>
               )}
@@ -174,12 +167,12 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenDownloadModal 
           <div className="lg:col-span-2">
             <button
               onClick={() => toggleAccordion('lecturer')}
-              className="w-full flex items-center justify-between md:cursor-default text-left font-serif-luxury font-bold text-sm text-[#E2BE4A] uppercase tracking-wider mb-4"
+              className="w-full flex items-center justify-between md:cursor-default text-left font-serif-luxury font-semibold text-sm text-[#D6A323] mb-4"
             >
               <span>The Lecturer</span>
               <ChevronDown className={`w-4 h-4 md:hidden transition-transform ${openAccordion === 'lecturer' ? 'rotate-180' : ''}`} />
             </button>
-            <ul className={`space-y-2.5 text-xs text-white/75 ${openAccordion === 'lecturer' ? 'block' : 'hidden md:block'}`}>
+            <ul className={`space-y-2.5 text-xs text-white/80 ${openAccordion === 'lecturer' ? 'block' : 'hidden md:block'}`}>
               <li>
                 <button onClick={() => go('about-professor')} className="hover:text-white transition-colors cursor-pointer">
                   Academic Pedigree (Ph.D.)
@@ -205,15 +198,15 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenDownloadModal 
 
           {/* Column 4: Newsletter / Bulletin Signup (4 Cols) */}
           <div className="lg:col-span-4 space-y-3">
-            <h4 className="font-serif-luxury font-bold text-sm text-[#E2BE4A] uppercase tracking-wider">
+            <h4 className="font-serif-luxury font-semibold text-sm text-[#D6A323]">
               Ceremonial Dispatch
             </h4>
-            <p className="text-xs text-white/70 leading-relaxed">
+            <p className="text-xs text-white/75 leading-relaxed">
               Receive the official inaugural lecture monograph, keynote transcripts, and photo digest delivered to your inbox.
             </p>
 
             <form onSubmit={handleNewsletterSubmit} className="space-y-2">
-              <div className="flex items-center rounded-full bg-white/10 border border-white/20 p-1 focus-within:border-[#E2BE4A] transition-colors">
+              <div className="flex items-center rounded-full bg-white/10 border border-white/20 p-1 focus-within:border-[#D6A323] transition-colors">
                 <input
                   type="email"
                   value={newsletterEmail}
@@ -226,7 +219,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenDownloadModal 
                 />
                 <button
                   type="submit"
-                  className="px-4 py-2 rounded-full bg-[#0B6B3A] hover:bg-[#064E2B] text-white text-xs font-bold uppercase tracking-wider shrink-0 transition-colors cursor-pointer"
+                  className="px-4 py-2 rounded-full bg-[#008F87] hover:bg-[#006B66] text-white text-xs font-medium shrink-0 transition-colors cursor-pointer"
                 >
                   Subscribe
                 </button>
@@ -239,20 +232,20 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenDownloadModal 
               )}
 
               {newsletterSubmitted && (
-                <div className="flex items-center gap-1.5 text-xs text-[#E2BE4A] pl-2 animate-fade-in font-medium">
+                <div className="flex items-center gap-1.5 text-xs text-[#FFF4DC] pl-2 animate-fade-in font-medium">
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
                   <span>Subscribed! Ceremonial monograph will be sent on 25 Nov.</span>
                 </div>
               )}
             </form>
 
-            <div className="pt-2 text-[11px] text-white/60 space-y-1">
+            <div className="pt-2 text-[11px] text-white/70 space-y-1">
               <div className="flex items-center gap-1.5">
-                <MapPin className="w-3 h-3 text-[#E2BE4A]" />
+                <MapPin className="w-3 h-3 text-[#D6A323]" />
                 <span>Assembly Hall, Main Campus, Keffi, Nasarawa State</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <Mail className="w-3 h-3 text-[#E2BE4A]" />
+                <Mail className="w-3 h-3 text-[#D6A323]" />
                 <span>inaugural@nsuk.edu.ng</span>
               </div>
             </div>
@@ -275,8 +268,8 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenDownloadModal 
       {/* ========================================================================= */}
       {/* 4. BASE LEGAL ROW & BACK-TO-TOP BUTTON                                    */}
       {/* ========================================================================= */}
-      <div className="relative border-t border-white/10 bg-[#021A0E]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-white/60">
+      <div className="relative border-t border-white/10 bg-[#002624]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-white/70">
           <div>
             © 2026 Nasarawa State University, Keffi. All rights reserved.
           </div>

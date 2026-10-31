@@ -1,6 +1,6 @@
 import React from 'react';
 
-export type BadgeVariant = 'green' | 'gold' | 'gray' | 'red' | 'amber' | 'blue';
+export type BadgeVariant = 'green' | 'gold' | 'lilac' | 'gray' | 'red' | 'amber' | 'blue';
 export type BadgeSize = 'sm' | 'md';
 
 export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
@@ -23,8 +23,9 @@ export const Badge: React.FC<BadgeProps> = ({
   };
 
   const variantClasses = {
-    green: 'bg-[#E7F3EC] text-[#064E2B] border border-[#0B6B3A]/20 font-bold',
-    gold: 'bg-[#FBF4DC] text-[#8A6A12] border border-[#C9A227]/30 font-bold',
+    green: 'bg-[#008F87]/15 text-[#006B66] border border-[#008F87]/30 font-bold',
+    gold: 'bg-[#FFF4DC] text-[#A97912] border border-[#D6A323]/40 font-bold',
+    lilac: 'bg-[#B9A1D0]/20 text-[#6B4B8A] border border-[#B9A1D0]/40 font-bold',
     gray: 'bg-gray-100 text-gray-700 border border-gray-200 font-semibold',
     red: 'bg-red-50 text-red-700 border border-red-200 font-bold',
     amber: 'bg-amber-50 text-amber-800 border border-amber-200 font-bold',

@@ -32,7 +32,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(({
       {label && (
         <label
           htmlFor={inputId}
-          className="block text-xs font-bold uppercase tracking-wider text-[#064E2B] select-none"
+          className="block text-xs font-bold uppercase tracking-wider text-[#006B66] select-none"
         >
           {label} {required && <span className="text-red-600 font-bold ml-0.5" aria-hidden="true">*</span>}
         </label>
@@ -54,8 +54,8 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(({
           required={required}
           className={`
             w-full min-h-[44px] rounded-xl text-sm transition-all duration-200
-            bg-white text-[#0F1F17] placeholder:text-[#9AA8A0]
-            border ${error ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20' : 'border-[#E3ECE6] hover:border-[#CAD7CE] focus:border-[#0B6B3A] focus:ring-[#0B6B3A]/20'}
+            bg-[#FFFBF2] text-[#252A2A] placeholder:text-[#252A2A]/50
+            border ${error ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20' : 'border-[#D6A323]/30 hover:border-[#D6A323]/60 focus:border-[#008F87] focus:ring-[#008F87]/20'}
             focus:outline-none focus:ring-2
             disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed
             ${leftIcon ? 'pl-10' : 'pl-3.5'}

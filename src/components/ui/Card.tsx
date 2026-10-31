@@ -22,14 +22,14 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(({
   };
 
   const variantClasses = {
-    white: 'bg-white border border-[#E3ECE6] shadow-[0_1px_3px_rgba(6,78,43,0.04),0_12px_32px_-12px_rgba(6,78,43,0.1)] text-[#0F1F17]',
-    sunken: 'bg-[#F6FAF7] border border-[#E3ECE6] text-[#0F1F17]',
-    forest: 'bg-gradient-to-br from-[#0B6B3A] to-[#043A20] border border-[#0B6B3A] text-white shadow-2xl',
-    outlined: 'bg-transparent border-2 border-[#E3ECE6] hover:border-[#0B6B3A]/30 text-[#0F1F17]'
+    white: 'bg-[#FFFBF2] border border-[#D6A323]/25 shadow-[0_1px_3px_rgba(0,143,135,0.04),0_12px_32px_-12px_rgba(0,107,102,0.1)] text-[#252A2A]',
+    sunken: 'bg-[#FFF4DC] border border-[#D6A323]/20 text-[#252A2A]',
+    forest: 'bg-gradient-to-br from-[#006B66] to-[#003330] border border-[#D6A323]/40 text-white shadow-2xl',
+    outlined: 'bg-transparent border-2 border-[#D6A323]/30 hover:border-[#008F87]/50 text-[#252A2A]'
   };
 
   const hoverClass = hoverable
-    ? 'transition-all duration-300 hover:-translate-y-1 hover:border-[#0B6B3A]/35 hover:shadow-[0_4px_6px_rgba(6,78,43,0.06),0_24px_48px_-16px_rgba(6,78,43,0.2)]'
+    ? 'transition-all duration-300 hover:-translate-y-1 hover:border-[#008F87]/40 hover:shadow-[0_4px_6px_rgba(0,143,135,0.06),0_24px_48px_-16px_rgba(0,107,102,0.2)]'
     : '';
 
   return (

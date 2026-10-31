@@ -67,6 +67,7 @@ export interface GalleryPhoto {
   id: string;
   url: string;
   caption: string;
+  category?: string;
   author?: string;
 }
 
@@ -147,7 +148,12 @@ export interface GuestWish {
   id: string;
   eventId: string;
   author: string;
+  role?: string;
+  affiliation?: string;
+  photoUrl?: string;
+  title?: string;
   message: string;
+  fullText?: string;
   createdAt: string;
   likes: number;
 }

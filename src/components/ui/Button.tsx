@@ -36,11 +36,11 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({
   };
 
   const variantClasses: Record<ButtonVariant, string> = {
-    primary: 'bg-gradient-to-r from-[#0B6B3A] to-[#064E2B] text-white shadow-md shadow-[#0B6B3A]/25 hover:brightness-110 active:brightness-95 focus-visible:ring-[#0B6B3A]',
-    secondary: 'bg-[#E7F3EC] text-[#064E2B] border border-[#0B6B3A]/20 hover:bg-[#D5EADB] focus-visible:ring-[#0B6B3A]',
-    gold: 'bg-gradient-to-r from-[#E2BE4A] to-[#C9A227] text-[#043A20] font-bold shadow-md shadow-[#C9A227]/30 hover:brightness-108 active:brightness-95 focus-visible:ring-[#C9A227]',
-    outline: 'bg-white text-[#0B6B3A] border-2 border-[#0B6B3A]/30 hover:border-[#0B6B3A] hover:bg-[#F6FAF7] focus-visible:ring-[#0B6B3A]',
-    ghost: 'bg-transparent text-[#47554F] hover:bg-[#F6FAF7] hover:text-[#0F1F17] focus-visible:ring-[#0B6B3A]',
+    primary: 'bg-gradient-to-r from-[#008F87] to-[#006B66] text-white shadow-md shadow-[#008F87]/25 hover:brightness-110 active:brightness-95 focus-visible:ring-[#008F87]',
+    secondary: 'bg-[#FFF4DC] text-[#006B66] border border-[#008F87]/20 hover:bg-[#FFECC2] focus-visible:ring-[#008F87]',
+    gold: 'bg-gradient-to-r from-[#D6A323] to-[#A97912] text-[#003330] font-bold shadow-md shadow-[#D6A323]/30 hover:brightness-108 active:brightness-95 focus-visible:ring-[#D6A323]',
+    outline: 'bg-[#FFFBF2] text-[#008F87] border-2 border-[#008F87]/30 hover:border-[#008F87] hover:bg-[#FFF4DC] focus-visible:ring-[#008F87]',
+    ghost: 'bg-transparent text-[#252A2A]/80 hover:bg-[#FFF4DC] hover:text-[#252A2A] focus-visible:ring-[#008F87]',
     danger: 'bg-red-600 text-white shadow-md shadow-red-600/25 hover:bg-red-700 focus-visible:ring-red-600'
   };
 

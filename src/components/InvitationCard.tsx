@@ -55,19 +55,19 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({
   const getPhotoFrameClass = () => {
     switch (event.photoFrame) {
       case 'arch':
-        return 'rounded-t-[140px] rounded-b-2xl border-2 border-[#C6A76A]/60 p-1.5 shadow-lg';
+        return 'rounded-t-[140px] rounded-b-2xl border-2 border-[#D6A323]/60 p-1.5 shadow-lg';
       case 'oval':
-        return 'rounded-full border-2 border-[#C6A76A]/60 p-1.5 shadow-lg aspect-[3/4]';
+        return 'rounded-full border-2 border-[#D6A323]/60 p-1.5 shadow-lg aspect-[3/4]';
       case 'medallion':
-        return 'rounded-full border-4 border-double border-[#C6A76A] p-2 shadow-xl aspect-square';
+        return 'rounded-full border-4 border-double border-[#D6A323] p-2 shadow-xl aspect-square';
       case 'rounded':
-        return 'rounded-3xl border border-[#C6A76A]/40 p-1 shadow-md';
+        return 'rounded-3xl border border-[#D6A323]/40 p-1 shadow-md';
       case 'square-gold':
-        return 'rounded-none border-2 border-[#C6A76A] p-1 shadow-md';
+        return 'rounded-none border-2 border-[#D6A323] p-1 shadow-md';
       case 'full':
         return 'rounded-xl overflow-hidden shadow-sm';
       default:
-        return 'rounded-2xl border border-[#C6A76A]/40 p-1';
+        return 'rounded-2xl border border-[#D6A323]/40 p-1';
     }
   };
 
@@ -105,6 +105,8 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({
   };
 
   const isDark = event.backgroundColor.toLowerCase() === '#111318' || 
+                 event.backgroundColor.toLowerCase() === '#006b66' || 
+                 event.backgroundColor.toLowerCase() === '#003330' || 
                  event.backgroundColor.toLowerCase() === '#0d2e24' || 
                  event.backgroundColor.toLowerCase() === '#0e1726';
 
@@ -127,24 +129,24 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({
 
       {/* Decorative Ornate Borders */}
       {event.borderStyle === 'ornate-gold' && (
-        <div className="absolute inset-3 border border-[#C6A76A]/40 pointer-events-none rounded-lg">
-          <div className="absolute inset-1.5 border border-[#C6A76A]/20 rounded-md" />
+        <div className="absolute inset-3 border border-[#D6A323]/40 pointer-events-none rounded-lg">
+          <div className="absolute inset-1.5 border border-[#D6A323]/20 rounded-md" />
           {/* Corner Flourishes */}
-          <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-[#C6A76A]" />
-          <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-[#C6A76A]" />
-          <div className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-[#C6A76A]" />
-          <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-[#C6A76A]" />
+          <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-[#D6A323]" />
+          <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-[#D6A323]" />
+          <div className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-[#D6A323]" />
+          <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-[#D6A323]" />
         </div>
       )}
 
       {event.borderStyle === 'arabesque' && (
-        <div className="absolute inset-3 border-2 border-[#C6A76A]/60 pointer-events-none rounded-2xl">
-          <div className="absolute inset-2 border border-[#C6A76A]/30 rounded-xl" />
+        <div className="absolute inset-3 border-2 border-[#D6A323]/60 pointer-events-none rounded-2xl">
+          <div className="absolute inset-2 border border-[#D6A323]/30 rounded-xl" />
           {/* Islamic Arabesque Corners */}
-          <div className="absolute top-2 left-2 text-[#C6A76A] text-xs">◈</div>
-          <div className="absolute top-2 right-2 text-[#C6A76A] text-xs">◈</div>
-          <div className="absolute bottom-2 left-2 text-[#C6A76A] text-xs">◈</div>
-          <div className="absolute bottom-2 right-2 text-[#C6A76A] text-xs">◈</div>
+          <div className="absolute top-2 left-2 text-[#D6A323] text-xs">◈</div>
+          <div className="absolute top-2 right-2 text-[#D6A323] text-xs">◈</div>
+          <div className="absolute bottom-2 left-2 text-[#D6A323] text-xs">◈</div>
+          <div className="absolute bottom-2 right-2 text-[#D6A323] text-xs">◈</div>
         </div>
       )}
 
@@ -155,11 +157,11 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({
       )}
 
       {event.borderStyle === 'botanical-leaf' && (
-        <div className="absolute inset-3 border border-[#C6A76A]/50 pointer-events-none rounded-xl">
-          <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#0D2E24] px-3 text-[#C6A76A] text-xs tracking-widest uppercase">
+        <div className="absolute inset-3 border border-[#D6A323]/50 pointer-events-none rounded-xl">
+          <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#006B66] px-3 text-[#D6A323] text-xs tracking-widest uppercase">
             ❦
           </div>
-          <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-[#0D2E24] px-3 text-[#C6A76A] text-xs tracking-widest uppercase">
+          <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-[#006B66] px-3 text-[#D6A323] text-xs tracking-widest uppercase">
             ❦
           </div>
         </div>
@@ -172,10 +174,10 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({
         <div className="w-full pt-1 flex flex-col items-center">
           {event.category === 'fatiha' && (
             <div className="mb-2">
-              <span className="font-arabic text-lg md:text-xl text-[#C6A76A] tracking-wider block">
+              <span className="font-arabic text-lg md:text-xl text-[#D6A323] tracking-wider block">
                 بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
               </span>
-              <span className="text-[10px] uppercase tracking-[0.25em] text-[#C6A76A]/80 font-sans-modern block mt-0.5">
+              <span className="text-[10px] uppercase tracking-[0.25em] text-[#D6A323]/80 font-sans-modern block mt-0.5">
                 In the Name of Allah, Most Gracious, Most Merciful
               </span>
             </div>
@@ -183,11 +185,11 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({
 
           {event.category !== 'fatiha' && (
             <div className="mb-2 flex items-center justify-center space-x-2">
-              <div className="h-[1px] w-6 bg-[#C6A76A]/50" />
-              <div className="w-6 h-6 rounded-full border border-[#C6A76A] flex items-center justify-center text-[10px] text-[#C6A76A] font-serif-luxury font-bold">
+              <div className="h-[1px] w-6 bg-[#D6A323]/50" />
+              <div className="w-6 h-6 rounded-full border border-[#D6A323] flex items-center justify-center text-[10px] text-[#D6A323] font-serif-luxury font-bold">
                 ❦
               </div>
-              <div className="h-[1px] w-6 bg-[#C6A76A]/50" />
+              <div className="h-[1px] w-6 bg-[#D6A323]/50" />
             </div>
           )}
 
@@ -202,7 +204,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({
 
           {/* Celebrant / Couple Names (Hero Typography) */}
           <h1 className={`text-2xl md:text-3xl lg:text-4xl mt-2 mb-1 tracking-wide leading-tight font-semibold ${getFontFamilyClass()} ${
-            isDark ? 'text-white' : 'text-[#20211F]'
+            isDark ? 'text-white' : 'text-[#252A2A]'
           }`}
           style={{
             textShadow: isDark ? '0 2px 10px rgba(0,0,0,0.5)' : 'none'
@@ -213,21 +215,21 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({
 
           {/* Event Sub-headline */}
           <div className="flex items-center justify-center space-x-3 my-1">
-            <span className="h-[1px] w-8 bg-[#C6A76A]/60" />
-            <span className="text-[11px] md:text-xs uppercase tracking-[0.25em] text-[#C6A76A] font-medium font-sans-modern">
+            <span className="h-[1px] w-8 bg-[#D6A323]/60" />
+            <span className="text-[11px] md:text-xs uppercase tracking-[0.25em] text-[#D6A323] font-medium font-sans-modern">
               {event.category === 'fatiha' ? 'Wedding Fatiha & Solemnization' : 
                event.category === 'wedding' ? 'Holy Matrimony & Reception' :
                event.category === 'birthday' ? 'Milestone Celebration' :
                event.category === 'corporate' ? 'Annual Gala & Honors' : event.title}
             </span>
-            <span className="h-[1px] w-8 bg-[#C6A76A]/60" />
+            <span className="h-[1px] w-8 bg-[#D6A323]/60" />
           </div>
         </div>
 
         {/* Central Portrait Photo (if present) */}
         {event.photoUrl && (
           <div className="my-2 flex-shrink-0 flex items-center justify-center w-full max-w-[200px] md:max-w-[220px]">
-            <div className={`overflow-hidden bg-[#20211F]/10 ${getPhotoFrameClass()}`}>
+            <div className={`overflow-hidden bg-[#252A2A]/10 ${getPhotoFrameClass()}`}>
               <div 
                 className="w-28 h-36 md:w-36 md:h-44 overflow-hidden relative"
                 style={{
@@ -248,7 +250,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({
 
         {/* Guest Personalized Line (if simulator active) */}
         {guestPreviewName && (
-          <div className="px-4 py-1.5 rounded-full bg-[#C6A76A]/15 border border-[#C6A76A]/30 text-[11px] text-[#C6A76A] font-sans-modern my-1">
+          <div className="px-4 py-1.5 rounded-full bg-[#D6A323]/15 border border-[#D6A323]/30 text-[11px] text-[#D6A323] font-sans-modern my-1">
             Personal Invitation for: <span className="font-semibold text-current">{guestPreviewName}</span>
           </div>
         )}
@@ -256,7 +258,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({
         {/* Date, Time & Venue Block */}
         <div className="w-full flex flex-col items-center space-y-1.5 pb-1">
           {/* Formatted Date */}
-          <div className="text-sm md:text-base font-serif-luxury tracking-widest uppercase font-semibold text-[#C6A76A]">
+          <div className="text-sm md:text-base font-serif-luxury tracking-widest uppercase font-semibold text-[#D6A323]">
             {formatDatePretty(event.date)}
           </div>
 
@@ -264,7 +266,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({
             AT {event.startTime} {event.endTime ? `— ${event.endTime}` : ''} • {event.timezone.split(' ')[0]}
           </div>
 
-          <div className="w-12 h-[1px] bg-[#C6A76A]/40 my-1" />
+          <div className="w-12 h-[1px] bg-[#D6A323]/40 my-1" />
 
           {/* Venue & Location */}
           <div className="max-w-[90%]">
@@ -277,7 +279,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({
           </div>
 
           {/* Dress code & RSVP notice */}
-          <div className="pt-1 text-[10px] uppercase tracking-wider text-[#C6A76A]/90 font-sans-modern">
+          <div className="pt-1 text-[10px] uppercase tracking-wider text-[#D6A323]/90 font-sans-modern">
             DRESS CODE: {event.dressCode}
           </div>
 
@@ -291,7 +293,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({
           {showRsvpCta && (
             <button
               onClick={onRsvpClick}
-              className="mt-2 px-6 py-2 rounded-full bg-gradient-to-r from-[#C6A76A] to-[#DFC79B] text-[#174C3C] text-xs font-semibold tracking-widest uppercase shadow-md hover:brightness-105 active:scale-95 transition-all"
+              className="mt-2 px-6 py-2 rounded-full bg-gradient-to-r from-[#D6A323] to-[#FFF4DC] text-[#003330] text-xs font-semibold tracking-widest uppercase shadow-md hover:brightness-105 active:scale-95 transition-all"
             >
               Respond to Invitation
             </button>

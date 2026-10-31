@@ -67,18 +67,18 @@ export const Modal: React.FC<ModalProps> = ({
     >
       <div
         ref={modalRef}
-        className={`w-full ${maxWidthClasses[maxWidth]} bg-white rounded-3xl border border-[#E3ECE6] shadow-2xl overflow-hidden my-auto animate-scale-up`}
+        className={`w-full ${maxWidthClasses[maxWidth]} bg-[#FFFBF2] rounded-3xl border border-[#D6A323]/30 shadow-2xl overflow-hidden my-auto animate-scale-up`}
       >
         {(title || showCloseButton) && (
-          <div className="px-6 py-5 border-b border-[#E3ECE6] flex items-center justify-between gap-4 bg-white sticky top-0 z-10">
+          <div className="px-6 py-5 border-b border-[#D6A323]/20 flex items-center justify-between gap-4 bg-[#FFFBF2] sticky top-0 z-10">
             <div>
               {typeof title === 'string' ? (
-                <h3 className="text-xl font-serif-luxury font-bold text-[#0F1F17]">{title}</h3>
+                <h3 className="text-xl font-serif-luxury font-bold text-[#252A2A]">{title}</h3>
               ) : (
                 title
               )}
               {subtitle && (
-                <p className="text-xs text-[#5B6B63] mt-0.5">{subtitle}</p>
+                <p className="text-xs text-[#252A2A]/70 mt-0.5">{subtitle}</p>
               )}
             </div>
 
@@ -87,7 +87,7 @@ export const Modal: React.FC<ModalProps> = ({
                 type="button"
                 onClick={onClose}
                 aria-label="Close dialog"
-                className="w-9 h-9 rounded-full bg-[#F6FAF7] hover:bg-[#E3ECE6] text-[#47554F] flex items-center justify-center transition-colors shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0B6B3A]"
+                className="w-9 h-9 rounded-full bg-[#FFF4DC] hover:bg-[#FFECC2] text-[#252A2A] flex items-center justify-center transition-colors shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#008F87]"
               >
                 <X className="w-4 h-4" />
               </button>

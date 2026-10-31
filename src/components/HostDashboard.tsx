@@ -155,20 +155,20 @@ export const HostDashboard: React.FC<HostDashboardProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-[#F6FAF7] pt-28 md:pt-36 pb-20 px-4 md:px-8">
+    <div className="min-h-screen bg-[#FFF4DC] pt-28 md:pt-36 pb-20 px-4 md:px-8">
       <div className="max-w-7xl mx-auto space-y-8">
         
         {/* Header Bar */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-3xl bg-white border border-[#C9A227]/30 shadow-xs">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-3xl bg-[#FFFBF2] border border-[#D6A323]/30 shadow-xs">
           <div>
-            <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-[#0B6B3A]/10 border border-[#C9A227]/30 text-xs font-semibold uppercase tracking-wider text-[#0B6B3A] mb-2">
-              <ShieldCheck className="w-3.5 h-3.5 text-[#C9A227]" />
+            <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-[#008F87]/10 border border-[#D6A323]/30 text-xs font-semibold uppercase tracking-wider text-[#008F87] mb-2">
+              <ShieldCheck className="w-3.5 h-3.5 text-[#D6A323]" />
               <span>Event Concierge & Guest Directory</span>
             </div>
-            <h1 className="text-2xl md:text-3xl font-serif-luxury font-bold text-[#0F1F17]">
+            <h1 className="text-2xl md:text-3xl font-serif-luxury font-bold text-[#252A2A]">
               {event.title}
             </h1>
-            <p className="text-xs text-[#0F1F17]/70 font-sans-modern mt-1">
+            <p className="text-xs text-[#252A2A]/70 font-sans-modern mt-1">
               Date: <strong>{event.date}</strong> • Venue: <strong>{event.venueName}</strong>
             </p>
           </div>
@@ -176,23 +176,23 @@ export const HostDashboard: React.FC<HostDashboardProps> = ({
           <div className="flex flex-wrap items-center gap-2">
             <button
               onClick={onOpenCheckInScanner}
-              className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#0B6B3A] to-[#064E2B] text-white text-xs font-semibold uppercase tracking-wider shadow-md hover:scale-[1.02] transition-all flex items-center space-x-1.5 border border-[#C9A227]/40"
+              className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#008F87] to-[#006B66] text-white text-xs font-semibold uppercase tracking-wider shadow-md hover:scale-[1.02] transition-all flex items-center space-x-1.5 border border-[#D6A323]/40"
             >
-              <QrCode className="w-4 h-4 text-[#C9A227]" />
+              <QrCode className="w-4 h-4 text-[#D6A323]" />
               <span>Scan QR Check-In</span>
             </button>
 
             <button
               onClick={() => setIsAddModalOpen(true)}
-              className="px-4 py-2.5 rounded-xl bg-white text-[#0B6B3A] border border-[#C9A227]/40 text-xs font-semibold uppercase tracking-wider hover:bg-[#F6FAF7] transition-all flex items-center space-x-1.5"
+              className="px-4 py-2.5 rounded-xl bg-[#FFFBF2] text-[#008F87] border border-[#D6A323]/40 text-xs font-semibold uppercase tracking-wider hover:bg-[#FFF4DC] transition-all flex items-center space-x-1.5"
             >
-              <UserPlus className="w-4 h-4 text-[#C9A227]" />
+              <UserPlus className="w-4 h-4 text-[#D6A323]" />
               <span>Add Guest</span>
             </button>
 
             <button
               onClick={exportToCsv}
-              className="px-4 py-2.5 rounded-xl bg-[#C9A227] text-[#0B6B3A] font-semibold text-xs uppercase tracking-wider shadow-xs hover:brightness-105 transition-all flex items-center space-x-1.5"
+              className="px-4 py-2.5 rounded-xl bg-[#D6A323] text-[#003330] font-semibold text-xs uppercase tracking-wider shadow-xs hover:brightness-105 transition-all flex items-center space-x-1.5"
             >
               <Download className="w-4 h-4" />
               <span>Export CSV</span>
@@ -210,12 +210,12 @@ export const HostDashboard: React.FC<HostDashboardProps> = ({
 
         {/* Top KPI Cards */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-          <div className="bg-white p-5 rounded-2xl border border-[#C9A227]/30 shadow-xs">
+          <div className="bg-[#FFFBF2] p-5 rounded-2xl border border-[#D6A323]/30 shadow-xs">
             <div className="flex items-center justify-between text-gray-500 mb-2">
               <span className="text-[10px] uppercase tracking-wider font-semibold">Total Responses</span>
-              <Users className="w-4 h-4 text-[#C9A227]" />
+              <Users className="w-4 h-4 text-[#D6A323]" />
             </div>
-            <div className="text-2xl md:text-3xl font-bold font-serif-luxury text-[#0F1F17]">
+            <div className="text-2xl md:text-3xl font-bold font-serif-luxury text-[#252A2A]">
               {totalRsvps}
             </div>
             <div className="text-[10px] text-gray-500 mt-1">Submitted submissions</div>
@@ -272,7 +272,7 @@ export const HostDashboard: React.FC<HostDashboardProps> = ({
 
         {/* Dietary & Song Request Quick Highlights */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="bg-white p-5 rounded-2xl border border-[#C9A227]/30 shadow-xs flex items-center space-x-4">
+          <div className="bg-[#FFFBF2] p-5 rounded-2xl border border-[#D6A323]/30 shadow-xs flex items-center space-x-4">
             <div className="w-10 h-10 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-800">
               <Utensils className="w-5 h-5" />
             </div>
@@ -293,7 +293,7 @@ export const HostDashboard: React.FC<HostDashboardProps> = ({
             </div>
           </div>
 
-          <div className="bg-white p-5 rounded-2xl border border-[#C9A227]/30 shadow-xs flex items-center space-x-4">
+          <div className="bg-[#FFFBF2] p-5 rounded-2xl border border-[#D6A323]/30 shadow-xs flex items-center space-x-4">
             <div className="w-10 h-10 rounded-xl bg-purple-50 border border-purple-200 flex items-center justify-center text-purple-800">
               <Music className="w-5 h-5" />
             </div>
@@ -309,17 +309,17 @@ export const HostDashboard: React.FC<HostDashboardProps> = ({
         </div>
 
         {/* Search & Filter Toolbar */}
-        <div className="bg-white p-4 rounded-2xl border border-[#C9A227]/30 shadow-xs flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="bg-[#FFFBF2] p-4 rounded-2xl border border-[#D6A323]/30 shadow-xs flex flex-col md:flex-row items-center justify-between gap-4">
           
           {/* Search */}
           <div className="relative w-full md:w-80">
-            <Search className="w-4 h-4 text-[#C9A227] absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-[#D6A323] absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               placeholder="Search by name, email, or ticket code..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 text-xs focus:outline-hidden focus:border-[#C9A227]"
+              className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 text-xs focus:outline-hidden focus:border-[#008F87]"
             />
           </div>
 
@@ -356,10 +356,10 @@ export const HostDashboard: React.FC<HostDashboardProps> = ({
         </div>
 
         {/* Guest List Table */}
-        <div className="bg-white rounded-3xl border border-[#C9A227]/30 shadow-xs overflow-hidden">
+        <div className="bg-[#FFFBF2] rounded-3xl border border-[#D6A323]/30 shadow-xs overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-[#F6FAF7] border-b border-[#C9A227]/20 text-gray-600 uppercase font-semibold text-[10px] tracking-wider">
+              <thead className="bg-[#FFF4DC] border-b border-[#D6A323]/20 text-[#252A2A]/70 uppercase font-semibold text-[10px] tracking-wider">
                 <tr>
                   <th className="py-4 px-6">Guest / Party</th>
                   <th className="py-4 px-4">Contact</th>
@@ -385,7 +385,7 @@ export const HostDashboard: React.FC<HostDashboardProps> = ({
                       {/* Name & Party */}
                       <td className="py-4 px-6">
                         <div className="flex items-center space-x-3">
-                          <div className="relative w-9 h-9 rounded-full border border-[#C9A227]/60 p-0.5 overflow-hidden bg-gray-100 flex-shrink-0">
+                          <div className="relative w-9 h-9 rounded-full border border-[#D6A323]/60 p-0.5 overflow-hidden bg-gray-100 flex-shrink-0">
                             <img
                               src={guest.photoUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80'}
                               alt={guest.fullName}
@@ -393,7 +393,7 @@ export const HostDashboard: React.FC<HostDashboardProps> = ({
                             />
                           </div>
                           <div>
-                            <div className="font-semibold text-sm text-[#0F1F17]">
+                            <div className="font-semibold text-sm text-[#252A2A]">
                               {guest.fullName}
                             </div>
                             {guest.plusOneNames && guest.plusOneNames.length > 0 && (
@@ -459,7 +459,7 @@ export const HostDashboard: React.FC<HostDashboardProps> = ({
                           className={`px-3 py-1.5 rounded-full text-[11px] font-bold transition-all ${
                             guest.checkedIn
                               ? 'bg-emerald-600 text-white hover:bg-emerald-700 shadow-xs'
-                              : 'bg-gray-100 text-gray-600 hover:bg-[#C9A227] hover:text-[#0B6B3A]'
+                              : 'bg-gray-100 text-gray-600 hover:bg-[#D6A323] hover:text-[#003330]'
                           }`}
                         >
                           {guest.checkedIn ? '✓ Checked In' : 'Mark Arrival'}
@@ -494,8 +494,8 @@ export const HostDashboard: React.FC<HostDashboardProps> = ({
       {/* Manual Add Guest Modal */}
       {isAddModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
-          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full border border-[#C9A227]/40 shadow-2xl">
-            <h3 className="text-xl font-serif-luxury font-bold text-[#0F1F17] mb-4">
+          <div className="bg-[#FFFBF2] rounded-3xl p-6 sm:p-8 max-w-md w-full border border-[#D6A323]/40 shadow-2xl">
+            <h3 className="text-xl font-serif-luxury font-bold text-[#252A2A] mb-4">
               Register Guest Manually
             </h3>
             <form onSubmit={handleManualAddSubmit} className="space-y-4 text-xs">
@@ -573,7 +573,7 @@ export const HostDashboard: React.FC<HostDashboardProps> = ({
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-xl bg-[#0B6B3A] text-white font-semibold hover:bg-[#064E2B]"
+                  className="px-5 py-2 rounded-xl bg-[#008F87] text-white font-semibold hover:bg-[#006B66]"
                 >
                   Save Guest
                 </button>

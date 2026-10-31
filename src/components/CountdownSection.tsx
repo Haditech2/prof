@@ -132,7 +132,7 @@ export const CountdownSection: React.FC<CountdownSectionProps> = ({
       {standalone && (
         <div className="flex flex-col items-center text-center mb-8">
           <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-white/10 border border-[#F2E3B3]/30 text-xs text-[#F2E3B3] font-medium tracking-widest uppercase mb-3">
-            <Clock className="w-3.5 h-3.5 text-[#E2BE4A]" />
+            <Clock className="w-3.5 h-3.5 text-[#D6A323]" />
             <span>Precision Real-Time Countdown</span>
           </div>
 
@@ -154,8 +154,8 @@ export const CountdownSection: React.FC<CountdownSectionProps> = ({
                 onClick={() => onStyleChange && onStyleChange(st.id)}
                 className={`px-3 py-1.5 text-xs rounded-full border transition-all ${
                   currentStyle === st.id
-                    ? 'bg-white text-[#0B6B3A] border-white shadow-sm font-semibold'
-                    : 'bg-white/5 text-white/80 border-white/10 hover:border-[#F2E3B3]/50'
+                    ? 'bg-[#FFF4DC] text-[#006B66] border-[#D6A323] shadow-sm font-semibold'
+                    : 'bg-white/5 text-white/80 border-white/10 hover:border-[#D6A323]/50'
                 }`}
               >
                 {st.name}
@@ -175,7 +175,7 @@ export const CountdownSection: React.FC<CountdownSectionProps> = ({
             <span className="text-white/30">•</span>
             <button
               onClick={() => setSimulationState('event-day')}
-              className={`underline ${simulationState === 'event-day' ? 'text-[#E2BE4A] font-semibold' : 'text-white/50 hover:text-white'}`}
+              className={`underline ${simulationState === 'event-day' ? 'text-[#D6A323] font-semibold' : 'text-white/50 hover:text-white'}`}
             >
               Simulate Event Day
             </button>
@@ -192,11 +192,11 @@ export const CountdownSection: React.FC<CountdownSectionProps> = ({
 
       {/* State A: Event Day Celebration Message */}
       {timeLeft.isEventDay ? (
-        <div className="p-8 md:p-12 rounded-3xl bg-gradient-to-br from-[#0B6B3A] to-[#043A20] text-white text-center shadow-xl border border-[#F2E3B3]/30 max-w-3xl mx-auto animate-fade-in">
-          <div className="w-16 h-16 mx-auto rounded-full bg-white/10 flex items-center justify-center border border-[#E2BE4A] mb-4">
-            <Sparkles className="w-8 h-8 text-[#E2BE4A] animate-pulse" />
+        <div className="p-8 md:p-12 rounded-3xl bg-gradient-to-br from-[#006B66] via-[#004D49] to-[#003330] text-white text-center shadow-xl border border-[#D6A323]/40 max-w-3xl mx-auto animate-fade-in">
+          <div className="w-16 h-16 mx-auto rounded-full bg-white/10 flex items-center justify-center border border-[#D6A323] mb-4">
+            <Sparkles className="w-8 h-8 text-[#D6A323] animate-pulse" />
           </div>
-          <span className="text-xs uppercase tracking-[0.3em] text-[#F2E3B3] font-semibold block mb-2">
+          <span className="text-xs uppercase tracking-[0.3em] text-[#FFF4DC] font-semibold block mb-2">
             Today Is The Day
           </span>
           <h3 className="text-3xl md:text-5xl font-serif-luxury font-bold mb-4">
@@ -254,7 +254,7 @@ export const CountdownSection: React.FC<CountdownSectionProps> = ({
                   key={idx}
                   className="p-4 md:p-6 rounded-2xl bg-white/10 backdrop-blur border border-white/15 text-center shadow-lg relative overflow-hidden"
                 >
-                  <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#E2BE4A] to-transparent" />
+                  <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#D6A323] to-transparent" />
                   <span className="text-2xl md:text-4xl lg:text-5xl font-mono font-bold text-white tracking-widest block drop-shadow-md">
                     {String(item.value).padStart(2, '0')}
                   </span>
@@ -299,9 +299,9 @@ export const CountdownSection: React.FC<CountdownSectionProps> = ({
                 { label: 'Secs', value: timeLeft.seconds }
               ].map((item, idx) => (
                 <div key={idx} className="flex flex-col items-center">
-                  <div className="w-full bg-[#043A20] text-white rounded-xl shadow-lg border border-[#F2E3B3]/30 overflow-hidden relative">
+                  <div className="w-full bg-[#003330] text-white rounded-xl shadow-lg border border-[#D6A323]/40 overflow-hidden relative">
                     <div className="py-3 md:py-5 px-2">
-                      <span className="text-2xl md:text-4xl font-bold font-mono text-[#FBF5B7]">
+                      <span className="text-2xl md:text-4xl font-bold font-mono text-[#FFF4DC]">
                         {String(item.value).padStart(2, '0')}
                       </span>
                     </div>
@@ -342,10 +342,10 @@ export const CountdownSection: React.FC<CountdownSectionProps> = ({
 
           {/* Style 6: Velvet Banner */}
           {currentStyle === 'banner' && (
-            <div className="w-full max-w-4xl bg-gradient-to-r from-[#064E2B] via-[#0B6B3A] to-[#064E2B] text-white p-6 md:p-8 rounded-3xl border border-white/15 shadow-xl">
+            <div className="w-full max-w-4xl bg-gradient-to-r from-[#003330] via-[#006B66] to-[#003330] text-white p-6 md:p-8 rounded-3xl border border-[#D6A323]/30 shadow-xl">
               <div className="flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
                 <div>
-                  <span className="text-xs uppercase tracking-[0.25em] text-[#F2E3B3] font-semibold">
+                  <span className="text-xs uppercase tracking-[0.25em] text-[#FFF4DC] font-semibold">
                     Live Event Clock
                   </span>
                   <h4 className="text-xl md:text-2xl font-serif-luxury font-medium mt-1">
@@ -360,7 +360,7 @@ export const CountdownSection: React.FC<CountdownSectionProps> = ({
                     { label: 'Seconds', value: timeLeft.seconds }
                   ].map((item, idx) => (
                     <div key={idx} className="bg-white/10 backdrop-blur-md px-3 py-2 md:px-4 md:py-3 rounded-xl border border-white/10">
-                      <span className="text-xl md:text-3xl font-mono font-bold text-[#F2E3B3]">
+                      <span className="text-xl md:text-3xl font-mono font-bold text-[#FFF4DC]">
                         {String(item.value).padStart(2, '0')}
                       </span>
                       <span className="text-[9px] uppercase tracking-wider text-white/70 block mt-0.5">

@@ -68,19 +68,19 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in">
-      <div className="bg-[#F6FAF7] rounded-3xl border border-[#C9A227]/40 shadow-2xl max-w-4xl w-full max-h-[92vh] overflow-y-auto flex flex-col">
+      <div className="bg-[#FFF4DC] rounded-3xl border border-[#D6A323]/40 shadow-2xl max-w-4xl w-full max-h-[92vh] overflow-y-auto flex flex-col">
         
         {/* Modal Header */}
-        <div className="p-6 border-b border-[#C9A227]/20 flex items-center justify-between bg-white/80 sticky top-0 z-20 backdrop-blur-md">
+        <div className="p-6 border-b border-[#D6A323]/25 flex items-center justify-between bg-[#FFFBF2]/90 sticky top-0 z-20 backdrop-blur-md">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-xl bg-[#0B6B3A]/10 border border-[#C9A227]/30 flex items-center justify-center text-[#0B6B3A]">
-              <Download className="w-5 h-5 text-[#C9A227]" />
+            <div className="w-10 h-10 rounded-xl bg-[#008F87]/15 border border-[#D6A323]/30 flex items-center justify-center text-[#008F87]">
+              <Download className="w-5 h-5 text-[#D6A323]" />
             </div>
             <div>
-              <h3 className="text-xl font-serif-luxury font-bold text-[#0F1F17]">
+              <h3 className="text-xl font-serif-luxury font-bold text-[#252A2A]">
                 Download Invitation Card
               </h3>
-              <p className="text-xs text-[#0F1F17]/70 font-sans-modern">
+              <p className="text-xs text-[#252A2A]/70 font-sans-modern">
                 Generate sharp, watermark-free cards for WhatsApp, social media, or high-res printing.
               </p>
             </div>
@@ -88,27 +88,46 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
 
           <button
             onClick={onClose}
-            className="w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center justify-center transition-colors"
+            className="w-9 h-9 rounded-full bg-[#FFFBF2] hover:bg-[#FFECC2] text-[#252A2A] border border-[#D6A323]/30 flex items-center justify-center transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Quick Direct Download of Official Print Assets */}
-        <div className="mx-6 mt-6 p-4 rounded-2xl bg-white border border-[#C9A227]/40 shadow-xs">
+        <div className="mx-6 mt-6 p-4 rounded-2xl bg-[#FFFBF2] border border-[#D6A323]/40 shadow-xs">
           <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#0B6B3A]">
-              <Sparkles className="w-4 h-4 text-[#C9A227]" />
+            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#008F87]">
+              <Sparkles className="w-4 h-4 text-[#D6A323]" />
               <span>Official University Proclamation Assets</span>
             </div>
-            <span className="text-[10px] text-[#6B7B73] font-mono">Original Press Files</span>
+            <span className="text-[10px] text-[#252A2A]/60 font-mono">Original Press Files</span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <a
+              href="/images/i-will-be-attending-rsvp.jpg"
+              download="nsuk-65th-inaugural-i-will-be-attending.jpg"
+              className="p-3 rounded-xl border border-[#D6A323]/40 hover:border-[#008F87] bg-[#FFFBF2] transition-all flex items-center gap-3 group shadow-xs"
+            >
+              <img
+                src="/images/i-will-be-attending-rsvp.jpg"
+                alt="I Will Be Attending RSVP Flyer"
+                className="w-10 h-12 object-cover rounded-md border shrink-0"
+              />
+              <div className="min-w-0 text-left">
+                <div className="text-xs font-bold text-[#252A2A] group-hover:text-[#008F87] truncate">"I Will Be Attending"</div>
+                <div className="text-[10px] text-[#252A2A]/60">Official RSVP Flyer</div>
+                <div className="text-[10px] text-[#D6A323] font-semibold mt-0.5 flex items-center gap-1">
+                  <Download className="w-3 h-3" /> Download High-Res
+                </div>
+              </div>
+            </a>
+
             <a
               href="/images/inaugural-lecture-flyer-portrait.jpg"
               download="nsuk-65th-inaugural-lecture-official-flyer.jpg"
-              className="p-3 rounded-xl border border-[#E3ECE6] hover:border-[#0B6B3A] bg-[#F6FAF7] hover:bg-white transition-all flex items-center gap-3 group"
+              className="p-3 rounded-xl border border-[#D6A323]/40 hover:border-[#008F87] bg-[#FFFBF2] transition-all flex items-center gap-3 group shadow-xs"
             >
               <img
                 src="/images/inaugural-lecture-flyer-portrait.jpg"
@@ -116,9 +135,9 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
                 className="w-10 h-14 object-cover rounded-md border shrink-0"
               />
               <div className="min-w-0 text-left">
-                <div className="text-xs font-bold text-[#0F1F17] group-hover:text-[#0B6B3A] truncate">Official Portrait Flyer</div>
-                <div className="text-[10px] text-[#5B6B63]">Vertical Proclamation</div>
-                <div className="text-[10px] text-[#C9A227] font-semibold mt-0.5 flex items-center gap-1">
+                <div className="text-xs font-bold text-[#252A2A] group-hover:text-[#008F87] truncate">Official Portrait Flyer</div>
+                <div className="text-[10px] text-[#252A2A]/60">Vertical Proclamation</div>
+                <div className="text-[10px] text-[#D6A323] font-semibold mt-0.5 flex items-center gap-1">
                   <Download className="w-3 h-3" /> Download High-Res
                 </div>
               </div>
@@ -127,7 +146,7 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
             <a
               href="/images/inaugural-poster-65th.jpg"
               download="nsuk-65th-inaugural-banner-landscape.jpg"
-              className="p-3 rounded-xl border border-[#E3ECE6] hover:border-[#0B6B3A] bg-[#F6FAF7] hover:bg-white transition-all flex items-center gap-3 group"
+              className="p-3 rounded-xl border border-[#D6A323]/40 hover:border-[#008F87] bg-[#FFFBF2] transition-all flex items-center gap-3 group shadow-xs"
             >
               <img
                 src="/images/inaugural-poster-65th.jpg"
@@ -135,9 +154,9 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
                 className="w-14 h-10 object-cover rounded-md border shrink-0"
               />
               <div className="min-w-0 text-left">
-                <div className="text-xs font-bold text-[#0F1F17] group-hover:text-[#0B6B3A] truncate">Convocation Banner</div>
-                <div className="text-[10px] text-[#5B6B63]">Landscape Commemorative</div>
-                <div className="text-[10px] text-[#C9A227] font-semibold mt-0.5 flex items-center gap-1">
+                <div className="text-xs font-bold text-[#252A2A] group-hover:text-[#008F87] truncate">Convocation Banner</div>
+                <div className="text-[10px] text-[#252A2A]/60">Landscape Commemorative</div>
+                <div className="text-[10px] text-[#D6A323] font-semibold mt-0.5 flex items-center gap-1">
                   <Download className="w-3 h-3" /> Download High-Res
                 </div>
               </div>
@@ -146,7 +165,7 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
             <a
               href="/images/nura-x-intentional-intelligence.jpg"
               download="nsuk-nura-x-intentional-intelligence.jpg"
-              className="p-3 rounded-xl border border-[#E3ECE6] hover:border-[#0B6B3A] bg-[#F6FAF7] hover:bg-white transition-all flex items-center gap-3 group"
+              className="p-3 rounded-xl border border-[#D6A323]/40 hover:border-[#008F87] bg-[#FFFBF2] transition-all flex items-center gap-3 group shadow-xs"
             >
               <img
                 src="/images/nura-x-intentional-intelligence.jpg"
@@ -154,9 +173,9 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
                 className="w-10 h-10 object-cover rounded-full border shrink-0"
               />
               <div className="min-w-0 text-left">
-                <div className="text-xs font-bold text-[#0F1F17] group-hover:text-[#0B6B3A] truncate">NURA-X AI Emblem</div>
-                <div className="text-[10px] text-[#5B6B63]">Intentional Intelligence</div>
-                <div className="text-[10px] text-[#C9A227] font-semibold mt-0.5 flex items-center gap-1">
+                <div className="text-xs font-bold text-[#252A2A] group-hover:text-[#008F87] truncate">NURA-X AI Emblem</div>
+                <div className="text-[10px] text-[#252A2A]/60">Intentional Intelligence</div>
+                <div className="text-[10px] text-[#D6A323] font-semibold mt-0.5 flex items-center gap-1">
                   <Download className="w-3 h-3" /> Download High-Res
                 </div>
               </div>
@@ -172,7 +191,7 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
             
             {/* Aspect Ratio Selection */}
             <div>
-              <label className="text-xs font-semibold uppercase tracking-wider text-[#0B6B3A] block mb-2">
+              <label className="text-xs font-semibold uppercase tracking-wider text-[#008F87] block mb-2">
                 1. Customizable Digital Card Ratio
               </label>
               <div className="grid grid-cols-2 gap-2">
@@ -187,12 +206,12 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
                     onClick={() => setAspectRatio(r.id as AspectRatioType)}
                     className={`p-3 rounded-2xl border text-left transition-all ${
                       aspectRatio === r.id
-                        ? 'border-[#0B6B3A] bg-white ring-2 ring-[#C9A227]/30 shadow-xs'
-                        : 'border-[#C9A227]/30 bg-white/60 hover:bg-white text-gray-700'
+                        ? 'border-[#008F87] bg-[#FFFBF2] ring-2 ring-[#D6A323]/40 shadow-xs'
+                        : 'border-[#D6A323]/30 bg-[#FFFBF2]/70 hover:bg-[#FFFBF2] text-[#252A2A]'
                     }`}
                   >
-                    <div className="text-xs font-bold text-[#0F1F17]">{r.label}</div>
-                    <div className="text-[10px] text-gray-500 mt-0.5">{r.desc}</div>
+                    <div className="text-xs font-bold text-[#252A2A]">{r.label}</div>
+                    <div className="text-[10px] text-[#252A2A]/60 mt-0.5">{r.desc}</div>
                   </button>
                 ))}
               </div>
@@ -200,7 +219,7 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
 
             {/* File Format Selection */}
             <div>
-              <label className="text-xs font-semibold uppercase tracking-wider text-[#0B6B3A] block mb-2">
+              <label className="text-xs font-semibold uppercase tracking-wider text-[#008F87] block mb-2">
                 2. Select File Format
               </label>
               <div className="grid grid-cols-3 gap-2">
@@ -216,11 +235,11 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
                       onClick={() => setFormat(fmt.id as ExportFormat)}
                       className={`p-3 rounded-2xl border text-center transition-all flex flex-col items-center ${
                         format === fmt.id
-                          ? 'border-[#0B6B3A] bg-[#0B6B3A] text-white shadow-md'
-                          : 'border-[#C9A227]/30 bg-white text-[#0F1F17]/80 hover:border-[#C9A227]'
+                          ? 'border-[#008F87] bg-[#008F87] text-white shadow-md'
+                          : 'border-[#D6A323]/30 bg-[#FFFBF2] text-[#252A2A]/80 hover:border-[#D6A323]'
                       }`}
                     >
-                      <Icon className="w-5 h-5 mb-1 text-[#C9A227]" />
+                      <Icon className="w-5 h-5 mb-1 text-[#D6A323]" />
                       <div className="text-xs font-bold">{fmt.label}</div>
                       <div className="text-[9px] opacity-80 mt-0.5">{fmt.note}</div>
                     </button>
@@ -231,7 +250,7 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
 
             {/* Resolution Multiplier / Quality */}
             <div>
-              <label className="text-xs font-semibold uppercase tracking-wider text-[#0B6B3A] block mb-2">
+              <label className="text-xs font-semibold uppercase tracking-wider text-[#008F87] block mb-2">
                 3. Export Resolution
               </label>
               <div className="flex items-center space-x-2">
@@ -245,26 +264,26 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
                     onClick={() => setScale(sc.scale)}
                     className={`flex-1 py-2 px-2 text-xs rounded-xl border text-center font-medium transition-all ${
                       scale === sc.scale
-                        ? 'border-[#0B6B3A] bg-white font-bold text-[#0B6B3A] shadow-xs'
-                        : 'border-[#C9A227]/30 bg-white/60 text-gray-600 hover:bg-white'
+                        ? 'border-[#008F87] bg-[#FFFBF2] font-bold text-[#008F87] shadow-xs'
+                        : 'border-[#D6A323]/30 bg-[#FFFBF2]/70 text-[#252A2A]/70 hover:bg-[#FFFBF2]'
                     }`}
                   >
                     {sc.label}
                   </button>
                 ))}
               </div>
-              <p className="text-[11px] text-gray-500 mt-2 font-mono">
+              <p className="text-[11px] text-[#252A2A]/60 mt-2 font-mono">
                 Canvas resolution: {getDimensionsText()}
               </p>
             </div>
 
             {/* Quality & Watermark Notice */}
-            <div className="p-3.5 rounded-2xl bg-[#C9A227]/10 border border-[#C9A227]/30 text-xs text-[#0B6B3A] space-y-1">
+            <div className="p-3.5 rounded-2xl bg-[#FFFBF2] border border-[#D6A323]/40 text-xs text-[#008F87] space-y-1">
               <div className="flex items-center space-x-1.5 font-semibold">
-                <Sparkles className="w-4 h-4 text-[#C9A227]" />
+                <Sparkles className="w-4 h-4 text-[#D6A323]" />
                 <span>Zero Watermarks • Full Commercial License</span>
               </div>
-              <p className="text-[11px] text-[#0F1F17]/70">
+              <p className="text-[11px] text-[#252A2A]/70">
                 Your exported image retains vector-sharp typography and exact uploaded portrait color fidelity.
               </p>
             </div>
@@ -273,16 +292,16 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
             <button
               onClick={handleDownload}
               disabled={isExporting}
-              className="w-full py-4 rounded-2xl bg-gradient-to-r from-[#0B6B3A] to-[#064E2B] text-white font-semibold text-sm uppercase tracking-wider shadow-xl hover:shadow-2xl hover:scale-[1.01] active:scale-98 transition-all flex items-center justify-center space-x-2 border border-[#C9A227]/50 disabled:opacity-50"
+              className="w-full py-4 rounded-2xl bg-gradient-to-r from-[#008F87] to-[#006B66] text-white font-semibold text-sm uppercase tracking-wider shadow-xl hover:shadow-2xl hover:scale-[1.01] active:scale-98 transition-all flex items-center justify-center space-x-2 border border-[#D6A323]/50 disabled:opacity-50"
             >
               {isExporting ? (
                 <>
-                  <Loader2 className="w-5 h-5 animate-spin text-[#C9A227]" />
+                  <Loader2 className="w-5 h-5 animate-spin text-[#D6A323]" />
                   <span>Rendering Ultra-HD {format.toUpperCase()}...</span>
                 </>
               ) : (
                 <>
-                  <Download className="w-5 h-5 text-[#C9A227]" />
+                  <Download className="w-5 h-5 text-[#D6A323]" />
                   <span>Download Invitation ({format.toUpperCase()})</span>
                 </>
               )}
@@ -297,7 +316,7 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
           </div>
 
           {/* Right Column: Live Export Preview Canvas Container */}
-          <div className="lg:col-span-7 flex flex-col items-center justify-center bg-gray-200/50 p-6 rounded-3xl border border-gray-300/50 min-h-[460px] relative overflow-hidden">
+          <div className="lg:col-span-7 flex flex-col items-center justify-center bg-[#FFFBF2]/60 p-6 rounded-3xl border border-[#D6A323]/30 min-h-[460px] relative overflow-hidden">
             <span className="absolute top-3 left-4 text-[10px] uppercase tracking-widest text-gray-500 font-semibold font-mono">
               Live Capture Viewport ({aspectRatio})
             </span>

@@ -3,61 +3,76 @@
 @layer base {
   :root {
     /* ========================================================================= */
-    /* 1. COLOR PALETTE: NSUK INSTITUTIONAL BRAND & SEMANTIC TOKENS              */
+    /* 1. COLOR PALETTE: INAUGURAL BRAND & SEMANTIC TOKENS                       */
+    /* Academia × Faith × Culture × Technology × Humanity                        */
     /* ========================================================================= */
     
-    /* NSUK Emerald & Forest Greens */
-    --color-primary-950: #022415;
-    --color-primary-900: #043A20;
-    --color-primary-800: #064E2B;
-    --color-primary-700: #0B6B3A; /* Core Institutional Green */
-    --color-primary-600: #0E8347;
-    --color-primary-500: #12A157;
-    --color-primary-200: #C2E4D0;
-    --color-primary-100: #E7F3EC;
-    --color-primary-50:  #F6FAF7;
+    /* Official Signature & Deep Turquoise (30% Turquoise) */
+    --color-turquoise-sig:  #008F87; /* Signature Turquoise: Primary brand, headings, stage accents */
+    --color-turquoise-deep: #006B66; /* Deep Turquoise: Luxury contrast, banners, formal print */
+    --color-primary-950:    #003330;
+    --color-primary-900:    #004D49;
+    --color-primary-800:    #006B66; /* Deep Turquoise */
+    --color-primary-700:    #008F87; /* Signature Turquoise */
+    --color-primary-600:    #00A39B;
+    --color-primary-500:    #1AB3AB;
+    --color-primary-200:    #A3E8E3;
+    --color-primary-100:    #DDF7F5;
+    --color-primary-50:     #FFFBF2; /* Soft Ivory */
 
-    /* Regal Convocation Gold & Warm Sand */
-    --color-gold-900: #684E0B;
-    --color-gold-800: #8A6A12;
-    --color-gold-700: #A8841A;
-    --color-gold-600: #B8921F;
-    --color-gold-500: #C9A227; /* Core Accent Gold */
-    --color-gold-400: #DFC79B;
-    --color-gold-300: #EBD9B8;
-    --color-gold-200: #F2E3B3;
-    --color-gold-100: #F9F2DC;
-    --color-gold-50:  #FDFBF7;
+    /* Official Mustard Gold & Deep Gold (15% Mustard Gold) */
+    --color-gold-mustard: #D6A323; /* Mustard Gold: Premium accents, borders, highlights */
+    --color-gold-deep:    #A97912; /* Deep Gold: Foil-like print and detailing */
+    --color-gold-900:     #523906;
+    --color-gold-800:     #7A5609;
+    --color-gold-700:     #A97912; /* Deep Gold */
+    --color-gold-600:     #BF8E18;
+    --color-gold-500:     #D6A323; /* Mustard Gold */
+    --color-gold-400:     #E5BD55;
+    --color-gold-300:     #EFD38B;
+    --color-gold-200:     #F8E7BE;
+    --color-gold-100:     #FFF4DC; /* Warm Cream */
+    --color-gold-50:      #FFFBF2; /* Soft Ivory */
 
-    /* Neutral & Editorial Ink Surfaces */
-    --color-ink-950: #09130E;
-    --color-ink-900: #0F1F17; /* Core Dark Body Text */
-    --color-ink-800: #1D2E25;
-    --color-ink-700: #2E4037;
-    --color-ink-600: #47554F; /* Secondary Text */
-    --color-ink-500: #6B7B73; /* Muted & Placeholder Text */
-    --color-ink-400: #9AA8A0;
-    --color-ink-300: #CAD7CE;
-    --color-ink-200: #E3ECE6; /* Subtle Hairline Borders */
-    --color-ink-100: #F0F5F2;
-    --color-ink-50:  #FFFFFF; /* Pure White Card Surfaces */
+    /* Official Elegant Lilac (5% AI & Feminine Accent) */
+    --color-lilac-accent: #B9A1D0; /* Elegant Lilac: Limited feminine / AI accent */
+    --color-lilac-light:  #ECE3F5;
+    --color-lilac-dark:   #785B94;
+
+    /* Official Warm Cream & Soft Ivory (50% Dominant Background) */
+    --color-cream-main: #FFF4DC; /* Warm Cream: Main background */
+    --color-ivory-soft: #FFFBF2; /* Soft Ivory: Invitations, programme pages */
+
+    /* Official Deep Charcoal (Body text and formal contrast) */
+    --color-charcoal-deep: #252A2A; /* Deep Charcoal */
+    --color-ink-950: #121515;
+    --color-ink-900: #252A2A; /* Deep Charcoal */
+    --color-ink-800: #333939;
+    --color-ink-700: #464E4E;
+    --color-ink-600: #5C6666;
+    --color-ink-500: #748080;
+    --color-ink-400: #9AA6A6;
+    --color-ink-300: #C2CCCC;
+    --color-ink-200: #E6E5DE;
+    --color-ink-100: #FFF4DC; /* Warm Cream */
+    --color-ink-50:  #FFFBF2; /* Soft Ivory */
 
     /* Semantic Status Feedback */
-    --color-success-700: #065F46;
-    --color-success-500: #10B981;
-    --color-success-50:  #ECFDF5;
+    --color-success-700: #006B66;
+    --color-success-500: #008F87;
+    --color-success-50:  #FFFBF2;
 
-    --color-warning-700: #92400E;
-    --color-warning-500: #F59E0B;
-    --color-warning-50:  #FFFBEB;
+    --color-warning-700: #A97912;
+    --color-warning-500: #D6A323;
+    --color-warning-50:  #FFF4DC;
 
     --color-error-700:   #991B1B;
     --color-error-500:   #EF4444;
     --color-error-50:    #FEF2F2;
 
-    --color-info-700:    #1E40AF;
-    --color-info-500:    #3B82F6;
-    --color-info-50:     #EFF6FF;
+    --color-info-700:    #006B66;
+    --color-info-500:    #008F87;
+    --color-info-50:     #DDF7F5;
 
     /* Legacy Backwards-Compatible Aliases */
     --nsuk-green: var(--color-primary-700);
@@ -66,13 +81,13 @@
     --nsuk-green-soft: var(--color-primary-100);
     --nsuk-green-mist: var(--color-primary-50);
     --nsuk-gold: var(--color-gold-500);
-    --nsuk-gold-soft: var(--color-gold-200);
+    --nsuk-gold-soft: var(--color-gold-100);
     --ink: var(--color-ink-900);
     --ink-muted: var(--color-ink-600);
     --line: var(--color-ink-200);
-    --bg-ivory: var(--color-primary-50);
+    --bg-ivory: var(--color-ivory-soft);
     --gold-primary: var(--color-gold-500);
-    --gold-light: var(--color-gold-200);
+    --gold-light: var(--color-gold-100);
     --emerald-primary: var(--color-primary-700);
 
     /* ========================================================================= */
@@ -98,23 +113,23 @@
     --radius-sm: 0.5rem;  /* 8px */
     --radius-md: 0.75rem; /* 12px */
     --radius-lg: 1rem;    /* 16px */
-    --radius-xl: 1.25rem; /* 20px */
-    --radius-2xl: 1.5rem; /* 24px */
-    --radius-3xl: 2rem;   /* 32px */
+    --radius-xl: 1.125rem; /* 18px — barely-rounded feels hand-set, not pill-everything */
+    --radius-2xl: 1.25rem; /* 20px */
+    --radius-3xl: 1.5rem;   /* 24px */
     --radius-full: 9999px;
 
     /* ========================================================================= */
     /* 4. SHADOW & ELEVATION TOKENS                                              */
     /* ========================================================================= */
-    --shadow-xs: 0 1px 2px rgba(6, 78, 43, 0.04);
-    --shadow-sm: 0 1px 3px rgba(6, 78, 43, 0.06), 0 1px 2px rgba(6, 78, 43, 0.04);
-    --shadow-md: 0 4px 6px -1px rgba(6, 78, 43, 0.07), 0 2px 4px -2px rgba(6, 78, 43, 0.05);
-    --shadow-lg: 0 10px 15px -3px rgba(6, 78, 43, 0.08), 0 4px 6px -4px rgba(6, 78, 43, 0.04);
-    --shadow-xl: 0 20px 25px -5px rgba(6, 78, 43, 0.12), 0 8px 10px -6px rgba(6, 78, 43, 0.04);
-    --shadow-card: 0 1px 3px rgba(6, 78, 43, 0.04), 0 12px 32px -12px rgba(6, 78, 43, 0.12);
-    --shadow-card-hover: 0 4px 8px rgba(6, 78, 43, 0.06), 0 24px 48px -16px rgba(6, 78, 43, 0.22);
-    --shadow-primary: 0 8px 20px -8px rgba(11, 107, 58, 0.6);
-    --shadow-gold: 0 8px 20px -8px rgba(201, 162, 39, 0.65);
+    --shadow-xs: 0 1px 2px rgba(37, 42, 42, 0.05);
+    --shadow-sm: 0 1px 3px rgba(37, 42, 42, 0.06), 0 1px 2px rgba(37, 42, 42, 0.04);
+    --shadow-md: 0 4px 6px -1px rgba(37, 42, 42, 0.07), 0 2px 4px -2px rgba(37, 42, 42, 0.05);
+    --shadow-lg: 0 10px 15px -3px rgba(37, 42, 42, 0.08), 0 4px 6px -4px rgba(37, 42, 42, 0.04);
+    --shadow-xl: 0 20px 25px -5px rgba(37, 42, 42, 0.1), 0 8px 10px -6px rgba(37, 42, 42, 0.04);
+    --shadow-card: 0 1px 2px rgba(37, 42, 42, 0.04), 0 10px 28px -14px rgba(37, 42, 42, 0.13);
+    --shadow-card-hover: 0 3px 8px rgba(37, 42, 42, 0.06), 0 20px 40px -18px rgba(37, 42, 42, 0.2);
+    --shadow-primary: 0 8px 20px -10px rgba(0, 107, 102, 0.4);
+    --shadow-gold: 0 8px 20px -10px rgba(169, 121, 18, 0.4);
 
     /* ========================================================================= */
     /* 5. MOTION DURATIONS & EASING                                              */
@@ -195,23 +210,77 @@
   box-shadow: var(--shadow-card-hover);
 }
 
+/* Attendee portrait cards — gold oval + hover reveal */
+.attendee-card {
+  transition:
+    transform var(--duration-slow) var(--ease-out),
+    box-shadow var(--duration-slow) ease,
+    border-color var(--duration-normal) ease;
+}
+
+.attendee-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(201, 162, 39, 0.55);
+  box-shadow: var(--shadow-card-hover), 0 0 0 1px rgba(201, 162, 39, 0.2);
+}
+
 .nsuk-kicker {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  font-size: 0.6875rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.18em;
-  color: var(--color-primary-700);
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--color-gold-deep);
 }
 
-.nsuk-kicker::before {
+/* ========================================================================= */
+/* HOUSE-SET FEEL: paper grain, quiet eyebrows, hand-set tilt, script accents */
+/* ========================================================================= */
+
+/* Faint print grain over a whole face — like run through a laserprinter once */
+.paper-grain {
+  position: relative;
+}
+.paper-grain::after {
   content: '';
-  width: 1.5rem;
-  height: 2px;
-  border-radius: 2px;
-  background: var(--color-gold-500);
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='0.05'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23g)'/%3E%3C/svg%3E");
+  mix-blend-mode: multiply;
+  opacity: 0.5;
+}
+
+/* Section eyebrow — typeset like a citation line, not a promo pill */
+.eyebrow {
+  display: block;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-weight: 500;
+  font-size: 1rem;
+  letter-spacing: 0.01em;
+  color: var(--color-gold-deep);
+}
+
+/* The tiniest hand-set wobble. Cards sit on stacks; they shouldn't be square */
+.tilt {
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease, border-color 0.2s ease;
+}
+.tilt-tl { transform: rotate(-0.55deg); }
+.tilt-tr { transform: rotate(0.45deg); }
+.tilt:hover { transform: rotate(0deg); }
+
+@media (prefers-reduced-motion: reduce) {
+  .tilt, .tilt:hover { transform: none; transition: none; }
+}
+
+/* Rubric / script accent — for a handwritten-feeling aside */
+.font-script {
+  font-family: 'Great Vibes', 'Alex Brush', cursive;
 }
 
 /* ========================================================================= */
@@ -228,7 +297,7 @@
 .btn-green:hover {
   transform: translateY(-1px);
   filter: brightness(1.08);
-  box-shadow: 0 12px 26px -8px rgba(11, 107, 58, 0.7);
+  box-shadow: 0 10px 22px -10px rgba(0, 107, 102, 0.35);
 }
 
 .btn-green:active {
@@ -236,8 +305,8 @@
 }
 
 .btn-gold {
-  background: linear-gradient(135deg, #E2BE4A 0%, var(--color-gold-500) 100%);
-  color: var(--color-primary-900);
+  background: linear-gradient(135deg, var(--color-gold-mustard) 0%, var(--color-gold-deep) 100%);
+  color: #003330;
   box-shadow: var(--shadow-gold);
   min-height: 44px;
   transition: transform var(--duration-normal) ease, filter var(--duration-normal) ease;
@@ -297,6 +366,15 @@
   animation: scale-up 0.3s var(--ease-out) both;
 }
 
+@keyframes progress-fill {
+  from { width: 0%; }
+  to { width: 100%; }
+}
+
+.animate-progress-fill {
+  animation: progress-fill 4.5s linear infinite;
+}
+
 /* ========================================================================= */
 /* TYPOGRAPHY UTILITIES                                                      */
 /* ========================================================================= */
@@ -329,4 +407,16 @@
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-primary-700);
+}
+
+/* Hide scrollbar utility */
+.no-scrollbar::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
 }

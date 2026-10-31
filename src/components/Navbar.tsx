@@ -19,6 +19,7 @@ interface NavbarProps {
   onNavigate: (view: 'landing' | 'about-professor' | 'event' | 'dashboard') => void;
   activeView: string;
   onOpenDownloadModal?: () => void;
+  onOpenRsvp?: () => void;
 }
 
 type ViewId = 'landing' | 'about-professor' | 'event' | 'dashboard';
@@ -33,7 +34,8 @@ const NAV_ITEMS: { id: ViewId; label: string; badge?: string }[] = [
 export const Navbar: React.FC<NavbarProps> = ({
   onNavigate,
   activeView,
-  onOpenDownloadModal
+  onOpenDownloadModal,
+  onOpenRsvp
 }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
@@ -113,8 +115,8 @@ export const Navbar: React.FC<NavbarProps> = ({
             aria-label="Main Navigation"
             className={`mx-auto rounded-full transition-all duration-300 border shadow-lg backdrop-blur-xl ${
               scrolled
-                ? 'bg-white/90 border-[#C9A227]/30 shadow-xl py-2 px-3 sm:px-4'
-                : 'bg-white/85 border-[#E3ECE6] shadow-md py-2.5 px-3 sm:px-5'
+                ? 'bg-[#FFFBF2]/95 border-[#D6A323]/40 shadow-xl py-2 px-3 sm:px-4'
+                : 'bg-[#FFFBF2]/90 border-[#D6A323]/25 shadow-md py-2.5 px-3 sm:px-5'
             }`}
           >
             <div className="flex items-center justify-between gap-3">
@@ -123,10 +125,10 @@ export const Navbar: React.FC<NavbarProps> = ({
               <button
                 id="nav-brand"
                 onClick={() => go('landing')}
-                className="flex items-center gap-2.5 group text-left cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0B6B3A] rounded-full pr-2"
+                className="flex items-center gap-2.5 group text-left cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#008F87] rounded-full pr-2"
                 aria-label="NSUK 65th Inaugural Lecture Home"
               >
-                <div className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-full overflow-hidden border border-[#C9A227]/40 bg-white p-0.5 shadow-xs shrink-0 group-hover:scale-105 transition-transform">
+                <div className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-full overflow-hidden border border-[#D6A323]/40 bg-white p-0.5 shadow-xs shrink-0 group-hover:scale-105 transition-transform">
                   <img
                     src="/images/nsuk-crest.png"
                     alt="NSUK Crest"
@@ -135,17 +137,17 @@ export const Navbar: React.FC<NavbarProps> = ({
                 </div>
 
                 <div className="min-w-0">
-                  <div className="text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.16em] text-[#064E2B] font-cinzel leading-none">
+                  <div className="text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.16em] text-[#006B66] font-cinzel leading-none">
                     NSUK Keffi
                   </div>
-                  <div className="font-serif-luxury font-bold text-xs sm:text-sm text-[#0F1F17] leading-tight truncate">
+                  <div className="font-serif-luxury font-bold text-xs sm:text-sm text-[#252A2A] leading-tight truncate">
                     65th Inaugural Lecture
                   </div>
                 </div>
               </button>
 
               {/* Desktop Nav Items (Pill-style with animated active state) */}
-              <div className="hidden md:flex items-center gap-1 bg-[#F6FAF7] p-1 rounded-full border border-[#E3ECE6]" role="menubar">
+              <div className="hidden md:flex items-center gap-1 bg-[#FFF4DC]/60 p-1 rounded-full border border-[#D6A323]/25" role="menubar">
                 {NAV_ITEMS.map((item) => {
                   const active = activeView === item.id;
                   return (
@@ -154,10 +156,10 @@ export const Navbar: React.FC<NavbarProps> = ({
                       id={`nav-${item.id}`}
                       role="menuitem"
                       onClick={() => go(item.id)}
-                      className={`relative px-4 py-1.5 rounded-full text-xs font-semibold tracking-wide transition-all cursor-pointer select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0B6B3A] ${
+                      className={`relative px-4 py-1.5 rounded-full text-xs font-semibold tracking-wide transition-all cursor-pointer select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#008F87] ${
                         active
-                          ? 'bg-[#0B6B3A] text-white shadow-xs font-bold'
-                          : 'text-[#47554F] hover:text-[#0F1F17] hover:bg-white/70'
+                          ? 'bg-[#008F87] text-white shadow-xs font-bold'
+                          : 'text-[#47554F] hover:text-[#252A2A] hover:bg-white/70'
                       }`}
                     >
                       <span>{item.label}</span>
@@ -170,9 +172,9 @@ export const Navbar: React.FC<NavbarProps> = ({
                     id="nav-proclamation"
                     role="menuitem"
                     onClick={onOpenDownloadModal}
-                    className="px-3 py-1.5 rounded-full text-xs font-medium text-[#47554F] hover:text-[#0B6B3A] hover:bg-white/70 transition-all cursor-pointer flex items-center gap-1"
+                    className="px-3 py-1.5 rounded-full text-xs font-medium text-[#47554F] hover:text-[#008F87] hover:bg-white/70 transition-all cursor-pointer flex items-center gap-1"
                   >
-                    <Download className="w-3 h-3 text-[#C9A227]" />
+                    <Download className="w-3 h-3 text-[#D6A323]" />
                     <span className="hidden lg:inline">Poster</span>
                   </button>
                 )}
@@ -185,11 +187,11 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <button
                   id="nav-search-trigger"
                   onClick={() => setIsCommandPaletteOpen(true)}
-                  className="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#F6FAF7] border border-[#E3ECE6] hover:border-[#0B6B3A]/40 text-[#47554F] hover:text-[#0F1F17] text-xs font-medium transition-colors cursor-pointer"
+                  className="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#FFF4DC]/60 border border-[#D6A323]/30 hover:border-[#008F87]/40 text-[#47554F] hover:text-[#252A2A] text-xs font-medium transition-colors cursor-pointer"
                   title="Search & Quick Actions (Ctrl+K)"
                   aria-label="Open Command Palette"
                 >
-                  <Search className="w-3.5 h-3.5 text-[#0B6B3A]" />
+                  <Search className="w-3.5 h-3.5 text-[#008F87]" />
                   <span className="text-[11px] text-[#6B7B73]">Search</span>
                   <kbd className="px-1.5 py-0.2 rounded bg-white border border-gray-200 font-mono text-[9px] text-gray-500">
                     ⌘K
@@ -199,18 +201,24 @@ export const Navbar: React.FC<NavbarProps> = ({
                 {/* Primary CTA Button (1-2 words, verb-first) */}
                 <button
                   id="nav-cta-rsvp"
-                  onClick={() => go('event')}
-                  className="inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 rounded-full text-xs font-bold uppercase tracking-wider bg-[#0B6B3A] text-white hover:bg-[#064E2B] shadow-sm hover:shadow-md transition-all cursor-pointer active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0B6B3A]"
+                  onClick={() => {
+                    if (onOpenRsvp) {
+                      onOpenRsvp();
+                    } else {
+                      go('event');
+                    }
+                  }}
+                  className="inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 rounded-full text-xs font-bold uppercase tracking-wider bg-[#008F87] text-white hover:bg-[#006B66] shadow-sm hover:shadow-md transition-all cursor-pointer active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#008F87]"
                 >
                   <span>RSVP Now</span>
-                  <ArrowRight className="w-3 h-3 text-[#F2E3B3]" />
+                  <ArrowRight className="w-3 h-3 text-[#FFF4DC]" />
                 </button>
 
                 {/* Mobile Hamburger Toggle */}
                 <button
                   id="nav-mobile-toggle"
                   onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                  className="md:hidden w-9 h-9 rounded-full bg-[#F6FAF7] border border-[#E3ECE6] text-[#0F1F17] flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0B6B3A] cursor-pointer"
+                  className="md:hidden w-9 h-9 rounded-full bg-[#FFF4DC]/60 border border-[#D6A323]/30 text-[#252A2A] flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#008F87] cursor-pointer"
                   aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
                   aria-expanded={isMobileMenuOpen}
                 >
@@ -227,7 +235,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       {isMobileMenuOpen && (
         <div 
           ref={mobileMenuRef}
-          className="fixed inset-0 z-50 bg-[#043A20]/95 backdrop-blur-2xl text-white flex flex-col justify-between p-6 sm:p-8 animate-fade-in md:hidden"
+          className="fixed inset-0 z-50 bg-[#006B66]/95 backdrop-blur-2xl text-white flex flex-col justify-between p-6 sm:p-8 animate-fade-in md:hidden"
           role="dialog"
           aria-modal="true"
           aria-label="Navigation Menu"
@@ -239,7 +247,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <img src="/images/nsuk-crest.png" alt="NSUK Crest" className="w-full h-full object-contain" />
               </div>
               <div>
-                <div className="text-[10px] font-bold uppercase tracking-widest text-[#E2BE4A] font-cinzel">
+                <div className="text-[10px] font-bold uppercase tracking-widest text-[#D6A323] font-cinzel">
                   Nasarawa State University
                 </div>
                 <div className="font-serif-luxury font-bold text-sm">
@@ -259,7 +267,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* Staggered Navigation Links */}
           <div className="space-y-4 py-8">
-            <div className="text-[10px] uppercase tracking-[0.2em] text-[#E2BE4A] font-bold">
+            <div className="text-[10px] uppercase tracking-[0.2em] text-[#D6A323] font-bold">
               Navigation
             </div>
             {NAV_ITEMS.map((item, idx) => (
@@ -269,7 +277,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 style={{ animationDelay: `${idx * 60}ms` }}
                 className={`w-full text-left py-3 px-4 rounded-2xl text-lg font-serif-luxury font-bold transition-all flex items-center justify-between cursor-pointer animate-fade-up ${
                   activeView === item.id
-                    ? 'bg-[#C9A227] text-[#043A20] shadow-lg'
+                    ? 'bg-[#D6A323] text-[#003330] shadow-lg font-bold'
                     : 'text-white hover:bg-white/10'
                 }`}
               >
@@ -287,7 +295,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 className="w-full text-left py-3 px-4 rounded-2xl text-lg font-serif-luxury font-bold text-white/90 hover:bg-white/10 transition-colors flex items-center justify-between cursor-pointer"
               >
                 <span>Official Proclamation Poster</span>
-                <Download className="w-4 h-4 text-[#E2BE4A]" />
+                <Download className="w-4 h-4 text-[#D6A323]" />
               </button>
             )}
           </div>
@@ -295,14 +303,21 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Mobile Overlay Footer & Direct RSVP */}
           <div className="space-y-4 border-t border-white/10 pt-4">
             <button
-              onClick={() => go('event')}
-              className="w-full py-4 rounded-full bg-gradient-to-r from-[#E2BE4A] to-[#C9A227] text-[#043A20] font-bold text-xs uppercase tracking-widest shadow-xl flex items-center justify-center gap-2 cursor-pointer"
+              onClick={() => {
+                if (onOpenRsvp) {
+                  onOpenRsvp();
+                  setIsMobileMenuOpen(false);
+                } else {
+                  go('event');
+                }
+              }}
+              className="w-full py-4 rounded-full bg-gradient-to-r from-[#D6A323] to-[#A97912] text-[#003330] font-bold text-xs uppercase tracking-widest shadow-xl flex items-center justify-center gap-2 cursor-pointer"
             >
               <span>Confirm Attendance (RSVP)</span>
               <ArrowRight className="w-4 h-4" />
             </button>
 
-            <div className="text-center text-xs text-white/60">
+            <div className="text-center text-xs text-white/70">
               Wednesday, 25 November 2026 · 2:00 PM · Assembly Hall
             </div>
           </div>

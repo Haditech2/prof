@@ -12,8 +12,10 @@ import { Footer } from './components/Footer';
 import { Toast } from './components/Toast';
 import { AboutProfessorSection } from './components/AboutProfessorSection';
 import { IWillBeThereBanner } from './components/IWillBeThereBanner';
+import { AttendeeCards } from './components/AttendeeCards';
+import { TributeModal } from './components/TributeModal';
+import { PhotoGallery } from './components/ui/PhotoGallery';
 import { 
-  Sparkles, 
   ArrowRight, 
   Award, 
   Clock, 
@@ -26,6 +28,7 @@ import {
   Send,
   Download
 } from 'lucide-react';
+import type { RSVPResponse as RsvpType } from './types';
 
 export function App() {
   const [events, setEvents] = useState<EventData[]>(() => {
@@ -40,6 +43,7 @@ export function App() {
       try {
         const parsed = JSON.parse(saved);
         if (parsed && parsed.id === 'event-prof-rashidah-inaugural') {
+          parsed.gallery = INITIAL_EVENTS[0].gallery;
           return [parsed];
         }
       } catch {}
@@ -49,13 +53,32 @@ export function App() {
 
   const [rsvps, setRsvps] = useState<RSVPResponse[]>(() => {
     const saved = localStorage.getItem('prof_rashidah_rsvps');
-    return saved ? JSON.parse(saved) : INITIAL_RSVPS;
+    if (saved) {
+      try {
+        const parsed: RSVPResponse[] = JSON.parse(saved);
+        if (parsed && parsed.some(r => r.id === 'rsvp-inaug-2')) {
+          return parsed;
+        }
+      } catch {}
+    }
+    return INITIAL_RSVPS;
   });
 
   const [wishes, setWishes] = useState<GuestWish[]>(() => {
     const saved = localStorage.getItem('prof_rashidah_wishes');
-    return saved ? JSON.parse(saved) : INITIAL_WISHES;
+    if (saved) {
+      try {
+        const parsed: GuestWish[] = JSON.parse(saved);
+        if (parsed && parsed.some(w => w.id === 'wish-omotosho')) {
+          return parsed;
+        }
+      } catch {}
+    }
+    return INITIAL_WISHES;
   });
+
+  // State for Tribute Modal (Full letter preview)
+  const [selectedTributeForModal, setSelectedTributeForModal] = useState<GuestWish | null>(null);
 
   // State for homepage live "I Will Be There" DP generator
   const [homepageFlyerRsvp, setHomepageFlyerRsvp] = useState<RSVPResponse>(INITIAL_RSVPS[0]);
@@ -108,9 +131,73 @@ export function App() {
     setRsvps(prev => [newRsvp, ...prev]);
   };
 
+  // Update an existing RSVP in place (used when flyer name/photo changes)
+  const handleUpdateRsvp = (updated: RSVPResponse) => {
+    setRsvps(prev => prev.map(r => (r.id === updated.id ? updated : r)));
+  };
+
+  // Confirm from the homepage flyer studio — update the same guest instead of duplicating
+  const handleConfirmHomepageFlyer = ({
+    fullName,
+    photoUrl,
+    phone,
+    email
+  }: {
+    fullName: string;
+    photoUrl: string;
+    phone?: string;
+    email?: string;
+  }) => {
+    const isExistingFlyerRsvp = homepageFlyerRsvp.id.startsWith('rsvp-flyer-');
+    const updated: RsvpType = {
+      ...homepageFlyerRsvp,
+      id: isExistingFlyerRsvp ? homepageFlyerRsvp.id : `rsvp-flyer-${Date.now()}`,
+      eventId: currentEvent.id,
+      fullName,
+      email: email?.trim() || `${fullName.toLowerCase().replace(/[^a-z0-9]+/g, '.')}@guest.nsuk.edu.ng`,
+      phone: phone?.trim() || '',
+      attendance: 'attending',
+      guestCount: 1,
+      dietary: 'None',
+      groupCategory: 'General',
+      submittedAt: new Date().toISOString(),
+      qrTicketCode: isExistingFlyerRsvp
+        ? homepageFlyerRsvp.qrTicketCode
+        : `EA-RFO-${Math.floor(10000 + Math.random() * 90000)}`,
+      checkedIn: isExistingFlyerRsvp ? homepageFlyerRsvp.checkedIn : false,
+      checkedInAt: isExistingFlyerRsvp ? homepageFlyerRsvp.checkedInAt : undefined,
+      photoUrl: photoUrl || undefined
+    };
+
+    setRsvps(prev => (
+      prev.some(r => r.id === updated.id)
+        ? prev.map(r => (r.id === updated.id ? updated : r))
+        : [updated, ...prev]
+    ));
+    setHomepageFlyerRsvp(updated);
+  };
+
+  // Smooth scroll to RSVP section from anywhere
+  const scrollToRsvp = () => {
+    if (activeView !== 'landing') {
+      setActiveView('landing');
+      setTimeout(() => {
+        const el = document.getElementById('rsvp-section') || document.getElementById('dp-generator-section');
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 80);
+    } else {
+      const el = document.getElementById('rsvp-section') || document.getElementById('dp-generator-section');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   // Add Wish / Tribute handler
   const handleAddWish = (newWish: GuestWish) => {
     setWishes(prev => [newWish, ...prev]);
+  };
+
+  const handleLikeWish = (wishId: string) => {
+    setWishes(prev => prev.map(w => w.id === wishId ? { ...w, likes: (w.likes || 0) + 1 } : w));
   };
 
   // Inline Tribute Submission
@@ -159,12 +246,12 @@ export function App() {
   };
 
   return (
-    <div className="min-h-screen bg-white text-[#0F1F17] flex flex-col font-sans-modern">
+    <div className="min-h-screen bg-[#FFF4DC] text-[#252A2A] flex flex-col font-sans-modern paper-grain">
       
       {/* Accessible Skip to Content Link */}
       <a 
         href="#main-content" 
-        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-[#0B6B3A] focus:text-white focus:rounded-full focus:shadow-xl focus:text-xs focus:font-bold focus:outline-none focus:ring-2 focus:ring-[#C9A227]"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-[#008F87] focus:text-white focus:rounded-full focus:shadow-xl focus:text-xs focus:font-bold focus:outline-none focus:ring-2 focus:ring-[#D6A323]"
       >
         Skip to main content
       </a>
@@ -178,6 +265,7 @@ export function App() {
         }}
         activeView={activeView}
         onOpenDownloadModal={() => setIsDownloadModalOpen(true)}
+        onOpenRsvp={scrollToRsvp}
       />
 
       {/* Main Routed Content */}
@@ -187,14 +275,8 @@ export function App() {
             {/* 1. Hero */}
             <HeroSection
               event={currentEvent}
-              onOpenRsvp={() => {
-                setActiveView('event');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }}
-              onOpenDpGenerator={() => {
-                const el = document.getElementById('dp-generator-section');
-                if (el) el.scrollIntoView({ behavior: 'smooth' });
-              }}
+              onOpenRsvp={scrollToRsvp}
+              onOpenDpGenerator={scrollToRsvp}
               onReadProfileClick={() => {
                 setActiveView('about-professor');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -203,19 +285,17 @@ export function App() {
             />
 
             {/* 2. Countdown band */}
-            <section className="px-4 sm:px-6 lg:px-8 py-16">
-              <div className="max-w-6xl mx-auto rounded-[32px] bg-gradient-to-br from-[#0B6B3A] via-[#085A31] to-[#043A20] text-white overflow-hidden relative">
-                <div className="absolute inset-0 nsuk-pattern-light pointer-events-none" />
-                <div className="absolute -top-24 -right-24 w-72 h-72 rounded-full bg-[#C9A227]/20 blur-3xl pointer-events-none" />
-                <div className="relative grid grid-cols-1 lg:grid-cols-12 gap-8 items-center p-8 md:p-12">
+            <section className="px-3 sm:px-6 lg:px-8 py-10 sm:py-16">
+              <div className="max-w-6xl mx-auto rounded-3xl sm:rounded-[32px] bg-[#004D49] text-white overflow-hidden shadow-lg">
+                <div className="relative grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-center p-5 sm:p-8 md:p-12">
                   <div className="lg:col-span-4 text-center lg:text-left">
-                    <div className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-[#F2E3B3]">
-                      <Clock className="w-4 h-4" /> Countdown
+                    <div className="inline-flex items-center gap-2 text-sm font-serif-luxury italic text-[#FFF4DC]">
+                      <Clock className="w-4 h-4 text-[#D6A323]" /> Live Countdown
                     </div>
-                    <h2 className="mt-2 font-serif-luxury text-3xl md:text-4xl font-bold leading-tight">
-                      The Senate assembles soon.
+                    <h2 className="mt-1.5 font-serif-luxury text-2xl sm:text-3xl md:text-4xl font-semibold leading-tight">
+                      The Senate Assembles Soon.
                     </h2>
-                    <p className="mt-2 text-sm text-white/70">Wednesday, 25 November 2026 · 2:00 PM</p>
+                    <p className="mt-1 text-xs sm:text-sm text-white/80">Wednesday, 25 November 2026 · 2:00 PM</p>
                   </div>
                   <div className="lg:col-span-8">
                     <CountdownSection
@@ -230,26 +310,25 @@ export function App() {
             </section>
 
             {/* 3. Four pillars & NURA-X Flagship Feature */}
-            <section className="py-16 px-4 sm:px-6 lg:px-8">
-              <div className="max-w-7xl mx-auto space-y-10">
-                <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+            <section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8">
+              <div className="max-w-7xl mx-auto space-y-8">
+                <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-3 text-center md:text-left">
                   <div>
-                    <span className="nsuk-kicker">The Discourse</span>
-                    <h2 className="mt-3 font-serif-luxury text-4xl md:text-5xl font-bold text-[#0F1F17] leading-tight">
-                      Four pillars of the lecture
+                    <span className="eyebrow">The Lecture</span>
+                    <h2 className="font-serif-luxury text-3xl sm:text-4xl md:text-5xl font-bold text-[#252A2A] leading-tight">
+                      Pillars of the Lecture
                     </h2>
                   </div>
-                  <p className="text-sm text-[#5B6B63] max-w-sm">
-                    Two decades of research, distilled into one inaugural address.
+                  <p className="text-xs sm:text-sm text-[#5B6B63] max-w-sm mx-auto md:mx-0">
+                    Two decades of research and leadership distilled into one inaugural address.
                   </p>
                 </div>
 
-                {/* NURA-X Flagship Feature Box */}
-                <div className="rounded-3xl bg-gradient-to-br from-[#064E2B] via-[#043A20] to-[#0B6B3A] p-6 sm:p-8 text-white relative overflow-hidden border border-[#C9A227]/40 shadow-xl">
-                  <div className="absolute inset-0 nsuk-pattern-light opacity-30 pointer-events-none" />
-                  <div className="relative grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+                {/* NURA-X Flagship Feature Box with Digital / AI Brand Combination */}
+                <div className="rounded-3xl bg-[#004D49] p-5 sm:p-8 text-white shadow-lg overflow-hidden">
+                  <div className="relative grid grid-cols-1 md:grid-cols-12 gap-5 sm:gap-6 items-center">
                     <div className="md:col-span-3 flex justify-center">
-                      <div className="relative w-28 h-28 sm:w-36 sm:h-36 rounded-full p-1 bg-gradient-to-tr from-[#C9A227] via-white to-[#DFC79B] shadow-2xl">
+                      <div className="relative w-24 h-24 sm:w-32 sm:h-32 rounded-full p-1 bg-[#D6A323] shadow-lg">
                         <img
                           src="/images/nura-x-intentional-intelligence.jpg"
                           alt="NURA-X Intentional Intelligence Emblem"
@@ -258,42 +337,40 @@ export function App() {
                       </div>
                     </div>
                     <div className="md:col-span-9 space-y-2 text-center md:text-left">
-                      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#C9A227]/20 text-[#F2E3B3] text-[10px] sm:text-xs font-bold uppercase tracking-widest border border-[#C9A227]/30">
-                        <Sparkles className="w-3.5 h-3.5 text-[#E2BE4A]" /> Flagship AI Initiative · Inaugural Address
-                      </div>
-                      <h3 className="font-serif-luxury text-2xl sm:text-3xl font-bold leading-tight">
+                      <div className="font-serif-luxury italic text-sm text-[#F8E7BE]">The flagship initiative · NURA-X</div>
+                      <h3 className="font-serif-luxury text-xl sm:text-3xl font-bold leading-tight">
                         NURA-X: Intentional Intelligence
                       </h3>
-                      <p className="text-sm text-white/85 max-w-2xl leading-relaxed">
-                        A sovereign paradigm conceived by Professor Rashidah Funke Olanrewaju to anchor artificial intelligence in digital trust, algorithmic integrity, and human flourishing across Nigerian and African institutions.
+                      <p className="text-xs sm:text-sm text-white/90 max-w-2xl leading-relaxed">
+                        A sovereign paradigm anchoring artificial intelligence in digital trust, algorithmic integrity, and human flourishing across African institutions.
                       </p>
-                      <div className="pt-2 flex flex-wrap gap-4 text-xs text-[#F2E3B3] font-medium justify-center md:justify-start">
-                        <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-[#E2BE4A]" /> Digital Trust &amp; Cryptology</span>
-                        <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-[#E2BE4A]" /> Neural Vision &amp; Language</span>
-                        <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-[#E2BE4A]" /> Human-Centric AI Policy</span>
+                      <div className="pt-1 flex flex-wrap gap-2.5 sm:gap-4 text-[11px] sm:text-xs text-[#FFF4DC] font-medium justify-center md:justify-start">
+                        <span className="flex items-center gap-1"><CheckCircle2 className="w-3 h-3 text-[#D6A323]" /> Digital Trust &amp; Cryptology</span>
+                        <span className="flex items-center gap-1"><CheckCircle2 className="w-3 h-3 text-[#D6A323]" /> Neural Vision &amp; Language</span>
+                        <span className="flex items-center gap-1"><CheckCircle2 className="w-3 h-3 text-[#D6A323]" /> Human-Centric AI Policy</span>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   {[
-                    { icon: Cpu, title: 'Applied AI & Neural Systems', desc: 'Machine learning and vision built for African realities.' },
-                    { icon: Lock, title: 'Cyber Resiliency', desc: 'Cryptography and FinTech security for national infrastructure.' },
-                    { icon: Award, title: 'Software Engineering', desc: 'High-integrity systems and industry tech transfer.' },
-                    { icon: Users, title: 'EDC & Women in STEM', desc: 'Incubating startups and mentoring the next generation.' }
+                    { icon: Cpu, title: 'Applied AI & Neural Systems', desc: 'Computer vision and neural networks engineered for real-world impact.' },
+                    { icon: Lock, title: 'Cyber Resiliency & Trust', desc: 'Cryptography and security frameworks protecting electronic transactions.' },
+                    { icon: Award, title: 'Software Engineering', desc: 'High-integrity software frameworks and university-industry tech transfer.' },
+                    { icon: Users, title: 'EDC & Women in STEM', desc: 'Incubating student technology ventures and mentoring next-gen scholars.' }
                   ].map((pillar, idx) => (
-                    <div key={idx} className="nsuk-card nsuk-card-hover p-6 group">
-                      <div className="flex items-center justify-between mb-6">
-                        <div className="w-12 h-12 rounded-2xl bg-[#E7F3EC] text-[#0B6B3A] flex items-center justify-center group-hover:bg-[#0B6B3A] group-hover:text-white transition-colors">
-                          <pillar.icon className="w-6 h-6" />
+                    <div key={idx} className="bg-[#FFFBF2] border border-[#D6A323]/30 rounded-2xl p-5 sm:p-6 group hover:border-[#008F87]/50 hover:shadow-md transition-all">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="w-11 h-11 rounded-xl bg-[#008F87]/10 text-[#008F87] border border-[#008F87]/20 flex items-center justify-center group-hover:bg-[#008F87] group-hover:text-white transition-colors">
+                          <pillar.icon className="w-5 h-5" />
                         </div>
-                        <span className="font-serif-luxury text-3xl font-bold text-[#E3ECE6] group-hover:text-[#C9A227] transition-colors">
+                        <span className="font-serif-luxury text-2xl sm:text-3xl font-bold text-[#D6A323]/40 group-hover:text-[#D6A323] transition-colors">
                           0{idx + 1}
                         </span>
                       </div>
-                      <h3 className="font-bold text-[#0F1F17] text-base">{pillar.title}</h3>
-                      <p className="mt-2 text-sm text-[#5B6B63] leading-relaxed">{pillar.desc}</p>
+                      <h3 className="font-bold text-[#252A2A] text-sm sm:text-base">{pillar.title}</h3>
+                      <p className="mt-1.5 text-xs sm:text-sm text-[#5B6B63] leading-relaxed">{pillar.desc}</p>
                     </div>
                   ))}
                 </div>
@@ -301,20 +378,20 @@ export function App() {
             </section>
 
             {/* 4. Biography spotlight with Interactive Portrait Gallery */}
-            <section className="py-20 px-4 sm:px-6 lg:px-8 bg-[#F6FAF7] relative overflow-hidden">
-              <div className="absolute inset-0 nsuk-pattern opacity-50 pointer-events-none" />
-              <div className="relative max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            <section className="py-14 sm:py-20 px-4 sm:px-6 lg:px-8 bg-[#FFFBF2] border-y border-[#D6A323]/25 relative overflow-hidden">
+              <div className="relative max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
                 
                 {/* Left Column: Interactive Portrait Frame */}
                 <div className="lg:col-span-5 flex flex-col items-center">
-                  <div className="relative w-full max-w-[340px]">
-                    <div className="absolute -inset-3 rounded-[32px] border-2 border-dashed border-[#0B6B3A]/25" />
+                  <div className="relative w-full max-w-[300px] sm:max-w-[340px]">
+                    <div className="absolute -inset-3 rounded-[32px] border-2 border-dashed border-[#008F87]/30" />
                     
                     {/* Active Portrait */}
-                    <div className="relative rounded-[28px] overflow-hidden shadow-2xl aspect-[4/5] bg-white">
+                    <div className="relative rounded-[28px] overflow-hidden shadow-2xl aspect-[4/5] bg-[#006B66]">
                       <img
                         src={[
                           '/images/prof-rashidah-executive-desk.jpg',
+                          '/images/prof-rashidah-candid-celebration.jpg',
                           '/images/prof-rashidah-courtyard-regalia.jpg',
                           '/images/prof-rashidah-garden-portrait.jpg',
                           '/images/prof-rashidah-olanrewaju.jpg',
@@ -323,24 +400,26 @@ export function App() {
                         alt="Professor Rashidah Funke Olanrewaju"
                         className="w-full h-full object-cover object-top transition-all duration-500"
                       />
-                      <div className="absolute inset-x-0 bottom-0 p-5 bg-gradient-to-t from-[#043A20]/90 to-transparent text-white">
-                        <div className="text-[10px] uppercase tracking-[0.18em] text-[#F2E3B3] font-bold">
+                      <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5 bg-gradient-to-t from-[#006B66]/95 to-transparent text-white">
+                        <div className="text-[10px] uppercase tracking-[0.18em] text-[#FFF4DC] font-bold">
                           {[
                             'Director at Executive Desk · EDC',
+                            'Celebration with Scholars & Mentee',
                             'Senate Courtyard Regalia',
                             'Main Campus Garden',
                             'Official Academic Robes',
                             'Official Proclamation Poster'
                           ][spotlightPhotoIdx]}
                         </div>
-                        <div className="font-serif-luxury text-lg font-bold">Prof. R. F. Olanrewaju</div>
+                        <div className="font-serif-luxury text-base sm:text-lg font-bold">Prof. R. F. Olanrewaju</div>
                       </div>
                     </div>
 
-                    {/* Thumbnail Switcher Pills */}
-                    <div className="mt-4 flex items-center justify-center gap-2 p-1.5 rounded-2xl bg-white border border-[#E3ECE6] shadow-xs">
+                    {/* Thumbnail Switcher Pills (Smooth Touch Scroll) */}
+                    <div className="mt-3 flex items-center justify-center gap-1.5 p-1.5 rounded-2xl bg-[#FFF4DC] border border-[#D6A323]/40 shadow-xs overflow-x-auto no-scrollbar max-w-full">
                       {[
-                        { url: '/images/prof-rashidah-executive-desk.jpg', label: 'Executive Office' },
+                        { url: '/images/prof-rashidah-executive-desk.jpg', label: 'Office' },
+                        { url: '/images/prof-rashidah-candid-celebration.jpg', label: 'Celebration' },
                         { url: '/images/prof-rashidah-courtyard-regalia.jpg', label: 'Courtyard' },
                         { url: '/images/prof-rashidah-garden-portrait.jpg', label: 'Garden' },
                         { url: '/images/prof-rashidah-olanrewaju.jpg', label: 'Robes' },
@@ -350,9 +429,9 @@ export function App() {
                           key={pIdx}
                           onClick={() => setSpotlightPhotoIdx(pIdx)}
                           title={item.label}
-                          className={`relative w-11 h-11 rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${
+                          className={`relative w-10 h-10 rounded-xl overflow-hidden border-2 transition-all cursor-pointer shrink-0 ${
                             spotlightPhotoIdx === pIdx
-                              ? 'border-[#0B6B3A] ring-2 ring-[#C9A227]/50 scale-105'
+                              ? 'border-[#008F87] ring-2 ring-[#D6A323] scale-105'
                               : 'border-transparent opacity-60 hover:opacity-100'
                           }`}
                         >
@@ -369,46 +448,46 @@ export function App() {
                 </div>
 
                 {/* Right Column: Citation */}
-                <div className="lg:col-span-7">
-                  <span className="nsuk-kicker">Academic Citation</span>
-                  <h2 className="mt-3 font-serif-luxury text-4xl md:text-5xl font-bold text-[#0F1F17] leading-tight">
-                    A leading voice in AI, software &amp; cryptology.
+                <div className="lg:col-span-7 text-center lg:text-left">
+                  <span className="eyebrow">Academic Citation</span>
+                  <h2 className="mt-2 font-serif-luxury text-3xl sm:text-4xl md:text-5xl font-bold text-[#252A2A] leading-tight">
+                    A Leading Voice in AI &amp; Software Intelligence
                   </h2>
-                  <p className="mt-4 text-[15px] text-[#5B6B63] leading-relaxed max-w-xl">
-                    Professor of Computer Science &amp; AI at NSUK. Trained at Fed Poly Kaduna (Diploma), UPM Malaysia (B.Sc. Hons) and IIUM Malaysia (M.Sc., Ph.D.). Director of the Entrepreneurship Development Centre (EDC).
+                  <p className="mt-3 text-xs sm:text-sm text-[#5B6B63] leading-relaxed max-w-xl mx-auto lg:mx-0">
+                    Professor of Computer Science &amp; AI at NSUK. Trained in Malaysia (UPM &amp; IIUM) with doctoral excellence in neural systems and cryptology. Pioneered transformative entrepreneurship ecosystems impacting over 10,000 university students.
                   </p>
 
-                  <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-3">
                     {[
                       { k: 'Pedigree', v: 'Ph.D. Computer Eng.', s: 'IIUM, Malaysia' },
                       { k: 'Leadership', v: 'Director, EDC', s: '10,000+ students' },
                       { k: 'Distinction', v: 'FCRIDE · SMIEEE', s: 'Chartered Fellow' }
                     ].map((c) => (
-                      <div key={c.k} className="nsuk-card p-4">
-                        <div className="text-[10px] uppercase tracking-[0.16em] font-bold text-[#C9A227]">{c.k}</div>
-                        <div className="mt-1 font-bold text-[#0F1F17] text-sm">{c.v}</div>
+                      <div key={c.k} className="bg-[#FFF4DC]/50 border border-[#D6A323]/30 rounded-2xl p-3.5 sm:p-4 text-center sm:text-left">
+                        <div className="text-[10px] uppercase tracking-[0.16em] font-bold text-[#A97912]">{c.k}</div>
+                        <div className="mt-0.5 font-bold text-[#252A2A] text-sm">{c.v}</div>
                         <div className="text-xs text-[#5B6B63]">{c.s}</div>
                       </div>
                     ))}
                   </div>
 
-                  <div className="mt-8 flex flex-wrap gap-3">
+                  <div className="mt-6 flex flex-wrap justify-center lg:justify-start gap-3">
                     <button
                       id="bio-full-profile"
                       onClick={() => {
                         setActiveView('about-professor');
                         window.scrollTo({ top: 0, behavior: 'smooth' });
                       }}
-                      className="btn-green inline-flex items-center gap-2 px-6 py-3 rounded-full text-xs font-bold uppercase tracking-wider"
+                      className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-medium bg-[#008F87] hover:bg-[#006B66] text-white shadow-md transition-all cursor-pointer"
                     >
-                      <span>View Profile</span> <ArrowRight className="w-3.5 h-3.5" />
+                      <span>View Full Profile</span> <ArrowRight className="w-3.5 h-3.5" />
                     </button>
                     <button
                       id="bio-invitation"
                       onClick={() => setIsDownloadModalOpen(true)}
-                      className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-xs font-bold uppercase tracking-wider bg-white border border-[#E3ECE6] text-[#0F1F17] hover:border-[#0B6B3A] transition-colors"
+                      className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-medium bg-[#FFFBF2] border border-[#D6A323]/40 text-[#252A2A] hover:border-[#008F87] transition-colors cursor-pointer"
                     >
-                      <Download className="w-3.5 h-3.5 text-[#0B6B3A]" /> <span>View Poster</span>
+                      <Download className="w-3.5 h-3.5 text-[#008F87]" /> <span>Official Poster</span>
                     </button>
                   </div>
                 </div>
@@ -416,36 +495,43 @@ export function App() {
             </section>
 
             {/* 5. Order of proceedings — timeline */}
-            <section className="py-20 px-4 sm:px-6 lg:px-8">
-              <div className="max-w-5xl mx-auto">
-                <div className="text-center mb-12">
-                  <span className="nsuk-kicker justify-center">Ceremonial Protocol</span>
-                  <h2 className="mt-3 font-serif-luxury text-4xl md:text-5xl font-bold text-[#0F1F17]">Order of proceedings</h2>
+            <section className="py-12 sm:py-20 px-4 sm:px-6 lg:px-8">
+              <div className="max-w-4xl mx-auto">
+                <div className="text-center mb-8 sm:mb-12">
+                  <span className="eyebrow">Ceremonial Protocol</span>
+                  <h2 className="mt-2 font-serif-luxury text-3xl sm:text-4xl font-bold text-[#252A2A]">Order of Proceedings</h2>
                 </div>
 
                 <div className="relative">
-                  <div className="absolute left-[27px] md:left-1/2 top-2 bottom-2 w-px bg-gradient-to-b from-[#0B6B3A] via-[#C9A227] to-[#0B6B3A] md:-translate-x-1/2" />
-                  <div className="space-y-6">
+                  {/* Vertical Track Rail */}
+                  <div className="absolute left-[17px] md:left-1/2 top-2 bottom-2 w-px bg-gradient-to-b from-[#008F87] via-[#D6A323] to-[#008F87] md:-translate-x-1/2" />
+                  <div className="space-y-4 sm:space-y-6">
                     {[
                       { time: '13:15', title: 'Academic Senate Robing & Procession', location: 'Senate Chamber to Assembly Hall' },
                       { time: '13:45', title: 'Arrival & Seating of Dignitaries', location: 'Assembly Hall Sanctuary' },
-                      { time: '14:00', title: 'Anthems & Constitution of Assembly', location: 'Assembly Hall Podium' },
+                      { time: '14:00', title: 'Anthems & Formal Constitution of Assembly', location: 'Assembly Hall Podium' },
                       { time: '14:20', title: 'Reading of Academic Citation', location: 'Podium of Honour' },
-                      { time: '14:35', title: '65th Inaugural Lecture Delivery', location: 'Assembly Hall Lectern' },
+                      { time: '14:35', title: 'Delivery of 65th Inaugural Lecture', location: 'Assembly Hall Lectern' },
                       { time: '15:50', title: 'Formal Admission & Plaque Presentation', location: 'High Table Dais' },
                       { time: '16:30', title: 'Inaugural Banquet & Academic Reception', location: 'University Banquet Pavilion' }
                     ].map((item, index) => {
                       const left = index % 2 === 0;
                       return (
                         <div key={index} className="relative flex md:items-center">
-                          <div className="absolute left-0 md:left-1/2 md:-translate-x-1/2 w-14 h-14 rounded-full bg-white border-2 border-[#0B6B3A] flex items-center justify-center text-[11px] font-bold text-[#0B6B3A] shadow-md z-10">
-                            {item.time}
+                          {/* Compact time dot/badge on mobile, full circle on desktop */}
+                          <div className="absolute left-0 md:left-1/2 md:-translate-x-1/2 w-9 h-9 md:w-14 md:h-14 rounded-full bg-white border-2 border-[#008F87] flex items-center justify-center text-[10px] md:text-[11px] font-bold text-[#008F87] shadow-md z-10">
+                            <span className="hidden md:inline">{item.time}</span>
+                            <Clock className="w-4 h-4 md:hidden text-[#008F87]" />
                           </div>
-                          <div className={`pl-20 md:pl-0 w-full md:w-1/2 ${left ? 'md:pr-14 md:text-right' : 'md:ml-auto md:pl-14'}`}>
-                            <div className={`nsuk-card nsuk-card-hover px-5 py-4 ${index === 3 ? 'border-[#0B6B3A] bg-[#E7F3EC]' : ''}`}>
-                              <h3 className="font-bold text-[#0F1F17]">{item.title}</h3>
+                          <div className={`pl-12 md:pl-0 w-full md:w-1/2 ${left ? 'md:pr-12 md:text-right' : 'md:ml-auto md:pl-12'}`}>
+                            <div className={`tilt ${left ? 'tilt-tl' : 'tilt-tr'} bg-[#FFFBF2] rounded-xl border border-[#D6A323]/30 p-4 sm:p-5 shadow-xs hover:border-[#008F87]/40 ${index === 4 ? 'border-[#D6A323] bg-[#FFF4DC]/70' : ''}`}>
+                              <div className="md:hidden inline-block text-[10px] font-mono font-bold uppercase px-2 py-0.5 rounded-full bg-[#008F87]/15 text-[#006B66] mb-1">
+                                {item.time} prompt
+                              </div>
+                              <h3 className="font-bold text-[#252A2A] text-sm sm:text-base leading-snug">{item.title}</h3>
                               <div className={`mt-1 text-xs text-[#5B6B63] flex items-center gap-1 ${left ? 'md:justify-end' : ''}`}>
-                                <MapPin className="w-3 h-3 text-[#C9A227]" /> {item.location}
+                                <MapPin className="w-3 h-3 text-[#D6A323] shrink-0" />
+                                <span>{item.location}</span>
                               </div>
                             </div>
                           </div>
@@ -457,136 +543,94 @@ export function App() {
               </div>
             </section>
 
-            {/* 6. DP flyer generator */}
-            <section id="dp-generator-section" className="py-16 px-4 sm:px-6 lg:px-8">
-              <div className="max-w-6xl mx-auto rounded-[32px] bg-gradient-to-br from-[#064E2B] to-[#043A20] text-white p-8 sm:p-12 relative overflow-hidden">
-                <div className="absolute inset-0 nsuk-pattern-light pointer-events-none" />
-                <div className="absolute -bottom-32 -left-20 w-96 h-96 rounded-full bg-[#0B6B3A] blur-3xl opacity-60 pointer-events-none" />
-                <div className="relative grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-                  <div className="lg:col-span-5 text-center lg:text-left space-y-4">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#C9A227]/20 text-[#F2E3B3] text-[10px] font-bold uppercase tracking-[0.16em]">
-                      <Sparkles className="w-3.5 h-3.5 text-[#E2BE4A]" /> Attendee Flyer Studio
-                    </div>
-                    <h2 className="font-serif-luxury text-3xl sm:text-4xl font-bold leading-tight">
-                      Tell everyone you're attending.
-                    </h2>
-                    <p className="text-sm text-white/75 leading-relaxed max-w-md mx-auto lg:mx-0">
-                      Personalize your official attendee flyer with your photo and designation for WhatsApp Status and LinkedIn.
-                    </p>
-
-                    <div className="pt-2 flex flex-wrap justify-center lg:justify-start gap-3">
-                      <button
-                        id="dp-confirm-rsvp"
-                        onClick={() => {
-                          setActiveView('event');
-                          window.scrollTo({ top: 0, behavior: 'smooth' });
-                        }}
-                        className="btn-gold inline-flex items-center gap-2 px-6 py-3 rounded-full text-xs font-bold uppercase tracking-wider"
-                      >
-                        <span>Reserve Seat</span> <ArrowRight className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="lg:col-span-7 flex justify-center">
-                    <IWillBeThereBanner
-                      event={currentEvent}
-                      rsvp={homepageFlyerRsvp}
-                      defaultRatio="story"
-                      onUpdatePhoto={(newPhoto) => {
-                        setHomepageFlyerRsvp(prev => ({ ...prev, photoUrl: newPhoto }));
-                      }}
-                      onSuccessToast={(msg) => setToastMessage(msg)}
-                    />
-                  </div>
+            {/* 6. Simple RSVP + flyer generator */}
+            <section id="rsvp-section" className="py-12 sm:py-20 px-3 sm:px-6 lg:px-8 bg-[#FFF4DC]/60 border-y border-[#D6A323]/30 relative">
+              <div id="dp-generator-section" className="max-w-5xl mx-auto space-y-6 sm:space-y-8">
+                
+                {/* Section Header */}
+                <div className="text-center max-w-2xl mx-auto space-y-2">
+                  <span className="font-script text-2xl sm:text-3xl text-[#A97912] block">
+                    Write your name below — the registry is open
+                  </span>
+                  <h2 className="font-serif-luxury text-3xl sm:text-4xl md:text-5xl font-bold text-[#252A2A] leading-tight">
+                    I Will Be Attending
+                  </h2>
+                  <p className="text-xs sm:text-sm text-[#5B6B63] leading-relaxed max-w-xl mx-auto">
+                    Reserve your seat in seconds for the 65th Inaugural Lecture of Professor Rashidah Funke Olanrewaju. Add your portrait photo to complete your official flyer and share on WhatsApp and LinkedIn.
+                  </p>
                 </div>
+
+                {/* The Upgraded Interactive RSVP Banner */}
+                <IWillBeThereBanner
+                  event={currentEvent}
+                  rsvp={homepageFlyerRsvp}
+                  onUpdatePhoto={(newPhoto) => {
+                    setHomepageFlyerRsvp((prev) => ({ ...prev, photoUrl: newPhoto }));
+                  }}
+                  onUpdateName={(name) => {
+                    setHomepageFlyerRsvp((prev) => ({ ...prev, fullName: name }));
+                  }}
+                  onConfirmRsvp={handleConfirmHomepageFlyer}
+                  onSuccessToast={(msg) => setToastMessage(msg)}
+                />
               </div>
             </section>
 
-            {/* 7. Attendees + Tributes */}
-            <section className="py-20 px-4 sm:px-6 lg:px-8">
-              <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10">
-                {/* Attendees */}
+            {/* 7. Attendees (carded + hover) + Tributes */}
+            <section className="py-14 sm:py-20 px-4 sm:px-6 lg:px-8">
+              <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10">
+                
                 <div className="lg:col-span-7">
-                  <div className="flex items-end justify-between mb-6">
-                    <div>
-                      <span className="nsuk-kicker">Public Registry</span>
-                      <h2 className="mt-3 font-serif-luxury text-3xl md:text-4xl font-bold text-[#0F1F17]">Who’s attending</h2>
-                    </div>
-                    <span className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E7F3EC] text-[#0B6B3A] text-xs font-bold">
-                      <CheckCircle2 className="w-3.5 h-3.5" /> {currentEventRsvps.length} confirmed
-                    </span>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {currentEventRsvps.slice(0, 6).map((rsvp) => (
-                      <div key={rsvp.id} className="nsuk-card nsuk-card-hover p-3.5 flex items-center gap-3">
-                        <img
-                          src={rsvp.photoUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80'}
-                          alt={rsvp.fullName}
-                          className="w-12 h-12 rounded-full object-cover ring-2 ring-[#E7F3EC] shrink-0"
-                        />
-                        <div className="min-w-0">
-                          <h3 className="text-sm font-bold text-[#0F1F17] truncate">{rsvp.fullName}</h3>
-                          <div className="mt-0.5 flex items-center gap-2">
-                            <span className="text-[10px] font-bold uppercase tracking-wider text-[#A8841A] bg-[#FBF4DC] px-2 py-0.5 rounded-full">
-                              {rsvp.groupCategory || 'Guest'}
-                            </span>
-                            <span className="text-[11px] text-[#0B6B3A] font-semibold">Attending</span>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  <button
-                    id="attendees-confirm"
-                    onClick={() => {
-                      setActiveView('event');
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                  <AttendeeCards
+                    rsvps={currentEventRsvps}
+                    limit={8}
+                    onRegisterClick={() => {
+                      const el = document.getElementById('dp-generator-section');
+                      if (el) el.scrollIntoView({ behavior: 'smooth' });
                     }}
-                    className="mt-6 btn-green inline-flex items-center gap-2 px-6 py-3 rounded-full text-xs font-bold uppercase tracking-wider"
-                  >
-                    <span>Register Now</span> <ArrowRight className="w-3.5 h-3.5" />
-                  </button>
+                  />
                 </div>
 
-                {/* Tributes */}
+                {/* Tributes & Felicitations Showcase */}
                 <div className="lg:col-span-5">
-                  <div className="rounded-[28px] bg-[#F6FAF7] border border-[#E3ECE6] p-6 md:p-7 h-full flex flex-col">
-                    <div className="flex items-center justify-between mb-5">
-                      <h3 className="font-serif-luxury text-2xl font-bold text-[#0F1F17] flex items-center gap-2">
-                        <Heart className="w-5 h-5 text-[#C9A227] fill-[#C9A227]" /> Tributes
-                      </h3>
+                  <div className="rounded-3xl bg-[#FFFBF2] border border-[#D6A323]/30 p-5 sm:p-7 flex flex-col h-full shadow-sm">
+                    <div className="flex items-center justify-between mb-4">
+                      <div>
+                        <span className="eyebrow">Goodwill Messages</span>
+                        <h3 className="font-serif-luxury text-xl sm:text-2xl font-bold text-[#252A2A] flex items-center gap-2">
+                          <Heart className="w-5 h-5 text-[#D6A323] fill-[#D6A323]" /> Felicitations &amp; Tributes
+                        </h3>
+                      </div>
                       <button
                         onClick={() => {
                           setActiveView('about-professor');
                           window.scrollTo({ top: 0, behavior: 'smooth' });
                         }}
-                        className="text-xs font-semibold text-[#0B6B3A] hover:underline"
+                        className="text-xs font-semibold text-[#008F87] hover:text-[#006B66] hover:underline whitespace-nowrap cursor-pointer"
                       >
-                        View all →
+                        All Tributes →
                       </button>
                     </div>
 
-                    <form onSubmit={handleInlineTributeSubmit} className="space-y-2.5">
-                      <div className="grid grid-cols-2 gap-2.5">
+                    {/* Quick Post Tribute Form */}
+                    <form onSubmit={handleInlineTributeSubmit} className="space-y-2 mb-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         <input
                           id="tribute-name"
                           type="text"
-                          placeholder="Your name"
+                          placeholder="Your name & title"
                           value={inlineAuthor}
                           onChange={(e) => setInlineAuthor(e.target.value)}
-                          className="px-3.5 py-2.5 rounded-xl border border-[#E3ECE6] bg-white text-sm focus:outline-none focus:border-[#0B6B3A] focus:ring-4 focus:ring-[#0B6B3A]/10"
+                          className="px-3 py-2 rounded-xl border border-[#D6A323]/30 bg-white text-xs text-[#252A2A] focus:outline-none focus:border-[#008F87]"
                           required
                         />
                         <input
                           id="tribute-role"
                           type="text"
-                          placeholder="Role (optional)"
+                          placeholder="Affiliation / Relationship"
                           value={inlineRole}
                           onChange={(e) => setInlineRole(e.target.value)}
-                          className="px-3.5 py-2.5 rounded-xl border border-[#E3ECE6] bg-white text-sm focus:outline-none focus:border-[#0B6B3A] focus:ring-4 focus:ring-[#0B6B3A]/10"
+                          className="px-3 py-2 rounded-xl border border-[#D6A323]/30 bg-white text-xs text-[#252A2A] focus:outline-none focus:border-[#008F87]"
                         />
                       </div>
                       <div className="relative">
@@ -596,59 +640,101 @@ export function App() {
                           placeholder="A short message for Prof. Rashidah…"
                           value={inlineMessage}
                           onChange={(e) => setInlineMessage(e.target.value)}
-                          className="w-full px-3.5 py-2.5 pr-14 rounded-xl border border-[#E3ECE6] bg-white text-sm focus:outline-none focus:border-[#0B6B3A] focus:ring-4 focus:ring-[#0B6B3A]/10 resize-none"
+                          className="w-full px-3 py-2 pr-12 rounded-xl border border-[#D6A323]/30 bg-white text-xs text-[#252A2A] focus:outline-none focus:border-[#008F87] resize-none"
                           required
                         />
                         <button
                           id="tribute-submit"
                           type="submit"
                           aria-label="Post tribute"
-                          className="absolute right-2 bottom-3 w-9 h-9 rounded-lg btn-green flex items-center justify-center"
+                          className="absolute right-2 bottom-2 w-8 h-8 rounded-lg bg-[#008F87] hover:bg-[#006B66] text-white flex items-center justify-center cursor-pointer shadow-xs transition-colors"
                         >
-                          <Send className="w-4 h-4" />
+                          <Send className="w-3.5 h-3.5" />
                         </button>
                       </div>
                     </form>
 
-                    <div className="mt-5 space-y-3 overflow-y-auto max-h-[340px] pr-1">
-                      {currentEventWishes.map((w) => (
-                        <div key={w.id} className="bg-white rounded-2xl border border-[#E3ECE6] p-4">
-                          <p className="text-sm text-[#0F1F17] leading-relaxed">“{w.message}”</p>
-                          <div className="mt-2 text-xs font-bold text-[#0B6B3A]">— {w.author}</div>
+                    {/* Rich Tributes List with Avatars & Full-Letter Modal Links */}
+                    <div className="space-y-3 overflow-y-auto max-h-[380px] pr-1">
+                      {currentEventWishes.map((w, idx) => (
+                        <div key={w.id} className={`tilt ${idx % 2 === 0 ? 'tilt-tl' : 'tilt-tr'} bg-white rounded-xl border border-[#D6A323]/25 p-4 space-y-2 hover:border-[#008F87]/40 shadow-xs`}>
+                          <div className="flex items-center gap-2.5">
+                            {w.photoUrl ? (
+                              <img
+                                src={w.photoUrl}
+                                alt={w.author}
+                                className="w-10 h-10 rounded-full object-cover object-top border-2 border-[#D6A323] shrink-0"
+                              />
+                            ) : (
+                              <div className="w-10 h-10 rounded-full bg-[#008F87]/15 text-[#006B66] border-2 border-[#D6A323] flex items-center justify-center font-bold text-xs shrink-0">
+                                {w.author.slice(0, 2).toUpperCase()}
+                              </div>
+                            )}
+                            <div className="min-w-0">
+                              <h4 className="text-xs font-bold text-[#252A2A] truncate">{w.author}</h4>
+                              {w.role && (
+                                <p className="text-[10px] text-[#A97912] font-semibold truncate">{w.role}</p>
+                              )}
+                            </div>
+                          </div>
+
+                          <p className="text-xs text-[#47554F] leading-relaxed line-clamp-3 italic font-serif-luxury">
+                            “{w.message}”
+                          </p>
+
+                          <div className="pt-2 border-t border-[#D6A323]/15 flex items-center justify-between">
+                            {w.fullText ? (
+                              <button
+                                onClick={() => setSelectedTributeForModal(w)}
+                                className="text-[11px] font-bold text-[#008F87] hover:text-[#006B66] transition-colors inline-flex items-center gap-1 cursor-pointer"
+                              >
+                                <span>Read Full Tribute</span>
+                                <ArrowRight className="w-3 h-3" />
+                              </button>
+                            ) : (
+                              <span className="text-[10px] text-[#9AA8A0]">Felicitations Note</span>
+                            )}
+
+                            <span className="inline-flex items-center gap-1 text-[10px] text-[#D6A323] font-semibold">
+                              <Heart className="w-3 h-3 fill-[#D6A323]" />
+                              <span>{w.likes}</span>
+                            </span>
+                          </div>
                         </div>
                       ))}
                     </div>
                   </div>
                 </div>
+
               </div>
             </section>
 
             {/* 8. Gallery */}
-            <section className="pb-24 px-4 sm:px-6 lg:px-8">
-              <div className="max-w-7xl mx-auto">
-                <div className="flex items-end justify-between mb-8">
+            <section className="pb-20 sm:pb-24 px-4 sm:px-6 lg:px-8">
+              <div className="max-w-7xl mx-auto space-y-6">
+                <div className="flex items-end justify-between">
                   <div>
-                    <span className="nsuk-kicker">Gallery</span>
-                    <h2 className="mt-3 font-serif-luxury text-3xl md:text-4xl font-bold text-[#0F1F17]">Moments of distinction</h2>
+                    <span className="eyebrow">Photographic Chronicle</span>
+                    <h2 className="mt-2 font-serif-luxury text-2xl sm:text-4xl font-bold text-[#252A2A]">Moments of Distinction</h2>
                   </div>
+                  <button
+                    onClick={() => {
+                      setActiveView('about-professor');
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                    className="text-xs font-semibold text-[#008F87] hover:text-[#006B66] hover:underline cursor-pointer"
+                  >
+                    View Gallery →
+                  </button>
                 </div>
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                  {currentEvent.gallery.map((img, i) => (
-                    <div
-                      key={img.id}
-                      className={`group relative rounded-3xl overflow-hidden bg-[#E7F3EC] ${i === 0 ? 'lg:row-span-2 lg:col-span-2 aspect-square lg:aspect-auto' : 'aspect-square'}`}
-                    >
-                      <img
-                        src={img.url}
-                        alt={img.caption}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                      />
-                      <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-[#043A20]/85 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
-                        <p className="text-sm font-semibold text-white">{img.caption}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                <PhotoGallery
+                  photos={currentEvent.gallery.map((img) => ({
+                    url: img.url,
+                    caption: img.caption,
+                    category: img.category,
+                    author: img.author
+                  }))}
+                />
               </div>
             </section>
 
@@ -662,11 +748,13 @@ export function App() {
           </div>
         )}
 
-
         {/* Dedicated About Professor View */}
         {activeView === 'about-professor' && (
           <AboutProfessorSection
             event={currentEvent}
+            wishes={currentEventWishes}
+            onAddWish={handleAddWish}
+            onSelectTribute={(t) => setSelectedTributeForModal(t)}
             onRsvpToInaugural={() => {
               setActiveView('event');
               window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -686,6 +774,7 @@ export function App() {
             rsvps={currentEventRsvps}
             wishes={currentEventWishes}
             onAddRsvp={handleAddRsvp}
+            onUpdateRsvp={handleUpdateRsvp}
             onAddWish={handleAddWish}
             onBackToStudio={() => {
               setActiveView('landing');
@@ -725,6 +814,14 @@ export function App() {
         rsvps={currentEventRsvps}
         onCheckInGuest={(rsvpId) => handleToggleCheckIn(rsvpId)}
         onSuccessToast={(msg) => setToastMessage(msg)}
+      />
+
+      {/* Full Tribute & Goodwill Letter Modal */}
+      <TributeModal
+        tribute={selectedTributeForModal}
+        isOpen={!!selectedTributeForModal}
+        onClose={() => setSelectedTributeForModal(null)}
+        onLike={handleLikeWish}
       />
 
       {/* Floating Toast Notification */}
