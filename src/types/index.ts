@@ -156,6 +156,7 @@ export interface GuestWish {
   fullText?: string;
   createdAt: string;
   likes: number;
+  status?: 'pending' | 'published';
 }
 
 export interface InvitationThemePreset {

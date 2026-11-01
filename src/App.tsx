@@ -14,6 +14,8 @@ import { AboutProfessorSection } from './components/AboutProfessorSection';
 import { IWillBeThereBanner } from './components/IWillBeThereBanner';
 import { AttendeeCards } from './components/AttendeeCards';
 import { TributeModal } from './components/TributeModal';
+import { AdminTributesView } from './components/AdminTributesView';
+import { tributesApi } from './lib/tributesApi';
 import { PhotoGallery } from './components/ui/PhotoGallery';
 import { 
   ArrowRight, 
@@ -64,18 +66,8 @@ export function App() {
     return INITIAL_RSVPS;
   });
 
-  const [wishes, setWishes] = useState<GuestWish[]>(() => {
-    const saved = localStorage.getItem('prof_rashidah_wishes');
-    if (saved) {
-      try {
-        const parsed: GuestWish[] = JSON.parse(saved);
-        if (parsed && parsed.some(w => w.id === 'wish-omotosho')) {
-          return parsed;
-        }
-      } catch {}
-    }
-    return INITIAL_WISHES;
-  });
+  // Shared tributes start from curated seed data, then hydrate from the API.
+  const [wishes, setWishes] = useState<GuestWish[]>(INITIAL_WISHES);
 
   // State for Tribute Modal (Full letter preview)
   const [selectedTributeForModal, setSelectedTributeForModal] = useState<GuestWish | null>(null);
@@ -87,7 +79,7 @@ export function App() {
   const [spotlightPhotoIdx, setSpotlightPhotoIdx] = useState(0);
 
   // Navigation View State
-  const [activeView, setActiveView] = useState<'landing' | 'about-professor' | 'event' | 'dashboard'>('landing');
+  const [activeView, setActiveView] = useState<'landing' | 'about-professor' | 'event' | 'dashboard' | 'admin'>('landing');
 
   // Modals
   const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
@@ -110,9 +102,22 @@ export function App() {
     localStorage.setItem('prof_rashidah_rsvps', JSON.stringify(rsvps));
   }, [rsvps]);
 
+  // Fetch published tributes from the shared wall (falls back to seed data
+  // locally when the tribute API is not reachable, e.g. `npm run dev`).
   useEffect(() => {
-    localStorage.setItem('prof_rashidah_wishes', JSON.stringify(wishes));
-  }, [wishes]);
+    let active = true;
+    tributesApi
+      .listPublished()
+      .then((published) => {
+        if (active && published.length > 0) setWishes(published);
+      })
+      .catch(() => {
+        /* keep seed data when the API is unavailable */
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   // Current active event (exclusively Professor Rashidah)
   const currentEvent = events[0] || INITIAL_EVENTS[0];
@@ -191,13 +196,33 @@ export function App() {
     }
   };
 
-  // Add Wish / Tribute handler
+  // Add Wish / Tribute handler — public submissions are stored as pending
+  // until an administrator reviews and publishes them.
   const handleAddWish = (newWish: GuestWish) => {
-    setWishes(prev => [newWish, ...prev]);
+    tributesApi
+      .submit({
+        eventId: newWish.eventId,
+        author: newWish.author,
+        role: newWish.role,
+        title: newWish.title,
+        message: newWish.message,
+        fullText: newWish.fullText
+      })
+      .then(() => {
+        setToastMessage('Thank you — your tribute was received and awaits review before it appears on the wall.');
+      })
+      .catch(() => {
+        // Graceful fallback: keep it locally when the shared wall is unreachable (e.g. local dev).
+        setWishes(prev => [newWish, ...prev]);
+        setToastMessage('Tribute saved on this device — the shared wall is not reachable yet.');
+      });
   };
 
   const handleLikeWish = (wishId: string) => {
     setWishes(prev => prev.map(w => w.id === wishId ? { ...w, likes: (w.likes || 0) + 1 } : w));
+    tributesApi.like(wishId).catch(() => {
+      /* like count stays optimistic if the API is unavailable */
+    });
   };
 
   // Inline Tribute Submission
@@ -211,7 +236,8 @@ export function App() {
     const newWish: GuestWish = {
       id: `wish-${Date.now()}`,
       eventId: currentEvent.id,
-      author: inlineRole.trim() ? `${inlineAuthor.trim()} (${inlineRole.trim()})` : inlineAuthor.trim(),
+      author: inlineAuthor.trim(),
+      role: inlineRole.trim() || undefined,
       message: inlineMessage.trim(),
       createdAt: new Date().toISOString(),
       likes: 1
@@ -221,7 +247,6 @@ export function App() {
     setInlineAuthor('');
     setInlineMessage('');
     setInlineRole('');
-    setToastMessage('Tribute posted successfully!');
   };
 
   // Toggle Check In
@@ -795,6 +820,16 @@ export function App() {
             onOpenCheckInScanner={() => setIsCheckInScannerOpen(true)}
             onViewEventPage={() => setActiveView('event')}
             onSuccessToast={(msg) => setToastMessage(msg)}
+          />
+        )}
+
+        {/* Administrators: moderate shared tributes & felicitations */}
+        {activeView === 'admin' && (
+          <AdminTributesView
+            onSuccessToast={(msg) => setToastMessage(msg)}
+            onPublishedCountChange={(published) => {
+              if (published.length > 0) setWishes(published);
+            }}
           />
         )}
       </main>

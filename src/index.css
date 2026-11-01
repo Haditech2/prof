@@ -376,6 +376,148 @@
 }
 
 /* ========================================================================= */
+/* PORTRAIT SLIDESHOW — quiet camera movement + brass shutter reveal         */
+/* ========================================================================= */
+.hero-slide-enter,
+.hero-slide-exit,
+.hero-ken-burns,
+.hero-slide-sweep {
+  will-change: transform, opacity, clip-path;
+}
+
+.hero-slide-exit {
+  z-index: 1;
+}
+
+.hero-slide-enter-next {
+  animation: hero-reveal-next 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.hero-slide-enter-previous {
+  animation: hero-reveal-previous 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.hero-slide-exit-next {
+  animation: hero-leave-next 950ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.hero-slide-exit-previous {
+  animation: hero-leave-previous 950ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes hero-reveal-next {
+  from { opacity: 0.45; clip-path: inset(0 0 0 100%); transform: translateX(1.5%); }
+  to { opacity: 1; clip-path: inset(0); transform: translateX(0); }
+}
+
+@keyframes hero-reveal-previous {
+  from { opacity: 0.45; clip-path: inset(0 100% 0 0); transform: translateX(-1.5%); }
+  to { opacity: 1; clip-path: inset(0); transform: translateX(0); }
+}
+
+@keyframes hero-leave-next {
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: 0.55; transform: scale(1.035) translateX(-1.5%); }
+}
+
+@keyframes hero-leave-previous {
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: 0.55; transform: scale(1.035) translateX(1.5%); }
+}
+
+.hero-ken-burns {
+  animation-duration: 5.2s;
+  animation-timing-function: cubic-bezier(0.22, 0.61, 0.36, 1);
+  animation-fill-mode: both;
+}
+
+.hero-ken-burns-0 {
+  transform-origin: 48% 22%;
+  animation-name: hero-camera-in;
+}
+
+.hero-ken-burns-1 {
+  transform-origin: 56% 30%;
+  animation-name: hero-camera-left;
+}
+
+.hero-ken-burns-2 {
+  transform-origin: 44% 28%;
+  animation-name: hero-camera-right;
+}
+
+@keyframes hero-camera-in {
+  from { transform: scale(1.015); }
+  to { transform: scale(1.085) translateY(-0.6%); }
+}
+
+@keyframes hero-camera-left {
+  from { transform: scale(1.07) translateX(1.4%); }
+  to { transform: scale(1.025) translateX(-0.8%); }
+}
+
+@keyframes hero-camera-right {
+  from { transform: scale(1.025) translateX(-1%); }
+  to { transform: scale(1.075) translateX(1%); }
+}
+
+.hero-slideshow.is-paused .hero-ken-burns {
+  animation-play-state: paused;
+}
+
+.hero-slide-sweep {
+  top: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, transparent 3%, #efd38b 20%, #fff4dc 50%, #d6a323 80%, transparent 97%);
+  box-shadow: 0 0 14px rgba(214, 163, 35, 0.45);
+}
+
+.hero-slide-sweep-next {
+  left: 0;
+  animation: hero-sweep-next 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.hero-slide-sweep-previous {
+  right: 0;
+  animation: hero-sweep-previous 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes hero-sweep-next {
+  0% { left: 0; opacity: 0; }
+  12% { opacity: 0.9; }
+  82% { opacity: 0.75; }
+  100% { left: 100%; opacity: 0; }
+}
+
+@keyframes hero-sweep-previous {
+  0% { right: 0; opacity: 0; }
+  12% { opacity: 0.9; }
+  82% { opacity: 0.75; }
+  100% { right: 100%; opacity: 0; }
+}
+
+.hero-photo-grain {
+  opacity: 0.1;
+  mix-blend-mode: soft-light;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.72' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.7'/%3E%3C/svg%3E");
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-slide-enter,
+  .hero-slide-exit,
+  .hero-ken-burns {
+    animation: none !important;
+    clip-path: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+
+  .hero-slide-sweep {
+    display: none;
+  }
+}
+
+/* ========================================================================= */
 /* TYPOGRAPHY UTILITIES                                                      */
 /* ========================================================================= */
 .font-serif-luxury {

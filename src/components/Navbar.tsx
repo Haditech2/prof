@@ -16,19 +16,20 @@ import { CommandPalette } from './CommandPalette';
 
 interface NavbarProps {
   currentEvent: EventData;
-  onNavigate: (view: 'landing' | 'about-professor' | 'event' | 'dashboard') => void;
+  onNavigate: (view: 'landing' | 'about-professor' | 'event' | 'dashboard' | 'admin') => void;
   activeView: string;
   onOpenDownloadModal?: () => void;
   onOpenRsvp?: () => void;
 }
 
-type ViewId = 'landing' | 'about-professor' | 'event' | 'dashboard';
+type ViewId = 'landing' | 'about-professor' | 'event' | 'dashboard' | 'admin';
 
 const NAV_ITEMS: { id: ViewId; label: string; badge?: string }[] = [
   { id: 'landing', label: 'The Lecture' },
   { id: 'about-professor', label: 'Profile' },
   { id: 'event', label: 'RSVP Pass', badge: 'Required' },
-  { id: 'dashboard', label: 'Secretariat' }
+  { id: 'dashboard', label: 'Secretariat' },
+  { id: 'admin', label: 'Admin' }
 ];
 
 export const Navbar: React.FC<NavbarProps> = ({

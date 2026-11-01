@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 
 interface FooterProps {
-  onNavigate: (view: 'landing' | 'about-professor' | 'event' | 'dashboard') => void;
+  onNavigate: (view: 'landing' | 'about-professor' | 'event' | 'dashboard' | 'admin') => void;
   onOpenDownloadModal?: () => void;
 }
 
@@ -26,7 +26,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenDownloadModal 
     setOpenAccordion(prev => prev === id ? null : id);
   };
 
-  const go = (v: 'landing' | 'about-professor' | 'event' | 'dashboard') => {
+  const go = (v: 'landing' | 'about-professor' | 'event' | 'dashboard' | 'admin') => {
     onNavigate(v);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -275,11 +275,18 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenDownloadModal 
           </div>
 
           <div className="flex items-center gap-4 text-[11px]">
-            <button 
-              onClick={() => go('dashboard')} 
+            <button
+              onClick={() => go('dashboard')}
               className="hover:text-white transition-colors cursor-pointer"
             >
               Secretariat Portal
+            </button>
+            <span className="text-white/20">|</span>
+            <button
+              onClick={() => go('admin')}
+              className="hover:text-white transition-colors cursor-pointer"
+            >
+              Tribute Moderation
             </button>
             <span className="text-white/20">|</span>
             <button 

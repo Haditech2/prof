@@ -85,27 +85,39 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   onDownloadCardClick
 }) => {
   const [activePhotoIndex, setActivePhotoIndex] = useState(0);
+  const [previousPhotoIndex, setPreviousPhotoIndex] = useState<number | null>(null);
+  const [slideDirection, setSlideDirection] = useState<'next' | 'previous'>('next');
   const [isPlaying, setIsPlaying] = useState(true);
   const [isHovered, setIsHovered] = useState(false);
   const [showFullCredentials, setShowFullCredentials] = useState(false);
 
   const selectedHeroPhoto = heroPhotos[activePhotoIndex];
+  const previousHeroPhoto = previousPhotoIndex === null ? null : heroPhotos[previousPhotoIndex];
+
+  const showSlide = (nextIndex: number, direction: 'next' | 'previous') => {
+    if (nextIndex === activePhotoIndex) return;
+    setPreviousPhotoIndex(activePhotoIndex);
+    setSlideDirection(direction);
+    setActivePhotoIndex(nextIndex);
+  };
 
   // Auto-advance slideshow smoothly every 4.5 seconds when active
   useEffect(() => {
     if (!isPlaying || isHovered) return;
     const interval = setInterval(() => {
-      setActivePhotoIndex((prev) => (prev + 1) % heroPhotos.length);
+      setPreviousPhotoIndex(activePhotoIndex);
+      setSlideDirection('next');
+      setActivePhotoIndex((activePhotoIndex + 1) % heroPhotos.length);
     }, 4500);
     return () => clearInterval(interval);
-  }, [isPlaying, isHovered]);
+  }, [activePhotoIndex, isPlaying, isHovered]);
 
   const handlePrevSlide = () => {
-    setActivePhotoIndex((prev) => (prev - 1 + heroPhotos.length) % heroPhotos.length);
+    showSlide((activePhotoIndex - 1 + heroPhotos.length) % heroPhotos.length, 'previous');
   };
 
   const handleNextSlide = () => {
-    setActivePhotoIndex((prev) => (prev + 1) % heroPhotos.length);
+    showSlide((activePhotoIndex + 1) % heroPhotos.length, 'next');
   };
 
   return (
@@ -254,17 +266,43 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               
               {/* Museum-Grade Beveled Portrait Frame with Floating Slideshow Nav */}
               <div className="relative rounded-2xl bg-[#FFFBF2] border-2 border-[#D6A323]/50 p-2 sm:p-2.5 shadow-xl group rotate-[-0.5deg] hover:rotate-0 transition-transform duration-300">
-                <div className="relative rounded-xl overflow-hidden aspect-[3/4] bg-[#006B66]">
-                  {/* Active Slide Image with Smooth Crossfade */}
-                  <img
+                <div className={`relative rounded-xl overflow-hidden aspect-[3/4] bg-[#006B66] hero-slideshow ${!isPlaying || isHovered ? 'is-paused' : ''}`}>
+                  {/* The outgoing image stays underneath for a true layered dissolve. */}
+                  {previousHeroPhoto && (
+                    <img
+                      src={previousHeroPhoto.url}
+                      alt=""
+                      aria-hidden="true"
+                      className={`absolute inset-0 h-full w-full object-cover object-top hero-slide-exit hero-slide-exit-${slideDirection}`}
+                    />
+                  )}
+
+                  {/* Active slide: directional reveal outside, slow camera movement inside. */}
+                  <div
                     key={selectedHeroPhoto.url}
-                    src={selectedHeroPhoto.url}
-                    alt={selectedHeroPhoto.alt}
-                    className="w-full h-full object-cover object-top transition-all duration-700 animate-fade-in"
+                    className={`absolute inset-0 z-[2] hero-slide-enter hero-slide-enter-${slideDirection}`}
+                    onAnimationEnd={(event) => {
+                      if (event.currentTarget === event.target) setPreviousPhotoIndex(null);
+                    }}
+                  >
+                    <img
+                      src={selectedHeroPhoto.url}
+                      alt={selectedHeroPhoto.alt}
+                      className={`h-full w-full object-cover object-top hero-ken-burns hero-ken-burns-${activePhotoIndex % 3}`}
+                    />
+                  </div>
+
+                  {/* A fine brass edge follows the reveal, like a camera shutter. */}
+                  <div
+                    key={`sweep-${activePhotoIndex}`}
+                    className={`absolute inset-y-0 z-[3] w-px pointer-events-none hero-slide-sweep hero-slide-sweep-${slideDirection}`}
+                    aria-hidden="true"
                   />
+
+                  <div className="absolute inset-0 z-[4] pointer-events-none hero-photo-grain" aria-hidden="true" />
                   
                   {/* Subtle Corner Vignette */}
-                  <div className="absolute inset-0 ring-1 ring-inset ring-black/10 pointer-events-none" />
+                  <div className="absolute inset-0 z-[5] ring-1 ring-inset ring-black/10 pointer-events-none" />
 
                   {/* Top Slide Progress Bar for Auto-play */}
                   {isPlaying && !isHovered && (
@@ -346,7 +384,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                           key={pIdx}
                           type="button"
                           onClick={() => {
-                            setActivePhotoIndex(pIdx);
+                            showSlide(pIdx, pIdx > activePhotoIndex ? 'next' : 'previous');
                             setIsPlaying(true);
                           }}
                           title={`${photo.badge} (${pIdx + 1}/${heroPhotos.length})`}

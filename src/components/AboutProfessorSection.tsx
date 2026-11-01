@@ -860,7 +860,7 @@ export const AboutProfessorSection: React.FC<AboutProfessorSectionProps> = ({
         {/* ========================================================================= */}
         <section className="bg-[#FFFBF2] rounded-3xl p-6 md:p-10 border border-[#D6A323]/30 shadow-sm space-y-6">
           <div className="text-center max-w-xl mx-auto">
-            <span className="text-[10px] uppercase tracking-[0.25em] text-[#008F87] font-semibold block mb-1">
+            <span className="eyebrow block mb-1">
               Scholarly Felicitations
             </span>
             <h2 className="text-2xl sm:text-3xl font-serif-luxury font-bold text-[#252A2A]">
@@ -920,7 +920,7 @@ export const AboutProfessorSection: React.FC<AboutProfessorSectionProps> = ({
               {tributeSubmitted ? (
                 <span className="text-xs text-[#006B66] font-semibold flex items-center space-x-1">
                   <CheckCircle2 className="w-4 h-4 text-[#008F87]" />
-                  <span>Tribute added to the roster!</span>
+                  <span>Received — awaiting review.</span>
                 </span>
               ) : <div />}
 

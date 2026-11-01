@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { CountdownStyle, EventData } from '../types';
 import { Clock, Sparkles, CheckCircle2 } from 'lucide-react';
 
+const CountdownThreeScene = React.lazy(() =>
+  import('./CountdownThreeScene').then((module) => ({ default: module.CountdownThreeScene }))
+);
+
 interface CountdownSectionProps {
   event: EventData;
   activeStyle?: CountdownStyle;
@@ -219,7 +223,17 @@ export const CountdownSection: React.FC<CountdownSectionProps> = ({
         </div>
       ) : (
         /* State C: Active Real-time Countdown Renderers */
-        <div className="w-full flex justify-center">
+        <div className="relative isolate w-full min-h-[132px] overflow-hidden rounded-2xl border border-white/10 bg-[#003330]/20">
+          <React.Suspense fallback={null}>
+            <CountdownThreeScene
+              days={timeLeft.days}
+              hours={timeLeft.hours}
+              minutes={timeLeft.minutes}
+              seconds={timeLeft.seconds}
+            />
+          </React.Suspense>
+          <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_20%,rgba(0,51,48,0.3)_100%)]" />
+          <div className="relative z-10 w-full flex justify-center px-2 py-5 md:px-4 md:py-7">
           {/* Style 1: Minimal Editorial Serif */}
           {currentStyle === 'editorial' && (
             <div className="grid grid-cols-4 gap-4 md:gap-8 max-w-2xl w-full text-center py-4">
@@ -372,6 +386,7 @@ export const CountdownSection: React.FC<CountdownSectionProps> = ({
               </div>
             </div>
           )}
+          </div>
         </div>
       )}
     </div>

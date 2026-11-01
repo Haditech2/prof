@@ -184,7 +184,7 @@ export const EventPageView: React.FC<EventPageViewProps> = ({
     setWishAuthor('');
     setWishMessage('');
     if (onSuccessToast) {
-      onSuccessToast('Your warm wish has been posted to the celebration board!');
+      onSuccessToast('Thank you — your wish was received and awaits a short review before it joins the wall.');
     }
   };
 
