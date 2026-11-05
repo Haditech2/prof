@@ -493,8 +493,8 @@ export const HostDashboard: React.FC<HostDashboardProps> = ({
 
       {/* Manual Add Guest Modal */}
       {isAddModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
-          <div className="bg-[#FFFBF2] rounded-3xl p-6 sm:p-8 max-w-md w-full border border-[#D6A323]/40 shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-2 sm:p-4 overflow-y-auto bg-black/60 backdrop-blur-xs animate-fade-in">
+          <div className="my-auto bg-[#FFFBF2] rounded-2xl sm:rounded-3xl p-4 sm:p-8 max-w-md w-full max-h-[calc(100dvh-1rem)] overflow-y-auto border border-[#D6A323]/40 shadow-2xl">
             <h3 className="text-xl font-serif-luxury font-bold text-[#252A2A] mb-4">
               Register Guest Manually
             </h3>
@@ -506,8 +506,8 @@ export const HostDashboard: React.FC<HostDashboardProps> = ({
                   required
                   value={manualName}
                   onChange={(e) => setManualName(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border text-sm"
-                  placeholder="e.g. Chief Adeleke"
+                  className="w-full min-h-11 px-3 py-2 rounded-xl border text-sm"
+                  placeholder="Guest full name"
                 />
               </div>
 
@@ -517,8 +517,8 @@ export const HostDashboard: React.FC<HostDashboardProps> = ({
                   type="email"
                   value={manualEmail}
                   onChange={(e) => setManualEmail(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border text-sm"
-                  placeholder="adeleke@example.com"
+                  className="w-full min-h-11 px-3 py-2 rounded-xl border text-sm"
+                  placeholder="guest@example.com"
                 />
               </div>
 
@@ -528,8 +528,8 @@ export const HostDashboard: React.FC<HostDashboardProps> = ({
                   type="tel"
                   value={manualPhone}
                   onChange={(e) => setManualPhone(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border text-sm"
-                  placeholder="+234 802 334 5566"
+                  className="w-full min-h-11 px-3 py-2 rounded-xl border text-sm"
+                  placeholder="Guest phone number"
                 />
               </div>
 
@@ -542,7 +542,7 @@ export const HostDashboard: React.FC<HostDashboardProps> = ({
                     max="10"
                     value={manualCount}
                     onChange={(e) => setManualCount(Number(e.target.value))}
-                    className="w-full px-3 py-2 rounded-xl border text-sm"
+                    className="w-full min-h-11 px-3 py-2 rounded-xl border text-sm"
                   />
                 </div>
 
@@ -551,7 +551,7 @@ export const HostDashboard: React.FC<HostDashboardProps> = ({
                   <select
                     value={manualCategory}
                     onChange={(e) => setManualCategory(e.target.value as GuestGroup)}
-                    className="w-full px-3 py-2 rounded-xl border text-sm"
+                    className="w-full min-h-11 px-3 py-2 rounded-xl border text-sm"
                   >
                     <option value="VIP">VIP</option>
                     <option value="Family">Family</option>
@@ -567,13 +567,13 @@ export const HostDashboard: React.FC<HostDashboardProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsAddModalOpen(false)}
-                  className="px-4 py-2 rounded-xl border text-gray-600 hover:bg-gray-100"
+                  className="px-4 py-2 min-h-11 rounded-xl border text-gray-600 hover:bg-gray-100"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-xl bg-[#008F87] text-white font-semibold hover:bg-[#006B66]"
+                  className="px-5 py-2 min-h-11 rounded-xl bg-[#008F87] text-white font-semibold hover:bg-[#006B66]"
                 >
                   Save Guest
                 </button>

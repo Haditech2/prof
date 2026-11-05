@@ -129,12 +129,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         {/* TOP PROCLAMATION KICKER                                                  */}
         {/* ========================================================================= */}
         <div className="max-w-2xl mx-auto text-center mb-6 sm:mb-8 animate-fade-in">
-          <div className="mb-3 flex items-center justify-center gap-3 text-[#A97912]">
-            <span className="h-px w-8 bg-[#D6A323]/60" />
-            <span className="font-serif-luxury italic text-sm sm:text-base tracking-wide">
+          <div className="mb-3 flex items-center justify-center gap-2 sm:gap-3 text-[#A97912]">
+            <span className="hidden sm:block h-px w-8 bg-[#D6A323]/60" />
+            <span className="font-serif-luxury italic text-xs min-[360px]:text-sm sm:text-base tracking-wide leading-snug">
               Nasarawa State University · 65th Inaugural Lecture
             </span>
-            <span className="h-px w-8 bg-[#D6A323]/60" />
+            <span className="hidden sm:block h-px w-8 bg-[#D6A323]/60" />
           </div>
 
           <p className="text-xs sm:text-sm text-[#47554F] max-w-2xl mx-auto font-sans leading-relaxed">
@@ -157,7 +157,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             {/* Professorial Headline */}
             <div>
               <span className="eyebrow">Inaugural Lecturer</span>
-              <h1 className="font-serif-luxury font-bold text-[#252A2A] text-3xl sm:text-5xl lg:text-6xl leading-[1.08] tracking-tight">
+              <h1 className="font-serif-luxury font-bold text-[#252A2A] text-[1.8rem] min-[360px]:text-3xl sm:text-5xl lg:text-6xl leading-[1.08] tracking-tight">
                 Professor Rashidah <br />
                 <span className="text-[#008F87] italic font-normal">Funke Olanrewaju</span>
               </h1>
@@ -168,8 +168,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               <p className="text-xs sm:text-sm text-[#252A2A] font-semibold">
                 Professor of Computer Science &amp; Artificial Intelligence
               </p>
-              <p className="text-xs text-[#006B66] font-semibold flex items-center justify-center lg:justify-start gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#D6A323]" />
+              <p className="text-xs text-[#006B66] font-semibold flex items-start justify-center lg:justify-start gap-1.5 px-1 sm:px-0">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#D6A323] shrink-0 mt-1" />
                 <span>Director, Entrepreneurship Development Centre (EDC), NSUK</span>
               </p>
 
@@ -178,7 +178,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 <button
                   type="button"
                   onClick={() => setShowFullCredentials(!showFullCredentials)}
-                  className="text-[11px] font-semibold text-[#A97912] hover:text-[#008F87] transition-colors inline-flex items-center gap-1 cursor-pointer"
+                  className="min-h-10 px-2 text-[11px] font-semibold text-[#A97912] hover:text-[#008F87] transition-colors inline-flex items-center gap-1 cursor-pointer"
                 >
                   <span>{showFullCredentials ? '▲ Hide Full Pedigree & Fellowships' : '▼ Show Full Pedigree & Fellowships'}</span>
                 </button>
@@ -203,7 +203,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   <BookOpen className="w-3.5 h-3.5 text-[#D6A323]" />
                   <span>Inaugural Lecture</span>
                 </span>
-                <span className="font-mono text-[9px] text-[#6B7B73]">Convocation Address</span>
+                <span className="hidden min-[430px]:inline font-mono text-[9px] text-[#6B7B73]">Convocation Address</span>
               </div>
               <div className="flex items-center gap-3">
                 <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-full border-2 border-[#D6A323] p-0.5 overflow-hidden shrink-0 shadow-sm bg-white">
@@ -247,7 +247,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               <button
                 id="hero-invite"
                 onClick={onDownloadCardClick}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-full text-xs font-semibold text-[#252A2A]/75 hover:text-[#008F87] transition-colors cursor-pointer"
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2.5 min-h-11 rounded-full text-xs font-semibold text-[#252A2A]/75 hover:text-[#008F87] transition-colors cursor-pointer"
               >
                 <Download className="w-3.5 h-3.5" />
                 <span>Poster</span>
@@ -330,7 +330,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   <button
                     type="button"
                     onClick={handlePrevSlide}
-                    className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/45 hover:bg-[#008F87] text-white backdrop-blur-md border border-white/25 flex items-center justify-center transition-all opacity-85 sm:opacity-0 group-hover:opacity-100 hover:scale-110 cursor-pointer shadow-lg z-20"
+                    className="absolute left-2 top-1/2 -translate-y-1/2 w-11 h-11 sm:w-9 sm:h-9 rounded-full bg-black/45 hover:bg-[#008F87] text-white backdrop-blur-md border border-white/25 flex items-center justify-center transition-all opacity-85 sm:opacity-0 group-hover:opacity-100 hover:scale-110 cursor-pointer shadow-lg z-20"
                     title="Previous Slide"
                     aria-label="Previous Slide"
                   >
@@ -340,7 +340,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   <button
                     type="button"
                     onClick={handleNextSlide}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/45 hover:bg-[#008F87] text-white backdrop-blur-md border border-white/25 flex items-center justify-center transition-all opacity-85 sm:opacity-0 group-hover:opacity-100 hover:scale-110 cursor-pointer shadow-lg z-20"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 w-11 h-11 sm:w-9 sm:h-9 rounded-full bg-black/45 hover:bg-[#008F87] text-white backdrop-blur-md border border-white/25 flex items-center justify-center transition-all opacity-85 sm:opacity-0 group-hover:opacity-100 hover:scale-110 cursor-pointer shadow-lg z-20"
                     title="Next Slide"
                     aria-label="Next Slide"
                   >
@@ -369,14 +369,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   <button
                     type="button"
                     onClick={handlePrevSlide}
-                    className="w-7 h-7 rounded-lg bg-[#FFF4DC] hover:bg-[#008F87] text-[#006B66] hover:text-white border border-[#D6A323]/30 hover:border-[#008F87] flex items-center justify-center transition-all cursor-pointer shrink-0 shadow-2xs"
+                    className="w-10 h-10 sm:w-9 sm:h-9 rounded-lg bg-[#FFF4DC] hover:bg-[#008F87] text-[#006B66] hover:text-white border border-[#D6A323]/30 hover:border-[#008F87] flex items-center justify-center transition-all cursor-pointer shrink-0 shadow-2xs"
                     title="Previous Slide"
                   >
                     <ChevronLeft className="w-3.5 h-3.5" />
                   </button>
 
                   {/* Arranged Thumbnail Slides */}
-                  <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 px-0.5 justify-center flex-1">
+                  <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1 px-0.5 justify-start sm:justify-center flex-1 snap-x">
                     {heroPhotos.map((photo, pIdx) => {
                       const isActive = activePhotoIndex === pIdx;
                       return (
@@ -388,7 +388,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                             setIsPlaying(true);
                           }}
                           title={`${photo.badge} (${pIdx + 1}/${heroPhotos.length})`}
-                          className={`relative w-9 h-9 sm:w-10 sm:h-10 rounded-xl overflow-hidden transition-all duration-300 cursor-pointer shrink-0 ${
+                          className={`relative w-11 h-11 sm:w-10 sm:h-10 rounded-xl overflow-hidden transition-all duration-300 cursor-pointer shrink-0 snap-center ${
                             isActive
                               ? 'ring-2 ring-[#D6A323] border-2 border-[#008F87] shadow-md scale-110 z-10'
                               : 'opacity-65 hover:opacity-100 hover:scale-105 border border-transparent'
@@ -411,7 +411,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   <button
                     type="button"
                     onClick={handleNextSlide}
-                    className="w-7 h-7 rounded-lg bg-[#FFF4DC] hover:bg-[#008F87] text-[#006B66] hover:text-white border border-[#D6A323]/30 hover:border-[#008F87] flex items-center justify-center transition-all cursor-pointer shrink-0 shadow-2xs"
+                    className="w-10 h-10 sm:w-9 sm:h-9 rounded-lg bg-[#FFF4DC] hover:bg-[#008F87] text-[#006B66] hover:text-white border border-[#D6A323]/30 hover:border-[#008F87] flex items-center justify-center transition-all cursor-pointer shrink-0 shadow-2xs"
                     title="Next Slide"
                   >
                     <ChevronRight className="w-3.5 h-3.5" />
@@ -421,7 +421,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   <button
                     type="button"
                     onClick={() => setIsPlaying(!isPlaying)}
-                    className="w-7 h-7 rounded-lg bg-[#FFF4DC] hover:bg-[#D6A323] text-[#006B66] hover:text-[#003330] border border-[#D6A323]/30 hover:border-[#D6A323] flex items-center justify-center transition-all cursor-pointer shrink-0 shadow-2xs"
+                    className="w-10 h-10 sm:w-9 sm:h-9 rounded-lg bg-[#FFF4DC] hover:bg-[#D6A323] text-[#006B66] hover:text-[#003330] border border-[#D6A323]/30 hover:border-[#D6A323] flex items-center justify-center transition-all cursor-pointer shrink-0 shadow-2xs"
                     title={isPlaying ? 'Pause slideshow' : 'Play slideshow'}
                   >
                     {isPlaying ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3 translate-x-0.5" />}
@@ -433,7 +433,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               <div className="text-center mt-2">
                 <button
                   onClick={onReadProfileClick}
-                  className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-[#008F87] hover:text-[#006B66] transition-colors p-1 cursor-pointer"
+                    className="inline-flex min-h-10 items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-[#008F87] hover:text-[#006B66] transition-colors px-2 py-1 cursor-pointer"
                 >
                   <span>Full Profile &amp; Pedigree</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -479,7 +479,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   Time
                 </div>
                 <div className="text-sm font-bold text-white truncate">
-                  2:00 PM Prompt
+                  2:00 PM
                 </div>
                 <div className="text-[11px] text-white/70">
                   Guests seated by 1:45 PM

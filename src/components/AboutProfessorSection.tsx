@@ -19,10 +19,13 @@ import {
   Globe2,
   ChevronDown,
   ChevronUp,
-  ArrowRight
+  ArrowRight,
+  ImagePlus,
+  X
 } from 'lucide-react';
 import { EventData, GuestWish } from '../types';
-import { INITIAL_WISHES } from '../data/mockData';
+import { INITIAL_WISHES } from '../data/eventData';
+import { fileToAvatarDataUrl } from '../lib/imageResize';
 import { TributeModal } from './TributeModal';
 import { PhotoGallery } from './ui/PhotoGallery';
 
@@ -57,7 +60,28 @@ export const AboutProfessorSection: React.FC<AboutProfessorSectionProps> = ({
   const [tributeAuthor, setTributeAuthor] = useState('');
   const [tributeRole, setTributeRole] = useState('');
   const [tributeMessage, setTributeMessage] = useState('');
+  const [tributePhoto, setTributePhoto] = useState<string>('');
+  const [tributePhotoName, setTributePhotoName] = useState<string>('');
+  const [tributePhotoBusy, setTributePhotoBusy] = useState(false);
+  const [tributePhotoError, setTributePhotoError] = useState<string>('');
   const [tributeSubmitted, setTributeSubmitted] = useState(false);
+  const tributePhotoInputRef = React.useRef<HTMLInputElement>(null);
+
+  const handleTributePhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+    setTributePhotoBusy(true);
+    setTributePhotoError('');
+    try {
+      setTributePhoto(await fileToAvatarDataUrl(file));
+      setTributePhotoName(file.name);
+    } catch (error) {
+      setTributePhotoError(error instanceof Error ? error.message : 'Photo could not be added.');
+    } finally {
+      setTributePhotoBusy(false);
+    }
+  };
 
   const handleAddTribute = (e: React.FormEvent) => {
     e.preventDefault();
@@ -68,6 +92,7 @@ export const AboutProfessorSection: React.FC<AboutProfessorSectionProps> = ({
       eventId: _event?.id || 'event-prof-rashidah-inaugural',
       author: tributeAuthor.trim(),
       role: tributeRole.trim() || 'Academic Colleague & Well-Wisher',
+      photoUrl: tributePhoto || undefined,
       message: tributeMessage.trim(),
       createdAt: new Date().toISOString(),
       likes: 1
@@ -82,6 +107,8 @@ export const AboutProfessorSection: React.FC<AboutProfessorSectionProps> = ({
     setTributeAuthor('');
     setTributeRole('');
     setTributeMessage('');
+    setTributePhoto('');
+    setTributePhotoName('');
     setTributeSubmitted(true);
     setTimeout(() => setTributeSubmitted(false), 4000);
   };
@@ -202,16 +229,6 @@ export const AboutProfessorSection: React.FC<AboutProfessorSectionProps> = ({
       category: 'Academic Mentorship'
     },
     {
-      url: '/images/dr-sherif-ajiteru.jpg',
-      caption: 'Dr. Sherif A. R. Ajiteru — Acting Deputy Provost & IIUM Fellow',
-      category: 'IIUM Fellow'
-    },
-    {
-      url: '/images/student-mentee-tribute.jpg',
-      caption: 'Mentee & Student Researcher Celebrating Professor Rashidah',
-      category: 'Student Mentee'
-    },
-    {
       url: '/images/nura-x-intentional-intelligence.jpg',
       caption: 'NURA-X: Intentional Intelligence Official AI Initiative Emblem',
       category: 'AI Initiative'
@@ -235,11 +252,6 @@ export const AboutProfessorSection: React.FC<AboutProfessorSectionProps> = ({
       url: '/images/inaugural-lecture-flyer-portrait.jpg',
       caption: 'Official 65th Inaugural Lecture Proclamation Poster',
       category: 'Proclamation Poster'
-    },
-    {
-      url: '/images/inaugural-poster-65th.jpg',
-      caption: 'Official 65th Inaugural Lecture Invitation Banner',
-      category: 'Official Banner'
     },
     {
       url: '/images/prof-rashidah-edc-summit-portrait.jpg',
@@ -279,7 +291,7 @@ export const AboutProfessorSection: React.FC<AboutProfessorSectionProps> = ({
         {/* ========================================================================= */}
         {/* HERO CARD: PROFESSORIAL SPOTLIGHT & INAUGURAL CITATION                    */}
         {/* ========================================================================= */}
-        <div className="relative rounded-3xl bg-gradient-to-br from-[#006B66] via-[#004D49] to-[#003330] border-2 border-[#D6A323]/50 p-8 md:p-12 shadow-2xl overflow-hidden">
+        <div className="relative rounded-3xl bg-gradient-to-br from-[#006B66] via-[#004D49] to-[#003330] border-2 border-[#D6A323]/50 p-5 sm:p-8 md:p-12 shadow-2xl overflow-hidden">
           {/* Subtle gold & lilac accent glows */}
           <div className="absolute top-0 right-0 w-80 h-80 bg-[#D6A323]/20 blur-[90px] rounded-full pointer-events-none" />
           <div className="absolute bottom-0 left-0 w-72 h-72 bg-[#B9A1D0]/20 blur-[80px] rounded-full pointer-events-none" />
@@ -318,7 +330,7 @@ export const AboutProfessorSection: React.FC<AboutProfessorSectionProps> = ({
                     <button
                       type="button"
                       onClick={() => setShowFullCreds(!showFullCreds)}
-                      className="px-2 py-0.5 rounded-full bg-white/10 hover:bg-white/20 text-[10px] text-[#D6A323] font-semibold border border-[#D6A323]/30 transition-colors inline-flex items-center gap-1 cursor-pointer"
+                      className="px-3 py-1.5 min-h-10 rounded-full bg-white/10 hover:bg-white/20 text-[10px] text-[#D6A323] font-semibold border border-[#D6A323]/30 transition-colors inline-flex items-center gap-1 cursor-pointer"
                     >
                       <span>{showFullCreds ? 'Less' : 'All Fellowships'}</span>
                       {showFullCreds ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
@@ -362,7 +374,7 @@ export const AboutProfessorSection: React.FC<AboutProfessorSectionProps> = ({
                   </span>
                   <span className="flex items-center space-x-1">
                     <Calendar className="w-3 h-3 text-[#D6A323]" />
-                    <span>2:00 PM Prompt</span>
+                    <span>2:00 PM</span>
                   </span>
                 </div>
               </div>
@@ -428,7 +440,7 @@ export const AboutProfessorSection: React.FC<AboutProfessorSectionProps> = ({
                       key={idx}
                       onClick={() => setSelectedAboutPhoto(p.url)}
                       title={p.label}
-                      className={`relative w-9 h-9 rounded-lg overflow-hidden border-2 transition-all cursor-pointer shrink-0 ${selectedAboutPhoto === p.url
+                      className={`relative w-11 h-11 rounded-lg overflow-hidden border-2 transition-all cursor-pointer shrink-0 ${selectedAboutPhoto === p.url
                           ? 'border-[#D6A323] ring-2 ring-[#D6A323]/60 scale-105'
                           : 'border-white/30 opacity-60 hover:opacity-100'
                         }`}
@@ -446,7 +458,7 @@ export const AboutProfessorSection: React.FC<AboutProfessorSectionProps> = ({
         {/* ========================================================================= */}
         {/* NAVIGATION TABS                                                           */}
         {/* ========================================================================= */}
-        <div className="flex items-center justify-start md:justify-center gap-2 overflow-x-auto pb-2 border-b border-[#D6A323]/25 no-scrollbar px-1">
+        <div className="flex items-center justify-start xl:justify-center gap-2 overflow-x-auto pb-2 border-b border-[#D6A323]/25 no-scrollbar px-1 snap-x scroll-px-1">
           {[
             { id: 'lecture', label: '1. The Lecture', icon: BookOpen },
             { id: 'biography', label: '2. Academic Pedigree', icon: GraduationCap },
@@ -460,7 +472,7 @@ export const AboutProfessorSection: React.FC<AboutProfessorSectionProps> = ({
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
-                className={`px-4 py-2.5 rounded-xl text-xs font-semibold transition-all flex items-center space-x-2 whitespace-nowrap cursor-pointer ${isCurrent
+                className={`px-4 py-2.5 min-h-11 rounded-xl text-xs font-semibold transition-all flex items-center space-x-2 whitespace-nowrap cursor-pointer shrink-0 snap-start ${isCurrent
                     ? 'bg-[#008F87] text-white shadow-md font-bold'
                     : 'bg-[#FFFBF2] text-[#252A2A] border border-[#D6A323]/30 hover:border-[#008F87]/40 hover:text-[#008F87]'
                   }`}
@@ -561,7 +573,7 @@ export const AboutProfessorSection: React.FC<AboutProfessorSectionProps> = ({
                       href="/images/inaugural-lecture-flyer-portrait.jpg"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="px-4 py-2 rounded-full bg-[#008F87] text-white text-xs font-bold uppercase tracking-wider hover:bg-[#006B66] transition-all flex items-center gap-1.5 shadow-sm"
+                      className="px-4 py-2 min-h-11 rounded-full bg-[#008F87] text-white text-xs font-bold uppercase tracking-wider hover:bg-[#006B66] transition-all flex items-center gap-1.5 shadow-sm"
                     >
                       <Download className="w-3.5 h-3.5 text-[#FFF4DC]" />
                       <span>View Full Resolution Flyer</span>
@@ -577,12 +589,12 @@ export const AboutProfessorSection: React.FC<AboutProfessorSectionProps> = ({
                     Ceremonial Protocol
                   </span>
                   <p className="text-xs text-[#252A2A] mt-0.5">
-                    Academic robes required for Senate members. Guests are requested to be seated in the Assembly Hall by 01:45 PM prompt before the University Mace entrance at 2:00 PM.
+                    Academic robes required for Senate members. Guests are requested to be seated in the Assembly Hall by 1:45 PM before the University Mace entrance at 2:00 PM.
                   </p>
                 </div>
                 <button
                   onClick={onRsvpToInaugural}
-                  className="px-5 py-2.5 rounded-full bg-[#008F87] hover:bg-[#006B66] text-white text-xs font-bold uppercase tracking-wider whitespace-nowrap shadow-md transition-all shrink-0 cursor-pointer"
+                  className="px-5 py-2.5 min-h-11 rounded-full bg-[#008F87] hover:bg-[#006B66] text-white text-xs font-bold uppercase tracking-wider whitespace-nowrap shadow-md transition-all shrink-0 cursor-pointer"
                 >
                   RSVP For Lecture
                 </button>
@@ -883,8 +895,8 @@ export const AboutProfessorSection: React.FC<AboutProfessorSectionProps> = ({
                   required
                   value={tributeAuthor}
                   onChange={(e) => setTributeAuthor(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-[#D6A323]/30 text-xs bg-white text-[#252A2A] placeholder-[#9AA8A0] focus:outline-hidden focus:border-[#008F87]"
-                  placeholder="e.g. Prof. Emmanuel Adams / Dr. Sarah Cole"
+                  className="w-full min-h-11 px-3 py-2 rounded-xl border border-[#D6A323]/30 text-xs bg-white text-[#252A2A] placeholder-[#9AA8A0] focus:outline-hidden focus:border-[#008F87]"
+                  placeholder="Your full name and title"
                 />
               </div>
 
@@ -896,8 +908,8 @@ export const AboutProfessorSection: React.FC<AboutProfessorSectionProps> = ({
                   type="text"
                   value={tributeRole}
                   onChange={(e) => setTributeRole(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-[#D6A323]/30 text-xs bg-white text-[#252A2A] placeholder-[#9AA8A0] focus:outline-hidden focus:border-[#008F87]"
-                  placeholder="e.g. Faculty Dean / Alumni Scholar"
+                  className="w-full min-h-11 px-3 py-2 rounded-xl border border-[#D6A323]/30 text-xs bg-white text-[#252A2A] placeholder-[#9AA8A0] focus:outline-hidden focus:border-[#008F87]"
+                  placeholder="Role or affiliation"
                 />
               </div>
             </div>
@@ -911,10 +923,61 @@ export const AboutProfessorSection: React.FC<AboutProfessorSectionProps> = ({
                 required
                 value={tributeMessage}
                 onChange={(e) => setTributeMessage(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl border border-[#D6A323]/30 text-xs bg-white text-[#252A2A] placeholder-[#9AA8A0] focus:outline-hidden focus:border-[#008F87] leading-relaxed"
+                className="w-full min-h-20 px-3 py-2 rounded-xl border border-[#D6A323]/30 text-xs bg-white text-[#252A2A] placeholder-[#9AA8A0] focus:outline-hidden focus:border-[#008F87] leading-relaxed"
                 placeholder="Write your congratulatory words..."
               />
             </div>
+
+            {/* Optional portrait photo */}
+            <div className="flex items-center gap-3">
+              {tributePhoto ? (
+                <div className="relative shrink-0">
+                  <img
+                    src={tributePhoto}
+                    alt="Your chosen portrait"
+                    className="w-14 h-14 rounded-full object-cover object-top border-2 border-[#D6A323]"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setTributePhoto('');
+                      setTributePhotoName('');
+                    }}
+                    className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-[#252A2A] text-white flex items-center justify-center shadow"
+                    aria-label="Remove photo"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => tributePhotoInputRef.current?.click()}
+                  disabled={tributePhotoBusy}
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 min-h-11 rounded-full border border-[#D6A323]/40 bg-[#FFFBF2] text-[11px] font-semibold text-[#006B66] hover:border-[#008F87] transition-colors disabled:opacity-60 cursor-pointer"
+                >
+                  <ImagePlus className="w-3.5 h-3.5" />
+                  {tributePhotoBusy ? 'Preparing photo…' : 'Add your photo'}
+                </button>
+              )}
+              <p className="text-[10px] text-[#9AA8A0] leading-snug">
+                {tributePhoto ? (
+                  <span className="text-[#5B6B63]">{tributePhotoName}</span>
+                ) : (
+                  'Optional — a face beside your words. Appears on the tribute wall once approved.'
+                )}
+              </p>
+              <input
+                ref={tributePhotoInputRef}
+                type="file"
+                accept="image/*"
+                className="sr-only"
+                onChange={handleTributePhotoChange}
+              />
+            </div>
+            {tributePhotoError && (
+              <p className="text-[11px] text-red-600 -mt-2">{tributePhotoError}</p>
+            )}
 
             <div className="flex items-center justify-between pt-1">
               {tributeSubmitted ? (
@@ -926,7 +989,7 @@ export const AboutProfessorSection: React.FC<AboutProfessorSectionProps> = ({
 
               <button
                 type="submit"
-                className="px-5 py-2.5 rounded-full bg-[#008F87] hover:bg-[#006B66] text-white text-xs font-bold uppercase tracking-wider transition-all flex items-center space-x-1.5 shadow-md cursor-pointer"
+                className="px-5 py-2.5 min-h-11 rounded-full bg-[#008F87] hover:bg-[#006B66] text-white text-xs font-bold uppercase tracking-wider transition-all flex items-center space-x-1.5 shadow-md cursor-pointer"
               >
                 <Send className="w-3.5 h-3.5" />
                 <span>Submit Felicitations</span>
@@ -936,7 +999,13 @@ export const AboutProfessorSection: React.FC<AboutProfessorSectionProps> = ({
 
           {/* List of Tributes */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
-            {activeWishes.map(w => (
+            {activeWishes.length === 0 ? (
+              <div className="md:col-span-3 rounded-2xl border border-dashed border-[#D6A323]/50 bg-[#FFF4DC]/35 px-6 py-10 text-center">
+                <Heart className="w-7 h-7 mx-auto text-[#D6A323]" />
+                <p className="mt-2 font-serif-luxury text-lg font-semibold text-[#252A2A]">No published tributes yet.</p>
+                <p className="mt-1 text-xs text-[#5B6B63]">Share the first felicitation above. It will appear after administrator approval.</p>
+              </div>
+            ) : activeWishes.map(w => (
               <div
                 key={w.id}
                 className="p-5 rounded-2xl bg-[#FFF4DC]/35 border border-[#D6A323]/30 flex flex-col justify-between space-y-3 hover:border-[#008F87]/40 transition-all shadow-xs"

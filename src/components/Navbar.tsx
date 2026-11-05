@@ -18,6 +18,7 @@ interface NavbarProps {
   currentEvent: EventData;
   onNavigate: (view: 'landing' | 'about-professor' | 'event' | 'dashboard' | 'admin') => void;
   activeView: string;
+  isAdmin?: boolean;
   onOpenDownloadModal?: () => void;
   onOpenRsvp?: () => void;
 }
@@ -35,6 +36,7 @@ const NAV_ITEMS: { id: ViewId; label: string; badge?: string }[] = [
 export const Navbar: React.FC<NavbarProps> = ({
   onNavigate,
   activeView,
+  isAdmin = false,
   onOpenDownloadModal,
   onOpenRsvp
 }) => {
@@ -98,6 +100,11 @@ export const Navbar: React.FC<NavbarProps> = ({
   }, [isMobileMenuOpen]);
 
   const go = (id: ViewId) => {
+    if (id === 'dashboard' && !isAdmin) {
+      onNavigate('admin');
+      setIsMobileMenuOpen(false);
+      return;
+    }
     onNavigate(id);
     setIsMobileMenuOpen(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -120,13 +127,13 @@ export const Navbar: React.FC<NavbarProps> = ({
                 : 'bg-[#FFFBF2]/90 border-[#D6A323]/25 shadow-md py-2.5 px-3 sm:px-5'
             }`}
           >
-            <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center justify-between gap-2 sm:gap-3 min-w-0">
               
               {/* Brand Identity / University Crest */}
               <button
                 id="nav-brand"
                 onClick={() => go('landing')}
-                className="flex items-center gap-2.5 group text-left cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#008F87] rounded-full pr-2"
+                className="flex min-h-11 min-w-0 flex-1 sm:flex-none items-center gap-2 sm:gap-2.5 group text-left cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#008F87] rounded-full sm:pr-2"
                 aria-label="NSUK 65th Inaugural Lecture Home"
               >
                 <div className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-full overflow-hidden border border-[#D6A323]/40 bg-white p-0.5 shadow-xs shrink-0 group-hover:scale-105 transition-transform">
@@ -141,15 +148,15 @@ export const Navbar: React.FC<NavbarProps> = ({
                   <div className="text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.16em] text-[#006B66] font-cinzel leading-none">
                     NSUK Keffi
                   </div>
-                  <div className="font-serif-luxury font-bold text-xs sm:text-sm text-[#252A2A] leading-tight truncate">
+                  <div className="font-serif-luxury font-bold text-[11px] sm:text-sm text-[#252A2A] leading-tight truncate max-w-[132px] sm:max-w-none">
                     65th Inaugural Lecture
                   </div>
                 </div>
               </button>
 
               {/* Desktop Nav Items (Pill-style with animated active state) */}
-              <div className="hidden md:flex items-center gap-1 bg-[#FFF4DC]/60 p-1 rounded-full border border-[#D6A323]/25" role="menubar">
-                {NAV_ITEMS.map((item) => {
+              <div className="hidden lg:flex items-center gap-1 bg-[#FFF4DC]/60 p-1 rounded-full border border-[#D6A323]/25" role="menubar">
+                {NAV_ITEMS.filter((item) => item.id !== 'dashboard' || isAdmin).map((item) => {
                   const active = activeView === item.id;
                   return (
                     <button
@@ -188,7 +195,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <button
                   id="nav-search-trigger"
                   onClick={() => setIsCommandPaletteOpen(true)}
-                  className="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#FFF4DC]/60 border border-[#D6A323]/30 hover:border-[#008F87]/40 text-[#47554F] hover:text-[#252A2A] text-xs font-medium transition-colors cursor-pointer"
+                  className="hidden xl:inline-flex items-center gap-2 px-3 py-1.5 min-h-10 rounded-full bg-[#FFF4DC]/60 border border-[#D6A323]/30 hover:border-[#008F87]/40 text-[#47554F] hover:text-[#252A2A] text-xs font-medium transition-colors cursor-pointer"
                   title="Search & Quick Actions (Ctrl+K)"
                   aria-label="Open Command Palette"
                 >
@@ -209,7 +216,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                       go('event');
                     }
                   }}
-                  className="inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 rounded-full text-xs font-bold uppercase tracking-wider bg-[#008F87] text-white hover:bg-[#006B66] shadow-sm hover:shadow-md transition-all cursor-pointer active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#008F87]"
+                  className="hidden sm:inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 min-h-11 rounded-full text-xs font-bold uppercase tracking-wider bg-[#008F87] text-white hover:bg-[#006B66] shadow-sm hover:shadow-md transition-all cursor-pointer active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#008F87]"
                 >
                   <span>RSVP Now</span>
                   <ArrowRight className="w-3 h-3 text-[#FFF4DC]" />
@@ -219,7 +226,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <button
                   id="nav-mobile-toggle"
                   onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                  className="md:hidden w-9 h-9 rounded-full bg-[#FFF4DC]/60 border border-[#D6A323]/30 text-[#252A2A] flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#008F87] cursor-pointer"
+                  className="lg:hidden w-11 h-11 shrink-0 rounded-full bg-[#FFF4DC]/60 border border-[#D6A323]/30 text-[#252A2A] flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#008F87] cursor-pointer"
                   aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
                   aria-expanded={isMobileMenuOpen}
                 >
@@ -236,7 +243,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       {isMobileMenuOpen && (
         <div 
           ref={mobileMenuRef}
-          className="fixed inset-0 z-50 bg-[#006B66]/95 backdrop-blur-2xl text-white flex flex-col justify-between p-6 sm:p-8 animate-fade-in md:hidden"
+          className="fixed inset-0 z-50 bg-[#006B66]/95 backdrop-blur-2xl text-white flex flex-col justify-between p-5 sm:p-8 animate-fade-in lg:hidden overflow-y-auto"
           role="dialog"
           aria-modal="true"
           aria-label="Navigation Menu"
@@ -259,7 +266,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             <button
               onClick={() => setIsMobileMenuOpen(false)}
-              className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center cursor-pointer"
+              className="w-11 h-11 shrink-0 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center cursor-pointer"
               aria-label="Close navigation"
             >
               <X className="w-5 h-5" />
@@ -271,7 +278,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <div className="text-[10px] uppercase tracking-[0.2em] text-[#D6A323] font-bold">
               Navigation
             </div>
-            {NAV_ITEMS.map((item, idx) => (
+            {NAV_ITEMS.filter((item) => item.id !== 'dashboard' || isAdmin).map((item, idx) => (
               <button
                 key={item.id}
                 onClick={() => go(item.id)}
@@ -330,6 +337,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         isOpen={isCommandPaletteOpen}
         onClose={() => setIsCommandPaletteOpen(false)}
         onNavigate={go}
+        isAdmin={isAdmin}
         onOpenDownloadModal={onOpenDownloadModal}
       />
     </>

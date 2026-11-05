@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { RSVPResponse } from '../types';
-import { QrCode, Search, CheckCircle2, AlertCircle, X, ShieldCheck } from 'lucide-react';
+import { QrCode, Search, CheckCircle2, AlertCircle, X } from 'lucide-react';
 
 interface QrCheckInModalProps {
   isOpen: boolean;
@@ -43,20 +43,20 @@ export const QrCheckInModal: React.FC<QrCheckInModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs animate-fade-in">
-      <div className="bg-[#FFFBF2] rounded-3xl border border-[#D6A323]/40 shadow-2xl max-w-lg w-full p-6 sm:p-8 space-y-6">
+    <div className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-2 sm:p-4 overflow-y-auto bg-black/70 backdrop-blur-xs animate-fade-in">
+      <div className="my-auto bg-[#FFFBF2] rounded-2xl sm:rounded-3xl border border-[#D6A323]/40 shadow-2xl max-w-lg w-full max-h-[calc(100dvh-1rem)] overflow-y-auto p-4 sm:p-8 space-y-5 sm:space-y-6">
         
         {/* Header */}
         <div className="flex items-center justify-between border-b border-[#D6A323]/20 pb-4">
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-3 min-w-0">
             <div className="w-10 h-10 rounded-xl bg-[#008F87]/15 border border-[#D6A323]/30 flex items-center justify-center text-[#008F87]">
               <QrCode className="w-5 h-5 text-[#D6A323]" />
             </div>
-            <div>
-              <h3 className="text-xl font-serif-luxury font-bold text-[#252A2A]">
+            <div className="min-w-0">
+              <h3 className="text-base sm:text-xl font-serif-luxury font-bold text-[#252A2A] leading-tight">
                 Venue QR Reception Scanner
               </h3>
-              <p className="text-xs text-[#252A2A]/70 font-sans-modern">
+              <p className="hidden sm:block text-xs text-[#252A2A]/70 font-sans-modern">
                 Scan or enter the encrypted code from the guest's Digital Pass.
               </p>
             </div>
@@ -64,54 +64,34 @@ export const QrCheckInModal: React.FC<QrCheckInModalProps> = ({
 
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-[#FFF4DC] hover:bg-[#FFECC2] text-[#252A2A] flex items-center justify-center transition-colors"
+            className="w-11 h-11 shrink-0 rounded-full bg-[#FFF4DC] hover:bg-[#FFECC2] text-[#252A2A] flex items-center justify-center transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Verification Input & Quick Code Triggers */}
+        {/* Verification Input */}
         <div className="space-y-4">
-          <div className="flex space-x-2">
+          <div className="flex flex-col sm:flex-row gap-2">
             <div className="relative flex-1">
               <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
-                placeholder="Enter Ticket Code (e.g. EA-AY-88219)"
+                placeholder="Enter guest ticket code"
                 value={ticketInput}
                 onChange={(e) => setTicketInput(e.target.value.toUpperCase())}
                 onKeyDown={(e) => e.key === 'Enter' && handleVerifyTicket()}
-                className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-[#D6A323]/40 bg-[#FFF4DC]/40 text-xs font-mono uppercase focus:outline-hidden focus:border-[#008F87]"
+                className="w-full min-h-11 pl-9 pr-4 py-2.5 rounded-xl border border-[#D6A323]/40 bg-[#FFF4DC]/40 text-xs font-mono uppercase focus:outline-hidden focus:border-[#008F87]"
               />
             </div>
             <button
               onClick={() => handleVerifyTicket()}
-              className="px-5 py-2.5 rounded-xl bg-[#008F87] text-white text-xs font-semibold uppercase tracking-wider hover:bg-[#006B66] transition-all"
+              className="px-5 py-2.5 min-h-11 rounded-xl bg-[#008F87] text-white text-xs font-semibold uppercase tracking-wider hover:bg-[#006B66] transition-all"
             >
               Verify
             </button>
           </div>
 
-          {/* Quick Demo Scan Helpers */}
-          <div className="bg-[#FFF4DC] p-3 rounded-2xl border border-[#D6A323]/30">
-            <span className="text-[10px] uppercase font-bold text-[#252A2A]/70 block mb-1.5">
-              Simulate Door Arrival (Click sample guest ticket):
-            </span>
-            <div className="flex flex-wrap gap-1.5">
-              {rsvps.slice(0, 4).map(r => (
-                <button
-                  key={r.id}
-                  onClick={() => {
-                    setTicketInput(r.qrTicketCode);
-                    handleVerifyTicket(r.qrTicketCode);
-                  }}
-                  className="px-2.5 py-1 rounded-lg bg-[#FFFBF2] border border-[#D6A323]/30 text-[10px] font-mono text-[#252A2A] hover:border-[#D6A323] hover:text-[#008F87]"
-                >
-                  {r.fullName.split(' ')[0]}: {r.qrTicketCode}
-                </button>
-              ))}
-            </div>
-          </div>
         </div>
 
         {/* Verification Feedback Result */}
@@ -124,7 +104,7 @@ export const QrCheckInModal: React.FC<QrCheckInModalProps> = ({
               </span>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 text-xs">
+            <div className="grid grid-cols-1 min-[360px]:grid-cols-2 gap-3 text-xs">
               <div>
                 <span className="text-[10px] uppercase text-gray-500 block">Guest Name</span>
                 <span className="font-bold text-gray-900">{scannedResult.fullName}</span>
@@ -165,7 +145,7 @@ export const QrCheckInModal: React.FC<QrCheckInModalProps> = ({
         <div className="flex justify-end pt-2">
           <button
             onClick={onClose}
-            className="px-6 py-2.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold"
+            className="px-6 py-2.5 min-h-11 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold"
           >
             Done
           </button>

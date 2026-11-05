@@ -144,6 +144,18 @@ export interface RSVPResponse {
   photoUrl?: string; // Guest's photo for the "I Will Be There" DP banner
 }
 
+export interface GeneratedPoster {
+  id: string;
+  eventId: string;
+  fullName: string;
+  photoUrl?: string;
+  photoScale: number;
+  photoOffsetX: number;
+  photoOffsetY: number;
+  createdAt: string;
+  updatedAt?: string;
+}
+
 export interface GuestWish {
   id: string;
   eventId: string;

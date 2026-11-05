@@ -11,10 +11,11 @@ import {
 
 interface FooterProps {
   onNavigate: (view: 'landing' | 'about-professor' | 'event' | 'dashboard' | 'admin') => void;
+  isAdmin?: boolean;
   onOpenDownloadModal?: () => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenDownloadModal }) => {
+export const Footer: React.FC<FooterProps> = ({ onNavigate, isAdmin = false, onOpenDownloadModal }) => {
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [newsletterSubmitted, setNewsletterSubmitted] = useState(false);
   const [newsletterError, setNewsletterError] = useState('');
@@ -64,7 +65,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenDownloadModal 
                 Witness academic history in the making.
               </h2>
               <p className="text-sm text-white/80 font-sans">
-                Wednesday, 25 November 2026 at 2:00 PM prompt · Assembly Hall, Main Campus, Keffi.
+                Wednesday, 25 November 2026 at 2:00 PM · Assembly Hall, Main Campus, Keffi.
               </p>
             </div>
 
@@ -123,14 +124,14 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenDownloadModal 
           <div className="lg:col-span-2">
             <button
               onClick={() => toggleAccordion('lecture')}
-              className="w-full flex items-center justify-between md:cursor-default text-left font-serif-luxury font-semibold text-sm text-[#D6A323] mb-4"
+              className="w-full min-h-11 flex items-center justify-between md:cursor-default text-left font-serif-luxury font-semibold text-sm text-[#D6A323] mb-2 md:mb-4"
             >
               <span>The Lecture</span>
               <ChevronDown className={`w-4 h-4 md:hidden transition-transform ${openAccordion === 'lecture' ? 'rotate-180' : ''}`} />
             </button>
             <ul className={`space-y-2.5 text-xs text-white/80 ${openAccordion === 'lecture' ? 'block' : 'hidden md:block'}`}>
               <li>
-                <button onClick={() => go('landing')} className="hover:text-white transition-colors cursor-pointer">
+                <button onClick={() => go('landing')} className="inline-flex min-h-10 items-center hover:text-white transition-colors cursor-pointer">
                   Lecture Topic &amp; Theme
                 </button>
               </li>
@@ -142,19 +143,19 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenDownloadModal 
                       document.getElementById('dp-generator-section')?.scrollIntoView({ behavior: 'smooth' });
                     }, 150);
                   }} 
-                  className="hover:text-white transition-colors cursor-pointer"
+                  className="inline-flex min-h-10 items-center hover:text-white transition-colors cursor-pointer"
                 >
                   Attendee DP Flyer
                 </button>
               </li>
               <li>
-                <button onClick={() => go('event')} className="hover:text-white transition-colors cursor-pointer">
+                <button onClick={() => go('event')} className="inline-flex min-h-10 items-center hover:text-white transition-colors cursor-pointer">
                   Order of Proceedings
                 </button>
               </li>
               {onOpenDownloadModal && (
                 <li>
-                  <button onClick={onOpenDownloadModal} className="hover:text-white transition-colors cursor-pointer flex items-center gap-1">
+                  <button onClick={onOpenDownloadModal} className="min-h-10 hover:text-white transition-colors cursor-pointer flex items-center gap-1">
                     <span>Press Proclamation</span>
                     <ExternalLink className="w-3 h-3 text-[#D6A323]" />
                   </button>
@@ -167,29 +168,29 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenDownloadModal 
           <div className="lg:col-span-2">
             <button
               onClick={() => toggleAccordion('lecturer')}
-              className="w-full flex items-center justify-between md:cursor-default text-left font-serif-luxury font-semibold text-sm text-[#D6A323] mb-4"
+              className="w-full min-h-11 flex items-center justify-between md:cursor-default text-left font-serif-luxury font-semibold text-sm text-[#D6A323] mb-2 md:mb-4"
             >
               <span>The Lecturer</span>
               <ChevronDown className={`w-4 h-4 md:hidden transition-transform ${openAccordion === 'lecturer' ? 'rotate-180' : ''}`} />
             </button>
             <ul className={`space-y-2.5 text-xs text-white/80 ${openAccordion === 'lecturer' ? 'block' : 'hidden md:block'}`}>
               <li>
-                <button onClick={() => go('about-professor')} className="hover:text-white transition-colors cursor-pointer">
+                <button onClick={() => go('about-professor')} className="inline-flex min-h-10 items-center hover:text-white transition-colors cursor-pointer">
                   Academic Pedigree (Ph.D.)
                 </button>
               </li>
               <li>
-                <button onClick={() => go('about-professor')} className="hover:text-white transition-colors cursor-pointer">
+                <button onClick={() => go('about-professor')} className="inline-flex min-h-10 items-center hover:text-white transition-colors cursor-pointer">
                   Director EDC Portfolio
                 </button>
               </li>
               <li>
-                <button onClick={() => go('about-professor')} className="hover:text-white transition-colors cursor-pointer">
+                <button onClick={() => go('about-professor')} className="inline-flex min-h-10 items-center hover:text-white transition-colors cursor-pointer">
                   NURA-X AI Framework
                 </button>
               </li>
               <li>
-                <button onClick={() => go('about-professor')} className="hover:text-white transition-colors cursor-pointer">
+                <button onClick={() => go('about-professor')} className="inline-flex min-h-10 items-center hover:text-white transition-colors cursor-pointer">
                   Scholarly Felicitations
                 </button>
               </li>
@@ -215,11 +216,11 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenDownloadModal 
                     setNewsletterError('');
                   }}
                   placeholder="scholar@university.edu"
-                  className="w-full pl-3.5 pr-2 py-1.5 bg-transparent text-xs text-white placeholder-white/50 focus:outline-none"
+                  className="w-full min-h-11 pl-3.5 pr-2 py-2 bg-transparent text-xs text-white placeholder-white/50 focus:outline-none"
                 />
                 <button
                   type="submit"
-                  className="px-4 py-2 rounded-full bg-[#008F87] hover:bg-[#006B66] text-white text-xs font-medium shrink-0 transition-colors cursor-pointer"
+                  className="px-4 py-2 min-h-11 rounded-full bg-[#008F87] hover:bg-[#006B66] text-white text-xs font-medium shrink-0 transition-colors cursor-pointer"
                 >
                   Subscribe
                 </button>
@@ -275,23 +276,27 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenDownloadModal 
           </div>
 
           <div className="flex items-center gap-4 text-[11px]">
-            <button
-              onClick={() => go('dashboard')}
-              className="hover:text-white transition-colors cursor-pointer"
-            >
-              Secretariat Portal
-            </button>
-            <span className="text-white/20">|</span>
+            {isAdmin && (
+              <>
+                <button
+                  onClick={() => go('dashboard')}
+                  className="hover:text-white transition-colors cursor-pointer"
+                >
+                  Secretariat Portal
+                </button>
+                <span className="text-white/20">|</span>
+              </>
+            )}
             <button
               onClick={() => go('admin')}
-              className="hover:text-white transition-colors cursor-pointer"
+              className="inline-flex min-h-10 items-center hover:text-white transition-colors cursor-pointer"
             >
               Tribute Moderation
             </button>
             <span className="text-white/20">|</span>
             <button 
               onClick={scrollToTop} 
-              className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-white/10 hover:bg-white/20 text-white text-[11px] font-semibold transition-colors cursor-pointer"
+              className="inline-flex min-h-10 items-center gap-1 px-3 py-1 rounded-full bg-white/10 hover:bg-white/20 text-white text-[11px] font-semibold transition-colors cursor-pointer"
               title="Return to top"
             >
               <span>Back to top</span>

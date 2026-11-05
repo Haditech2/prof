@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { EventData, RSVPResponse, GuestWish } from './types';
-import { INITIAL_EVENTS, INITIAL_RSVPS, INITIAL_WISHES } from './data/mockData';
+import { INITIAL_EVENTS, INITIAL_RSVPS, INITIAL_WISHES } from './data/eventData';
 import { Navbar } from './components/Navbar';
 import { HeroSection } from './components/HeroSection';
 import { CountdownSection } from './components/CountdownSection';
@@ -16,36 +16,46 @@ import { AttendeeCards } from './components/AttendeeCards';
 import { TributeModal } from './components/TributeModal';
 import { AdminTributesView } from './components/AdminTributesView';
 import { tributesApi } from './lib/tributesApi';
+import { fileToAvatarDataUrl } from './lib/imageResize';
+import { createRsvpDraft, createRsvpTicketCode, guestFallbackEmail, MY_RSVP_STORAGE_KEY } from './lib/rsvp';
 import { PhotoGallery } from './components/ui/PhotoGallery';
-import { 
-  ArrowRight, 
-  Award, 
-  Clock, 
-  MapPin, 
-  Cpu, 
-  Lock, 
-  Users, 
+import {
+  ArrowRight,
+  Award,
+  Clock,
+  MapPin,
+  Cpu,
+  Lock,
+  Users,
   Heart,
   CheckCircle2,
   Send,
-  Download
+  Download,
+  ImagePlus,
+  X,
+  ShieldCheck
 } from 'lucide-react';
-import type { RSVPResponse as RsvpType } from './types';
+
+type AppView = 'landing' | 'about-professor' | 'event' | 'dashboard' | 'admin';
+
+const viewFromLocation = (): AppView => {
+  if (typeof window !== 'undefined' && window.location.pathname.startsWith('/e/')) {
+    return 'event';
+  }
+  return 'landing';
+};
 
 export function App() {
   const [events, setEvents] = useState<EventData[]>(() => {
-    try {
-      localStorage.removeItem('everafter_inaugural_events');
-      localStorage.removeItem('everafter_inaugural_rsvps');
-      localStorage.removeItem('everafter_inaugural_wishes');
-    } catch {}
-
     const saved = localStorage.getItem('prof_rashidah_event');
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
         if (parsed && parsed.id === 'event-prof-rashidah-inaugural') {
           parsed.gallery = INITIAL_EVENTS[0].gallery;
+          // Refresh corrected public copy while preserving host-selected styling.
+          parsed.instructions = INITIAL_EVENTS[0].instructions;
+          parsed.schedule = INITIAL_EVENTS[0].schedule;
           return [parsed];
         }
       } catch {}
@@ -58,28 +68,34 @@ export function App() {
     if (saved) {
       try {
         const parsed: RSVPResponse[] = JSON.parse(saved);
-        if (parsed && parsed.some(r => r.id === 'rsvp-inaug-2')) {
-          return parsed;
-        }
+        if (Array.isArray(parsed)) return parsed;
       } catch {}
     }
     return INITIAL_RSVPS;
   });
 
-  // Shared tributes start from curated seed data, then hydrate from the API.
+  // Shared tributes begin empty and hydrate only from the production API.
   const [wishes, setWishes] = useState<GuestWish[]>(INITIAL_WISHES);
 
   // State for Tribute Modal (Full letter preview)
   const [selectedTributeForModal, setSelectedTributeForModal] = useState<GuestWish | null>(null);
 
   // State for homepage live "I Will Be There" DP generator
-  const [homepageFlyerRsvp, setHomepageFlyerRsvp] = useState<RSVPResponse>(INITIAL_RSVPS[0]);
+  const [homepageFlyerRsvp, setHomepageFlyerRsvp] = useState<RSVPResponse>(() => {
+    try {
+      const myRsvpId = localStorage.getItem(MY_RSVP_STORAGE_KEY);
+      return rsvps.find((rsvp) => rsvp.id === myRsvpId) || createRsvpDraft(INITIAL_EVENTS[0].id);
+    } catch {
+      return createRsvpDraft(INITIAL_EVENTS[0].id);
+    }
+  });
 
   // State for homepage biography photo switcher
   const [spotlightPhotoIdx, setSpotlightPhotoIdx] = useState(0);
 
   // Navigation View State
-  const [activeView, setActiveView] = useState<'landing' | 'about-professor' | 'event' | 'dashboard' | 'admin'>('landing');
+  const [activeView, setActiveView] = useState<AppView>(viewFromLocation);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   // Modals
   const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
@@ -92,6 +108,31 @@ export function App() {
   const [inlineAuthor, setInlineAuthor] = useState('');
   const [inlineMessage, setInlineMessage] = useState('');
   const [inlineRole, setInlineRole] = useState('');
+  const [inlinePhoto, setInlinePhoto] = useState('');
+  const inlinePhotoInputRef = React.useRef<HTMLInputElement>(null);
+
+  const handleAdminAuthChange = React.useCallback((authenticated: boolean) => {
+    setIsAdmin(authenticated);
+    if (!authenticated) {
+      setIsCheckInScannerOpen(false);
+      setActiveView((view) => (view === 'dashboard' ? 'admin' : view));
+    }
+  }, []);
+
+  const handlePublishedTributesChange = React.useCallback((published: GuestWish[]) => {
+    setWishes(published);
+  }, []);
+
+  const handleInlinePhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+    try {
+      setInlinePhoto(await fileToAvatarDataUrl(file));
+    } catch (error) {
+      setToastMessage(error instanceof Error ? error.message : 'Photo could not be added.');
+    }
+  };
 
   // Sync state to localStorage
   useEffect(() => {
@@ -102,8 +143,25 @@ export function App() {
     localStorage.setItem('prof_rashidah_rsvps', JSON.stringify(rsvps));
   }, [rsvps]);
 
-  // Fetch published tributes from the shared wall (falls back to seed data
-  // locally when the tribute API is not reachable, e.g. `npm run dev`).
+  // The backend validates the signed HttpOnly admin cookie. Public visitors
+  // never receive a Secretariat navigation entry or dashboard access.
+  useEffect(() => {
+    let active = true;
+    tributesApi
+      .session()
+      .then((session) => {
+        if (active) setIsAdmin(session.authenticated);
+      })
+      .catch(() => {
+        if (active) setIsAdmin(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  // Fetch published tributes from the shared wall. If the API is unavailable,
+  // the wall remains empty rather than displaying fabricated fallback entries.
   useEffect(() => {
     let active = true;
     tributesApi
@@ -112,7 +170,7 @@ export function App() {
         if (active && published.length > 0) setWishes(published);
       })
       .catch(() => {
-        /* keep seed data when the API is unavailable */
+        /* keep the empty production state when the API is unavailable */
       });
     return () => {
       active = false;
@@ -121,6 +179,22 @@ export function App() {
 
   // Current active event (exclusively Professor Rashidah)
   const currentEvent = events[0] || INITIAL_EVENTS[0];
+
+  const handleNavigate = (view: AppView) => {
+    if (view === 'event') {
+      window.history.pushState({}, '', `/e/${currentEvent.slug}`);
+    } else if (window.location.pathname.startsWith('/e/')) {
+      window.history.pushState({}, '', '/');
+    }
+    setActiveView(view);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    const handlePopState = () => setActiveView(viewFromLocation());
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   // Current event's RSVPs and Wishes
   const currentEventRsvps = rsvps.filter(r => r.eventId === currentEvent.id);
@@ -145,30 +219,28 @@ export function App() {
   const handleConfirmHomepageFlyer = ({
     fullName,
     photoUrl,
-    phone,
-    email
+    guestCount
   }: {
     fullName: string;
     photoUrl: string;
-    phone?: string;
-    email?: string;
+    guestCount: number;
   }) => {
-    const isExistingFlyerRsvp = homepageFlyerRsvp.id.startsWith('rsvp-flyer-');
-    const updated: RsvpType = {
+    const isExistingFlyerRsvp = homepageFlyerRsvp.id !== 'rsvp-draft' && Boolean(homepageFlyerRsvp.qrTicketCode);
+    const updated: RSVPResponse = {
       ...homepageFlyerRsvp,
       id: isExistingFlyerRsvp ? homepageFlyerRsvp.id : `rsvp-flyer-${Date.now()}`,
       eventId: currentEvent.id,
       fullName,
-      email: email?.trim() || `${fullName.toLowerCase().replace(/[^a-z0-9]+/g, '.')}@guest.nsuk.edu.ng`,
-      phone: phone?.trim() || '',
+      email: homepageFlyerRsvp.email || guestFallbackEmail(fullName),
+      phone: homepageFlyerRsvp.phone || '',
       attendance: 'attending',
-      guestCount: 1,
+      guestCount,
       dietary: 'None',
       groupCategory: 'General',
       submittedAt: new Date().toISOString(),
       qrTicketCode: isExistingFlyerRsvp
         ? homepageFlyerRsvp.qrTicketCode
-        : `EA-RFO-${Math.floor(10000 + Math.random() * 90000)}`,
+        : createRsvpTicketCode(currentEvent.slug),
       checkedIn: isExistingFlyerRsvp ? homepageFlyerRsvp.checkedIn : false,
       checkedInAt: isExistingFlyerRsvp ? homepageFlyerRsvp.checkedInAt : undefined,
       photoUrl: photoUrl || undefined
@@ -180,12 +252,21 @@ export function App() {
         : [updated, ...prev]
     ));
     setHomepageFlyerRsvp(updated);
+    try {
+      localStorage.setItem(MY_RSVP_STORAGE_KEY, updated.id);
+    } catch {
+      /* the pass remains available for the current session */
+    }
   };
 
   // Smooth scroll to RSVP section from anywhere
   const scrollToRsvp = () => {
+    if (activeView === 'event') {
+      document.getElementById('rsvp-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      return;
+    }
     if (activeView !== 'landing') {
-      setActiveView('landing');
+      handleNavigate('landing');
       setTimeout(() => {
         const el = document.getElementById('rsvp-section') || document.getElementById('dp-generator-section');
         if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -206,7 +287,8 @@ export function App() {
         role: newWish.role,
         title: newWish.title,
         message: newWish.message,
-        fullText: newWish.fullText
+        fullText: newWish.fullText,
+        photoUrl: newWish.photoUrl
       })
       .then(() => {
         setToastMessage('Thank you — your tribute was received and awaits review before it appears on the wall.');
@@ -238,6 +320,7 @@ export function App() {
       eventId: currentEvent.id,
       author: inlineAuthor.trim(),
       role: inlineRole.trim() || undefined,
+      photoUrl: inlinePhoto || undefined,
       message: inlineMessage.trim(),
       createdAt: new Date().toISOString(),
       likes: 1
@@ -247,6 +330,7 @@ export function App() {
     setInlineAuthor('');
     setInlineMessage('');
     setInlineRole('');
+    setInlinePhoto('');
   };
 
   // Toggle Check In
@@ -284,11 +368,9 @@ export function App() {
       {/* Standout Floating Frosted Navbar */}
       <Navbar
         currentEvent={currentEvent}
-        onNavigate={(view) => {
-          setActiveView(view);
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }}
+        onNavigate={handleNavigate}
         activeView={activeView}
+        isAdmin={isAdmin}
         onOpenDownloadModal={() => setIsDownloadModalOpen(true)}
         onOpenRsvp={scrollToRsvp}
       />
@@ -441,7 +523,7 @@ export function App() {
                     </div>
 
                     {/* Thumbnail Switcher Pills (Smooth Touch Scroll) */}
-                    <div className="mt-3 flex items-center justify-center gap-1.5 p-1.5 rounded-2xl bg-[#FFF4DC] border border-[#D6A323]/40 shadow-xs overflow-x-auto no-scrollbar max-w-full">
+                    <div className="mt-3 flex items-center justify-start sm:justify-center gap-1.5 p-1.5 rounded-2xl bg-[#FFF4DC] border border-[#D6A323]/40 shadow-xs overflow-x-auto no-scrollbar max-w-full snap-x">
                       {[
                         { url: '/images/prof-rashidah-executive-desk.jpg', label: 'Office' },
                         { url: '/images/prof-rashidah-candid-celebration.jpg', label: 'Celebration' },
@@ -454,7 +536,7 @@ export function App() {
                           key={pIdx}
                           onClick={() => setSpotlightPhotoIdx(pIdx)}
                           title={item.label}
-                          className={`relative w-10 h-10 rounded-xl overflow-hidden border-2 transition-all cursor-pointer shrink-0 ${
+                          className={`relative w-11 h-11 rounded-xl overflow-hidden border-2 transition-all cursor-pointer shrink-0 snap-center ${
                             spotlightPhotoIdx === pIdx
                               ? 'border-[#008F87] ring-2 ring-[#D6A323] scale-105'
                               : 'border-transparent opacity-60 hover:opacity-100'
@@ -551,7 +633,7 @@ export function App() {
                           <div className={`pl-12 md:pl-0 w-full md:w-1/2 ${left ? 'md:pr-12 md:text-right' : 'md:ml-auto md:pl-12'}`}>
                             <div className={`tilt ${left ? 'tilt-tl' : 'tilt-tr'} bg-[#FFFBF2] rounded-xl border border-[#D6A323]/30 p-4 sm:p-5 shadow-xs hover:border-[#008F87]/40 ${index === 4 ? 'border-[#D6A323] bg-[#FFF4DC]/70' : ''}`}>
                               <div className="md:hidden inline-block text-[10px] font-mono font-bold uppercase px-2 py-0.5 rounded-full bg-[#008F87]/15 text-[#006B66] mb-1">
-                                {item.time} prompt
+                                {item.time}
                               </div>
                               <h3 className="font-bold text-[#252A2A] text-sm sm:text-base leading-snug">{item.title}</h3>
                               <div className={`mt-1 text-xs text-[#5B6B63] flex items-center gap-1 ${left ? 'md:justify-end' : ''}`}>
@@ -631,7 +713,7 @@ export function App() {
                           setActiveView('about-professor');
                           window.scrollTo({ top: 0, behavior: 'smooth' });
                         }}
-                        className="text-xs font-semibold text-[#008F87] hover:text-[#006B66] hover:underline whitespace-nowrap cursor-pointer"
+                        className="inline-flex min-h-10 items-center px-2 text-xs font-semibold text-[#008F87] hover:text-[#006B66] hover:underline whitespace-nowrap cursor-pointer"
                       >
                         All Tributes →
                       </button>
@@ -646,7 +728,7 @@ export function App() {
                           placeholder="Your name & title"
                           value={inlineAuthor}
                           onChange={(e) => setInlineAuthor(e.target.value)}
-                          className="px-3 py-2 rounded-xl border border-[#D6A323]/30 bg-white text-xs text-[#252A2A] focus:outline-none focus:border-[#008F87]"
+                          className="min-h-11 px-3 py-2 rounded-xl border border-[#D6A323]/30 bg-white text-xs text-[#252A2A] focus:outline-none focus:border-[#008F87]"
                           required
                         />
                         <input
@@ -655,7 +737,7 @@ export function App() {
                           placeholder="Affiliation / Relationship"
                           value={inlineRole}
                           onChange={(e) => setInlineRole(e.target.value)}
-                          className="px-3 py-2 rounded-xl border border-[#D6A323]/30 bg-white text-xs text-[#252A2A] focus:outline-none focus:border-[#008F87]"
+                          className="min-h-11 px-3 py-2 rounded-xl border border-[#D6A323]/30 bg-white text-xs text-[#252A2A] focus:outline-none focus:border-[#008F87]"
                         />
                       </div>
                       <div className="relative">
@@ -665,23 +747,65 @@ export function App() {
                           placeholder="A short message for Prof. Rashidah…"
                           value={inlineMessage}
                           onChange={(e) => setInlineMessage(e.target.value)}
-                          className="w-full px-3 py-2 pr-12 rounded-xl border border-[#D6A323]/30 bg-white text-xs text-[#252A2A] focus:outline-none focus:border-[#008F87] resize-none"
+                          className="w-full min-h-20 px-3 py-2 pr-24 rounded-xl border border-[#D6A323]/30 bg-white text-xs text-[#252A2A] focus:outline-none focus:border-[#008F87] resize-none"
                           required
                         />
-                        <button
-                          id="tribute-submit"
-                          type="submit"
-                          aria-label="Post tribute"
-                          className="absolute right-2 bottom-2 w-8 h-8 rounded-lg bg-[#008F87] hover:bg-[#006B66] text-white flex items-center justify-center cursor-pointer shadow-xs transition-colors"
-                        >
-                          <Send className="w-3.5 h-3.5" />
-                        </button>
+                        <div className="absolute right-2 bottom-2 flex items-center gap-1.5">
+                          {inlinePhoto ? (
+                            <span className="relative">
+                              <img
+                                src={inlinePhoto}
+                                alt="Attached"
+                                className="w-10 h-10 rounded-lg object-cover object-top border-2 border-[#D6A323]"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => setInlinePhoto('')}
+                                className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-[#252A2A] text-white flex items-center justify-center"
+                                aria-label="Remove photo"
+                              >
+                                <X className="w-2 h-2" />
+                              </button>
+                            </span>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => inlinePhotoInputRef.current?.click()}
+                              title="Add your photo"
+                              aria-label="Add your photo"
+                              className="w-10 h-10 rounded-lg bg-[#FFF4DC] border border-[#D6A323]/40 text-[#006B66] hover:border-[#008F87] flex items-center justify-center cursor-pointer transition-colors"
+                            >
+                              <ImagePlus className="w-3.5 h-3.5" />
+                            </button>
+                          )}
+                          <button
+                            id="tribute-submit"
+                            type="submit"
+                            aria-label="Post tribute"
+                            className="w-10 h-10 rounded-lg bg-[#008F87] hover:bg-[#006B66] text-white flex items-center justify-center cursor-pointer shadow-xs transition-colors"
+                          >
+                            <Send className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                        <input
+                          ref={inlinePhotoInputRef}
+                          type="file"
+                          accept="image/*"
+                          className="sr-only"
+                          onChange={handleInlinePhotoChange}
+                        />
                       </div>
                     </form>
 
                     {/* Rich Tributes List with Avatars & Full-Letter Modal Links */}
                     <div className="space-y-3 overflow-y-auto max-h-[380px] pr-1">
-                      {currentEventWishes.map((w, idx) => (
+                      {currentEventWishes.length === 0 ? (
+                        <div className="rounded-2xl border border-dashed border-[#D6A323]/45 bg-[#FFF4DC]/45 px-5 py-8 text-center">
+                          <Heart className="w-6 h-6 mx-auto text-[#D6A323]" />
+                          <p className="mt-2 font-serif-luxury text-base font-semibold text-[#252A2A]">The tribute wall is open.</p>
+                          <p className="mt-1 text-[11px] text-[#5B6B63]">Be the first to leave a message for Professor Rashidah.</p>
+                        </div>
+                      ) : currentEventWishes.map((w, idx) => (
                         <div key={w.id} className={`tilt ${idx % 2 === 0 ? 'tilt-tl' : 'tilt-tr'} bg-white rounded-xl border border-[#D6A323]/25 p-4 space-y-2 hover:border-[#008F87]/40 shadow-xs`}>
                           <div className="flex items-center gap-2.5">
                             {w.photoUrl ? (
@@ -747,7 +871,7 @@ export function App() {
                       setActiveView('about-professor');
                       window.scrollTo({ top: 0, behavior: 'smooth' });
                     }}
-                    className="text-xs font-semibold text-[#008F87] hover:text-[#006B66] hover:underline cursor-pointer"
+                    className="inline-flex min-h-10 items-center px-2 text-xs font-semibold text-[#008F87] hover:text-[#006B66] hover:underline cursor-pointer"
                   >
                     View Gallery →
                   </button>
@@ -764,10 +888,8 @@ export function App() {
             </section>
 
             <Footer
-              onNavigate={(view) => {
-                setActiveView(view);
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }}
+              onNavigate={handleNavigate}
+              isAdmin={isAdmin}
               onOpenDownloadModal={() => setIsDownloadModalOpen(true)}
             />
           </div>
@@ -781,13 +903,11 @@ export function App() {
             onAddWish={handleAddWish}
             onSelectTribute={(t) => setSelectedTributeForModal(t)}
             onRsvpToInaugural={() => {
-              setActiveView('event');
-              window.scrollTo({ top: 0, behavior: 'smooth' });
+              handleNavigate('event');
             }}
             onDownloadInauguralCard={() => setIsDownloadModalOpen(true)}
             onViewEventPage={() => {
-              setActiveView('event');
-              window.scrollTo({ top: 0, behavior: 'smooth' });
+              handleNavigate('event');
             }}
           />
         )}
@@ -802,8 +922,7 @@ export function App() {
             onUpdateRsvp={handleUpdateRsvp}
             onAddWish={handleAddWish}
             onBackToStudio={() => {
-              setActiveView('landing');
-              window.scrollTo({ top: 0, behavior: 'smooth' });
+              handleNavigate('landing');
             }}
             onSuccessToast={(msg) => setToastMessage(msg)}
           />
@@ -811,25 +930,44 @@ export function App() {
 
         {/* Dedicated Senate Secretariat Check-In Scanner & Roster */}
         {activeView === 'dashboard' && (
-          <HostDashboard
-            event={currentEvent}
-            rsvps={currentEventRsvps}
-            onToggleCheckIn={handleToggleCheckIn}
-            onDeleteRsvp={handleDeleteRsvp}
-            onAddGuestManual={(newG) => setRsvps(prev => [newG, ...prev])}
-            onOpenCheckInScanner={() => setIsCheckInScannerOpen(true)}
-            onViewEventPage={() => setActiveView('event')}
-            onSuccessToast={(msg) => setToastMessage(msg)}
-          />
+          isAdmin ? (
+            <HostDashboard
+              event={currentEvent}
+              rsvps={currentEventRsvps}
+              onToggleCheckIn={handleToggleCheckIn}
+              onDeleteRsvp={handleDeleteRsvp}
+              onAddGuestManual={(newG) => setRsvps(prev => [newG, ...prev])}
+              onOpenCheckInScanner={() => setIsCheckInScannerOpen(true)}
+              onViewEventPage={() => handleNavigate('event')}
+              onSuccessToast={(msg) => setToastMessage(msg)}
+            />
+          ) : (
+            <section className="min-h-screen bg-[#FFF4DC] pt-32 px-4 flex justify-center">
+              <div className="w-full max-w-md h-fit p-7 rounded-2xl bg-[#FFFBF2] border border-[#D6A323]/40 shadow-md text-center">
+                <ShieldCheck className="w-9 h-9 mx-auto text-[#008F87]" />
+                <h1 className="mt-3 font-serif-luxury text-2xl font-bold text-[#252A2A]">
+                  Administrator access only
+                </h1>
+                <p className="mt-2 text-xs text-[#5B6B63]">
+                  Sign in with the event administrator account to open the guest registry and check-in tools.
+                </p>
+                <button
+                  onClick={() => setActiveView('admin')}
+                  className="mt-5 px-6 py-2.5 rounded-full bg-[#008F87] hover:bg-[#006B66] text-white text-sm font-medium shadow-md transition-colors"
+                >
+                  Go to admin sign-in
+                </button>
+              </div>
+            </section>
+          )
         )}
 
         {/* Administrators: moderate shared tributes & felicitations */}
         {activeView === 'admin' && (
           <AdminTributesView
             onSuccessToast={(msg) => setToastMessage(msg)}
-            onPublishedCountChange={(published) => {
-              if (published.length > 0) setWishes(published);
-            }}
+            onAuthChange={handleAdminAuthChange}
+            onPublishedCountChange={handlePublishedTributesChange}
           />
         )}
       </main>

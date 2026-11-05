@@ -16,7 +16,8 @@ import {
 interface CommandPaletteProps {
   isOpen: boolean;
   onClose: () => void;
-  onNavigate: (view: 'landing' | 'about-professor' | 'event' | 'dashboard') => void;
+  onNavigate: (view: 'landing' | 'about-professor' | 'event' | 'dashboard' | 'admin') => void;
+  isAdmin?: boolean;
   onOpenDownloadModal?: () => void;
 }
 
@@ -34,6 +35,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
   isOpen,
   onClose,
   onNavigate,
+  isAdmin = false,
   onOpenDownloadModal
 }) => {
   const [query, setQuery] = useState('');
@@ -113,7 +115,9 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
     }
   ];
 
-  const filteredCommands = commands.filter(cmd =>
+  const filteredCommands = commands
+    .filter((cmd) => cmd.id !== 'cmd-secretariat' || isAdmin)
+    .filter(cmd =>
     cmd.title.toLowerCase().includes(query.toLowerCase()) ||
     cmd.subtitle.toLowerCase().includes(query.toLowerCase()) ||
     cmd.category.toLowerCase().includes(query.toLowerCase())
@@ -159,7 +163,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
 
   return (
     <div 
-      className="fixed inset-0 z-50 flex items-start justify-center pt-20 sm:pt-28 px-4 bg-black/60 backdrop-blur-md animate-fade-in"
+      className="fixed inset-0 z-50 flex items-start justify-center pt-16 sm:pt-28 px-2 sm:px-4 overflow-y-auto bg-black/60 backdrop-blur-md animate-fade-in"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
@@ -168,10 +172,10 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       <div 
         ref={containerRef}
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-xl rounded-2xl bg-[#FFFBF2] border border-[#D6A323]/40 shadow-2xl overflow-hidden animate-scale-up text-[#252A2A]"
+        className="w-full max-w-xl max-h-[calc(100dvh-4.5rem)] sm:max-h-[calc(100dvh-8rem)] rounded-2xl bg-[#FFFBF2] border border-[#D6A323]/40 shadow-2xl overflow-hidden animate-scale-up text-[#252A2A] flex flex-col"
       >
         {/* Search Input Bar */}
-        <div className="relative flex items-center px-4 py-3.5 border-b border-[#D6A323]/20 bg-[#FFF4DC]/50">
+        <div className="relative flex items-center min-h-12 px-4 py-3 border-b border-[#D6A323]/20 bg-[#FFF4DC]/50 shrink-0">
           <Search className="w-4 h-4 text-[#008F87] shrink-0" />
           <input
             ref={inputRef}
@@ -187,7 +191,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
           {query && (
             <button 
               onClick={() => setQuery('')}
-              className="w-5 h-5 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center text-xs hover:bg-gray-300"
+              className="w-10 h-10 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center text-xs hover:bg-gray-300"
             >
               ✕
             </button>
@@ -195,7 +199,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
         </div>
 
         {/* Command List */}
-        <div className="max-h-80 overflow-y-auto p-2 space-y-1">
+        <div className="min-h-0 max-h-80 overflow-y-auto p-2 space-y-1">
           {filteredCommands.length === 0 ? (
             <div className="py-8 text-center text-xs text-[#252A2A]/60">
               No actions match "<span className="font-semibold text-[#252A2A]">{query}</span>"
@@ -213,7 +217,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
                     onClose();
                   }}
                   onMouseEnter={() => setSelectedIndex(idx)}
-                  className={`w-full text-left px-3.5 py-2.5 rounded-xl flex items-center justify-between gap-3 transition-colors cursor-pointer ${
+                  className={`w-full min-h-12 text-left px-3.5 py-2.5 rounded-xl flex items-center justify-between gap-3 transition-colors cursor-pointer ${
                     isSelected ? 'bg-[#FFF4DC] text-[#006B66]' : 'hover:bg-[#FFF4DC]/40 text-[#252A2A]'
                   }`}
                 >
@@ -250,7 +254,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
         </div>
 
         {/* Footer shortcuts helper */}
-        <div className="px-4 py-2.5 bg-[#FFF4DC] border-t border-[#D6A323]/20 flex items-center justify-between text-[11px] text-[#252A2A]/70">
+        <div className="hidden sm:flex px-4 py-2.5 bg-[#FFF4DC] border-t border-[#D6A323]/20 items-center justify-between text-[11px] text-[#252A2A]/70 shrink-0">
           <div className="flex items-center gap-3">
             <span><kbd className="px-1.5 py-0.5 rounded bg-white border border-[#D6A323]/30 font-mono text-[10px]">↑</kbd> <kbd className="px-1.5 py-0.5 rounded bg-white border border-[#D6A323]/30 font-mono text-[10px]">↓</kbd> to navigate</span>
             <span><kbd className="px-1.5 py-0.5 rounded bg-white border border-[#D6A323]/30 font-mono text-[10px]">↵</kbd> to select</span>

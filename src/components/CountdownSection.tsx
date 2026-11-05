@@ -147,8 +147,8 @@ export const CountdownSection: React.FC<CountdownSectionProps> = ({
             Synchronized with {event.timezone}. Accurately counting down to celebrate with {event.celebrants}.
           </p>
 
-          {/* Style Switcher Controls & Simulator */}
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
+          {/* Editing controls are shown only when a host-side style callback is supplied. */}
+          {onStyleChange && <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
             <span className="text-xs font-semibold text-white/60 uppercase tracking-wider mr-1">
               Choose Style:
             </span>
@@ -165,10 +165,10 @@ export const CountdownSection: React.FC<CountdownSectionProps> = ({
                 {st.name}
               </button>
             ))}
-          </div>
+          </div>}
 
-          {/* Simulation Toggle Buttons */}
-          <div className="mt-3 flex items-center space-x-3 text-xs">
+          {/* Event-state simulation is an editing aid, never a public control. */}
+          {onStyleChange && <div className="mt-3 flex items-center space-x-3 text-xs">
             <span className="text-white/60">State Preview:</span>
             <button
               onClick={() => setSimulationState('normal')}
@@ -190,7 +190,7 @@ export const CountdownSection: React.FC<CountdownSectionProps> = ({
             >
               Simulate Post-Event
             </button>
-          </div>
+          </div>}
         </div>
       )}
 

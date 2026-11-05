@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { EventData, RSVPResponse } from '../types';
+import { fileToFlyerPhotoDataUrl } from '../lib/imageResize';
 import confetti from 'canvas-confetti';
 import QRCode from 'qrcode';
 import {
@@ -18,18 +19,15 @@ import {
   X
 } from 'lucide-react';
 import { generateGoogleCalendarUrl, downloadIcsFile } from '../utils/calendar';
-
-/** Official RSVP flyer — oval photo window (percentage coordinates of 819×1024 artboard) */
-const OVAL = {
-  left: 0.5709,
-  top: 0.2536,
-  width: 0.3819,
-  height: 0.4645,
-};
-
-const FLYER_SRC = '/images/i-will-be-attending-rsvp.jpg';
-const FLYER_W = 819;
-const FLYER_H = 1024;
+import {
+  RSVP_PHOTO_FOCUS_Y,
+  RSVP_PHOTO_OVAL,
+  RSVP_POSTER_EXPORT_SCALE,
+  RSVP_POSTER_HEIGHT,
+  RSVP_POSTER_SRC,
+  RSVP_POSTER_WIDTH,
+  safePosterPhotoScale
+} from '../lib/posterLayout';
 
 export type StudioBackgroundTheme = 'emerald' | 'champagne' | 'midnight' | 'ivory';
 
@@ -74,12 +72,44 @@ const STUDIO_BACKGROUNDS: StudioBackgroundOption[] = [
 
 const QUICK_TITLES = ['Prof.', 'Dr.', 'Engr.', 'Barr.', 'Alhaji', 'Hajiya', 'Chief', 'Mr.', 'Mrs.', 'Ms.'];
 
+const formatClockTime = (time: string) => {
+  const [rawHour, minute = '00'] = time.split(':');
+  const hour = Number(rawHour);
+  const suffix = hour >= 12 ? 'PM' : 'AM';
+  const displayHour = hour % 12 || 12;
+  return `${displayHour}:${minute} ${suffix}`;
+};
+
+const subtractMinutes = (time: string, amount: number) => {
+  const [hour, minute] = time.split(':').map(Number);
+  const total = (hour * 60 + minute - amount + 24 * 60) % (24 * 60);
+  return `${String(Math.floor(total / 60)).padStart(2, '0')}:${String(total % 60).padStart(2, '0')}`;
+};
+
+const formatEventDate = (isoDate: string) => {
+  const [year, month, day] = isoDate.split('-').map(Number);
+  return new Intl.DateTimeFormat('en-NG', {
+    weekday: 'short',
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    timeZone: 'UTC'
+  }).format(new Date(Date.UTC(year, month - 1, day)));
+};
+
 interface IWillBeThereBannerProps {
   event: EventData;
   rsvp: RSVPResponse;
   onUpdatePhoto?: (newPhotoUrl: string) => void;
   onUpdateName?: (name: string) => void;
-  onConfirmRsvp?: (payload: { fullName: string; photoUrl: string; phone?: string; email?: string }) => void;
+  onConfirmRsvp?: (payload: {
+    fullName: string;
+    photoUrl: string;
+    guestCount: number;
+    photoScale: number;
+    photoOffsetX: number;
+    photoOffsetY: number;
+  }) => void;
   onSuccessToast?: (msg: string) => void;
   defaultRatio?: 'square' | 'story';
   compact?: boolean;
@@ -98,39 +128,34 @@ export const IWillBeThereBanner: React.FC<IWillBeThereBannerProps> = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const nameInputRef = useRef<HTMLInputElement>(null);
 
-  // Form State — defaults to the Vice-Chancellor
-  const [attendeeName, setAttendeeName] = useState(
-    rsvp.fullName || "Professor Sa'adatu Hassan Liman (Vice-Chancellor)"
-  );
-  const [localPhoto, setLocalPhoto] = useState<string | undefined>(
-    rsvp.photoUrl || '/images/vc-saadatu-hassan-liman.jpg'
-  );
-  const [phone, setPhone] = useState(rsvp.phone || '');
-  const [email, setEmail] = useState(rsvp.email?.includes('@guest.nsuk') ? '' : (rsvp.email || ''));
+  // Form state must belong to the visitor. Never prefill another guest's
+  // identity or portrait when the RSVP draft is blank.
+  const [attendeeName, setAttendeeName] = useState(rsvp.fullName || '');
+  const [localPhoto, setLocalPhoto] = useState<string | undefined>(rsvp.photoUrl || '');
   const [showQrModal, setShowQrModal] = useState(false);
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string>('');
+  const [isPhotoProcessing, setIsPhotoProcessing] = useState(false);
 
   // Default background for uploaded photo (official NSUK Emerald Studio)
   const studioBg: StudioBackgroundTheme = 'emerald';
 
-  // Natural photo centering defaults
-  const photoScale = 1.05;
-  const photoOffsetY = 0;
+  // Visitor-adjustable crop controls keep different portrait proportions usable.
+  const [photoScale, setPhotoScale] = useState(1);
+  const [photoOffsetX, setPhotoOffsetX] = useState(0);
+  const [photoOffsetY, setPhotoOffsetY] = useState(0);
 
   // Status state
   const [isDownloading, setIsDownloading] = useState(false);
   const [isCopying, setIsCopying] = useState(false);
   const [copiedImage, setCopiedImage] = useState(false);
-  const [isConfirmed, setIsConfirmed] = useState(Boolean(rsvp.fullName && rsvp.fullName.trim().length > 0));
+  const [isConfirmed, setIsConfirmed] = useState(
+    Boolean(rsvp.fullName?.trim() && rsvp.qrTicketCode?.trim())
+  );
 
   const guestPhoto = localPhoto || rsvp.photoUrl;
   const displayName = attendeeName.trim();
-  const parenMatch = displayName.match(/\(([^)]+)\)/);
-  const rawParenthetical = parenMatch ? parenMatch[1].trim() : '';
   const nameplateName = displayName.replace(/\s*\([^)]*\)\s*$/, '').trim();
-
-  // Kicker arc text (e.g. Vice-Chancellor or Confirmed Attendee)
-  const kickerTitle = rawParenthetical || 'Confirmed Attendee';
+  const safePhotoScale = safePosterPhotoScale(photoScale, photoOffsetX, photoOffsetY);
 
   // Extract initials for monogram fallback
   const initials = displayName
@@ -140,12 +165,19 @@ export const IWillBeThereBanner: React.FC<IWillBeThereBannerProps> = ({
         .slice(0, 2)
         .map((part) => part[0]?.toUpperCase() || '')
         .join('')
-    : 'VC';
+    : '';
 
   // Generate QR Code for digital pass
-  const ticketCode = rsvp.qrTicketCode || `EA-RFO-${Math.floor(10000 + Math.random() * 90000)}`;
+  const ticketCode = rsvp.qrTicketCode || '';
+  const eventDateLabel = formatEventDate(event.date);
+  const eventTimeLabel = formatClockTime(event.startTime);
+  const arrivalTimeLabel = formatClockTime(subtractMinutes(event.startTime, 15));
 
   useEffect(() => {
+    if (!ticketCode) {
+      setQrCodeDataUrl('');
+      return;
+    }
     QRCode.toDataURL(ticketCode, { width: 240, margin: 1, color: { dark: '#003330', light: '#FFFFFF' } })
       .then((url) => setQrCodeDataUrl(url))
       .catch((err) => console.error('QR code generation failed:', err));
@@ -159,18 +191,24 @@ export const IWillBeThereBanner: React.FC<IWillBeThereBannerProps> = ({
     if (rsvp.photoUrl && rsvp.photoUrl !== localPhoto) {
       setLocalPhoto(rsvp.photoUrl);
     }
-    if (rsvp.phone && rsvp.phone !== phone) {
-      setPhone(rsvp.phone);
+    if (rsvp.fullName?.trim() && rsvp.qrTicketCode?.trim()) {
+      setIsConfirmed(true);
     }
   }, [rsvp]);
 
   const applyPhoto = (url: string) => {
     setLocalPhoto(url);
+    setPhotoScale(1);
+    setPhotoOffsetX(0);
+    setPhotoOffsetY(0);
     onUpdatePhoto?.(url);
   };
 
   const removePhoto = () => {
     setLocalPhoto('');
+    setPhotoScale(1);
+    setPhotoOffsetX(0);
+    setPhotoOffsetY(0);
     onUpdatePhoto?.('');
   };
 
@@ -194,22 +232,20 @@ export const IWillBeThereBanner: React.FC<IWillBeThereBannerProps> = ({
     nameInputRef.current?.focus();
   };
 
-  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    e.target.value = '';
     if (!file) return;
-    if (!file.type.startsWith('image/')) {
-      onSuccessToast?.('Please choose an image file (JPG, PNG, or WEBP).');
-      return;
+    setIsPhotoProcessing(true);
+    try {
+      const result = await fileToFlyerPhotoDataUrl(file);
+      applyPhoto(result);
+      onSuccessToast?.('Photo added — your flyer preview is ready.');
+    } catch (error) {
+      onSuccessToast?.(error instanceof Error ? error.message : 'That photo could not be added.');
+    } finally {
+      setIsPhotoProcessing(false);
     }
-    const reader = new FileReader();
-    reader.onload = (loadEvent) => {
-      const result = loadEvent.target?.result as string;
-      if (result) {
-        applyPhoto(result);
-        onSuccessToast?.('Photo uploaded! Studio background applied.');
-      }
-    };
-    reader.readAsDataURL(file);
   };
 
   const loadImage = (src: string) =>
@@ -221,89 +257,46 @@ export const IWillBeThereBanner: React.FC<IWillBeThereBannerProps> = ({
       img.src = src;
     });
 
-  /** Helper to render character-by-character curved text along an ellipse arc */
-  const drawCurvedText = (
-    context: CanvasRenderingContext2D,
-    text: string,
-    centerX: number,
-    centerY: number,
-    radiusX: number,
-    radiusY: number,
-    fontSize: number,
-    color = '#FFFDF5',
-    fontFamily = "Georgia, 'Times New Roman', serif",
-    fontWeight = 'bold'
-  ) => {
-    if (!text) return;
-    context.save();
-    context.font = `${fontWeight} ${fontSize}px ${fontFamily}`;
-    context.fillStyle = color;
-    context.textAlign = 'center';
-    context.textBaseline = 'middle';
-    context.shadowColor = 'rgba(0, 0, 0, 0.95)';
-    context.shadowBlur = 6;
-    context.shadowOffsetY = 2;
-
-    const charWidths: number[] = [];
-    let totalW = 0;
-    for (let i = 0; i < text.length; i++) {
-      const w = context.measureText(text[i]).width;
-      charWidths.push(w);
-      totalW += w;
-    }
-
-    const rAvg = (radiusX + radiusY) / 2;
-    const totalAngle = totalW / rAvg;
-    let currentAngle = Math.PI / 2 + totalAngle / 2;
-
-    for (let i = 0; i < text.length; i++) {
-      const char = text[i];
-      const halfAngle = charWidths[i] / 2 / rAvg;
-      currentAngle -= halfAngle;
-
-      const x = centerX + radiusX * Math.cos(currentAngle);
-      const y = centerY + radiusY * Math.sin(currentAngle);
-
-      const vx = radiusX * Math.sin(currentAngle);
-      const vy = -radiusY * Math.cos(currentAngle);
-      const tangent = Math.atan2(vy, vx);
-
-      context.save();
-      context.translate(x, y);
-      context.rotate(tangent);
-      context.fillText(char, 0, 0);
-      context.restore();
-
-      currentAngle -= halfAngle;
-    }
-
-    context.restore();
+  const saveCurrentPosterToWall = () => {
+    const name = attendeeName.trim();
+    if (!name) return;
+    onConfirmRsvp?.({
+      fullName: name,
+      photoUrl: guestPhoto || '',
+      guestCount: 1,
+      photoScale,
+      photoOffsetX,
+      photoOffsetY,
+    });
   };
 
-  // Generates 2x Retina high-resolution canvas with default studio background and gilded nameplate
+  // Generates the high-resolution poster with the portrait and nameplate.
   const generateOfficialCanvas = async (): Promise<HTMLCanvasElement> => {
-    const scale = 2;
+    const scale = RSVP_POSTER_EXPORT_SCALE;
     const canvas = document.createElement('canvas');
-    canvas.width = FLYER_W * scale;
-    canvas.height = FLYER_H * scale;
+    canvas.width = RSVP_POSTER_WIDTH * scale;
+    canvas.height = RSVP_POSTER_HEIGHT * scale;
     const ctx = canvas.getContext('2d');
     if (!ctx) throw new Error('No 2D context');
 
     ctx.scale(scale, scale);
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
 
     // 1. Draw base flyer background
-    const flyer = await loadImage(FLYER_SRC);
-    ctx.drawImage(flyer, 0, 0, FLYER_W, FLYER_H);
+    const flyer = await loadImage(RSVP_POSTER_SRC);
+    ctx.drawImage(flyer, 0, 0, RSVP_POSTER_WIDTH, RSVP_POSTER_HEIGHT);
 
-    // Oval geometry
-    const ox = OVAL.left * FLYER_W;
-    const oy = OVAL.top * FLYER_H;
-    const ow = OVAL.width * FLYER_W;
-    const oh = OVAL.height * FLYER_H;
+    // Gold oval geometry
+    const ox = RSVP_PHOTO_OVAL.left * RSVP_POSTER_WIDTH;
+    const oy = RSVP_PHOTO_OVAL.top * RSVP_POSTER_HEIGHT;
+    const ow = RSVP_PHOTO_OVAL.width * RSVP_POSTER_WIDTH;
+    const oh = RSVP_PHOTO_OVAL.height * RSVP_POSTER_HEIGHT;
     const cx = ox + ow / 2;
     const cy = oy + oh / 2;
+    const artworkScale = RSVP_POSTER_WIDTH / 819;
 
-    // 2. Default Studio Background (Drawn inside the oval first!)
+    // 2. Draw the studio background and guest portrait inside the gold oval.
     ctx.save();
     ctx.beginPath();
     ctx.ellipse(cx, cy, ow / 2, oh / 2, 0, 0, Math.PI * 2);
@@ -311,29 +304,29 @@ export const IWillBeThereBanner: React.FC<IWillBeThereBannerProps> = ({
     ctx.clip();
 
     const selectedBgObj = STUDIO_BACKGROUNDS.find((b) => b.id === studioBg) || STUDIO_BACKGROUNDS[0];
-    const bgGrad = ctx.createRadialGradient(cx, cy - 25, 10, cx, cy, oh / 1.8);
+    const bgGrad = ctx.createRadialGradient(
+      cx,
+      cy - 25 * artworkScale,
+      10 * artworkScale,
+      cx,
+      cy,
+      oh / 1.8
+    );
     bgGrad.addColorStop(0, selectedBgObj.gradientColors[0]);
     bgGrad.addColorStop(0.55, selectedBgObj.gradientColors[1]);
     bgGrad.addColorStop(1, selectedBgObj.gradientColors[2]);
     ctx.fillStyle = bgGrad;
     ctx.fillRect(ox, oy, ow, oh);
 
-    // Subtle studio vignette / rim lighting inside background
-    ctx.strokeStyle = 'rgba(201, 162, 39, 0.28)';
-    ctx.lineWidth = 1.5;
-    ctx.beginPath();
-    ctx.ellipse(cx, cy, ow * 0.45, oh * 0.45, 0, 0, Math.PI * 2);
-    ctx.stroke();
-
-    // 3. Render guest photo (or bespoke monogram if no photo)
+    // 3. Render guest photo (or a dignified monogram if no photo)
     if (guestPhoto) {
       try {
         const guestImg = await loadImage(guestPhoto);
-        const baseScale = Math.max(ow / guestImg.width, oh / guestImg.height) * photoScale;
+        const baseScale = Math.max(ow / guestImg.width, oh / guestImg.height) * safePhotoScale;
         const drawW = guestImg.width * baseScale;
         const drawH = guestImg.height * baseScale;
-        const drawX = cx - drawW / 2;
-        const drawY = cy - drawH / 2 + photoOffsetY * 3;
+        const drawX = ox + (ow - drawW) * 0.5 + (photoOffsetX / 100) * ow;
+        const drawY = oy + (oh - drawH) * RSVP_PHOTO_FOCUS_Y + (photoOffsetY / 100) * oh;
         ctx.drawImage(guestImg, drawX, drawY, drawW, drawH);
       } catch (err) {
         console.warn('Could not draw guest photo, fallback to monogram:', err);
@@ -341,75 +334,61 @@ export const IWillBeThereBanner: React.FC<IWillBeThereBannerProps> = ({
     } else {
       // Bespoke dignified monogram
       ctx.fillStyle = selectedBgObj.id === 'champagne' || selectedBgObj.id === 'ivory' ? '#006B66' : '#FFF4DC';
-      ctx.font = 'bold 54px Georgia, serif';
+      ctx.font = `bold ${54 * artworkScale}px Georgia, serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.shadowColor = 'rgba(0, 0, 0, 0.45)';
-      ctx.shadowBlur = 8;
-      ctx.fillText(initials || 'VIP', cx, cy - 10);
+      ctx.shadowBlur = 8 * artworkScale;
+      ctx.fillText(initials || 'YOU', cx, cy - 10 * artworkScale);
       ctx.shadowBlur = 0;
 
       ctx.fillStyle = selectedBgObj.id === 'champagne' || selectedBgObj.id === 'ivory' ? '#008F87' : '#D6A323';
-      ctx.font = 'bold 11px sans-serif';
-      ctx.fillText('DISTINGUISHED GUEST', cx, cy + 32);
+      ctx.font = `bold ${11 * artworkScale}px sans-serif`;
+      ctx.fillText(
+        nameplateName ? 'DISTINGUISHED GUEST' : 'ADD YOUR PORTRAIT',
+        cx,
+        cy + 32 * artworkScale
+      );
     }
 
-    // 4. Attendee Name Curved along the Frame
-    // Strictly curves along the frame contour so it NEVER covers "INTENTIONAL INTELLIGENCE" or any flyer content!
+    // 4. Add the attendee name inside the lower part of the portrait oval.
     if (nameplateName) {
-      // Arched ribbon vignette inside the lower frame for contrast
-      const ribbonH = oh * 0.28;
-      const ribbonY = oy + oh - ribbonH;
-      const ribbonGrad = ctx.createLinearGradient(0, ribbonY, 0, oy + oh);
-      ribbonGrad.addColorStop(0, 'rgba(0, 51, 48, 0)');
-      ribbonGrad.addColorStop(0.35, 'rgba(0, 107, 102, 0.88)');
-      ribbonGrad.addColorStop(1, 'rgba(0, 51, 48, 0.98)');
-      ctx.fillStyle = ribbonGrad;
-      ctx.fillRect(ox, ribbonY, ow, ribbonH);
+      const nameBandTop = oy + oh * 0.70;
+      const nameBand = ctx.createLinearGradient(0, nameBandTop, 0, oy + oh);
+      nameBand.addColorStop(0, 'rgba(0, 51, 48, 0)');
+      nameBand.addColorStop(0.36, 'rgba(0, 77, 73, 0.86)');
+      nameBand.addColorStop(1, 'rgba(0, 51, 48, 0.98)');
+      ctx.fillStyle = nameBand;
+      ctx.fillRect(ox, nameBandTop, ow, oh * 0.30);
 
-      // Delicate gold hairline arc
-      ctx.save();
-      ctx.beginPath();
-      ctx.ellipse(cx, cy, 148, 226, 0, 40 * (Math.PI / 180), 140 * (Math.PI / 180), false);
-      ctx.strokeStyle = 'rgba(214, 163, 35, 0.85)';
-      ctx.lineWidth = 1.5;
-      ctx.stroke();
-      ctx.restore();
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.55)';
+      ctx.shadowBlur = 4 * artworkScale;
 
-      // Sub-label / Fellowship curved along the inner arc
-      const kickerText = `✦ ${kickerTitle.toUpperCase()} ✦`;
-      const kickerFontSize = kickerText.length > 38 ? 6.8 : kickerText.length > 26 ? 7.5 : 8.5;
-      drawCurvedText(
-        ctx,
-        kickerText,
-        cx,
-        cy,
-        126,
-        194,
-        kickerFontSize,
-        '#FFF4DC',
-        'system-ui, -apple-system, sans-serif'
-      );
+      ctx.fillStyle = '#E7B72B';
+      ctx.font = `700 ${8 * artworkScale}px Arial, sans-serif`;
+      ctx.fillText('CONFIRMED ATTENDEE', cx, oy + oh * 0.79, ow - 30 * artworkScale);
 
-      // Attendee Full Name & Title curved around the frame
-      const fontSize = nameplateName.length > 32 ? 12 : nameplateName.length > 24 ? 13.5 : 16;
-      drawCurvedText(ctx, nameplateName, cx, cy, 142, 218, fontSize, '#FFFDF5');
+      let nameFontSize = 19 * artworkScale;
+      do {
+        ctx.font = `700 ${nameFontSize}px Georgia, 'Times New Roman', serif`;
+        if (ctx.measureText(nameplateName).width <= ow - 34 * artworkScale) break;
+        nameFontSize -= artworkScale;
+      } while (nameFontSize > 10 * artworkScale);
+      ctx.fillStyle = '#FFFDF5';
+      ctx.fillText(nameplateName, cx, oy + oh * 0.87, ow - 30 * artworkScale);
+      ctx.shadowBlur = 0;
     }
 
     ctx.restore();
 
-    // 5. Crisp Gold Border Ring around the oval frame
+    // Keep the supplied template's gold oval crisp after inserting the photo.
     ctx.save();
     ctx.beginPath();
     ctx.ellipse(cx, cy, ow / 2, oh / 2, 0, 0, Math.PI * 2);
-    ctx.strokeStyle = 'rgba(169, 121, 18, 0.95)';
-    ctx.lineWidth = 3.5;
-    ctx.stroke();
-
-    ctx.beginPath();
-    ctx.ellipse(cx, cy, ow / 2 + 2.5, oh / 2 + 2.5, 0, 0, Math.PI * 2);
-    ctx.strokeStyle = 'rgba(214, 163, 35, 0.6)';
-    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = 'rgba(181, 126, 4, 0.95)';
+    ctx.lineWidth = 3 * artworkScale;
     ctx.stroke();
     ctx.restore();
 
@@ -419,15 +398,16 @@ export const IWillBeThereBanner: React.FC<IWillBeThereBannerProps> = ({
   const handleDownloadBanner = async () => {
     setIsDownloading(true);
     try {
+      saveCurrentPosterToWall();
       const canvas = await generateOfficialCanvas();
-      const imgData = canvas.toDataURL('image/png', 1.0);
+      const imgData = canvas.toDataURL('image/jpeg', 0.94);
       const safeName = (nameplateName || 'attendee')
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/^-|-$/g, '');
       const link = document.createElement('a');
       link.href = imgData;
-      link.download = `${safeName || 'attendee'}-i-will-be-attending-nsuk.png`;
+      link.download = `${safeName || 'attendee'}-i-will-be-attending-nsuk.jpg`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -455,6 +435,7 @@ export const IWillBeThereBanner: React.FC<IWillBeThereBannerProps> = ({
   const handleCopyImage = async () => {
     setIsCopying(true);
     try {
+      saveCurrentPosterToWall();
       const canvas = await generateOfficialCanvas();
       canvas.toBlob(async (blob) => {
         if (!blob) return;
@@ -480,7 +461,7 @@ export const IWillBeThereBanner: React.FC<IWillBeThereBannerProps> = ({
 
   const handleShareWhatsApp = () => {
     const text = encodeURIComponent(
-      `✦ I WILL BE ATTENDING! ✦\n\nThe 65th Inaugural Lecture of Professor Rashidah Funke Olanrewaju\nTopic: "INTENTIONAL INTELLIGENCE: From Digital Trust to Human Flourishing"\n\n📅 Date: Wednesday, 25 November 2026 at 2:00 PM prompt\n🏛 Venue: Assembly Hall, Main Campus, Nasarawa State University, Keffi (NSUK)\n\nReserve your seat & get your personalized attendee flyer:\n${window.location.origin}`
+      `✦ I WILL BE ATTENDING! ✦\n\n${event.title}\n\n📅 ${eventDateLabel} at ${eventTimeLabel}\n🏛 ${event.venueName}\n\nConfirm your attendance and create your personalized attendee flyer:\n${window.location.origin}/e/${event.slug}`
     );
     window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
   };
@@ -493,13 +474,9 @@ export const IWillBeThereBanner: React.FC<IWillBeThereBannerProps> = ({
       nameInputRef.current?.focus();
       return;
     }
+    const wasConfirmed = isConfirmed;
 
-    onConfirmRsvp?.({
-      fullName: name,
-      photoUrl: guestPhoto || '',
-      phone: phone.trim(),
-      email: email.trim(),
-    });
+    saveCurrentPosterToWall();
 
     setIsConfirmed(true);
 
@@ -514,18 +491,23 @@ export const IWillBeThereBanner: React.FC<IWillBeThereBannerProps> = ({
       /* ignore */
     }
 
-    onSuccessToast?.('Seat reserved! Your personalized flyer with official plaque is ready.');
+    onSuccessToast?.(
+      wasConfirmed
+        ? 'Your RSVP and digital pass have been updated.'
+        : 'RSVP confirmed! Your personalized flyer and digital pass are ready.'
+    );
   };
 
   return (
-    <div className={`w-full mx-auto ${compact ? 'max-w-xl' : 'max-w-5xl'}`}>
+    <div className={`w-full mx-auto ${compact ? 'max-w-xl' : 'max-w-6xl'}`}>
       {/* Hidden file input */}
       <input
         ref={fileInputRef}
         type="file"
         accept="image/*"
         onChange={handlePhotoUpload}
-        className="hidden"
+        className="sr-only"
+        aria-label="Upload RSVP portrait"
       />
 
       {/* Main Grid: Responsive 2-column on desktop, optimized 1-column on mobile */}
@@ -534,52 +516,52 @@ export const IWillBeThereBanner: React.FC<IWillBeThereBannerProps> = ({
         {/* ============================================================== */}
         {/* COLUMN 1: INTERACTIVE FORM & CONTROLS                          */}
         {/* ============================================================== */}
-        <div className="lg:col-span-6 w-full space-y-4">
+        <div className="order-1 lg:col-span-6 w-full space-y-4">
           
           {/* Confirmed Status Pill */}
           {isConfirmed && (
-            <div className="rounded-2xl bg-emerald-500/15 border border-emerald-400/40 p-3.5 sm:p-4 text-white flex items-center justify-between gap-3 shadow-sm animate-fade-in">
+            <div className="rounded-2xl bg-emerald-50 border border-emerald-200 p-3.5 sm:p-4 flex items-center justify-between gap-3 shadow-sm animate-fade-in">
               <div className="flex items-center gap-2.5 min-w-0">
                 <div className="w-9 h-9 rounded-full bg-emerald-500 flex items-center justify-center shrink-0 text-white shadow-md">
                   <CheckCircle2 className="w-5 h-5" />
                 </div>
                 <div className="min-w-0">
-                  <div className="text-[11px] font-semibold text-emerald-100">
-                    Seat Reserved &amp; Registered
+                  <div className="text-[11px] font-semibold text-emerald-700">
+                    Attendance Confirmed
                   </div>
-                  <div className="text-xs sm:text-sm font-serif-luxury font-bold text-white truncate">
+                  <div className="text-xs sm:text-sm font-serif-luxury font-bold text-[#252A2A] truncate">
                     {nameplateName || 'Attendee'}
                   </div>
                 </div>
               </div>
-              <button
+              {ticketCode && <button
                 type="button"
                 onClick={() => setShowQrModal(true)}
-                className="px-3 py-1.5 rounded-full bg-white/15 hover:bg-white/25 border border-white/20 text-xs font-bold text-white transition-all flex items-center gap-1.5 shrink-0 cursor-pointer"
+                className="px-3 py-1.5 rounded-full bg-white hover:bg-emerald-100 border border-emerald-200 text-xs font-bold text-[#006B66] transition-all flex items-center gap-1.5 shrink-0 cursor-pointer"
               >
                 <QrCode className="w-3.5 h-3.5 text-[#D6A323]" />
                 <span className="hidden sm:inline">Pass</span>
-              </button>
+              </button>}
             </div>
           )}
 
           {/* Form Card */}
           <form
             onSubmit={handleConfirm}
-            className="rounded-3xl bg-[#004D49] p-4 sm:p-6 shadow-lg text-white space-y-4 relative overflow-hidden"
+            className="rounded-3xl bg-white p-4 sm:p-6 shadow-sm text-[#252A2A] space-y-5 relative overflow-hidden border border-[#D6A323]/25"
           >
             {/* Header */}
-            <div className="relative z-10 flex items-center justify-between gap-2 border-b border-white/10 pb-3">
+            <div className="relative z-10 flex items-center justify-between gap-2 border-b border-[#D6A323]/20 pb-4">
               <div>
-                <div className="font-serif-luxury italic text-xs text-[#F8E7BE]">
+                <div className="font-serif-luxury italic text-xs text-[#A97912]">
                   Official Attendance Studio
                 </div>
-                <h3 className="mt-1 font-serif-luxury font-bold text-base sm:text-lg text-white">
-                  Reserve Seat &amp; Get Flyer
+                <h3 className="mt-1 font-serif-luxury font-bold text-lg sm:text-xl text-[#252A2A]">
+                  Confirm Attendance &amp; Get Flyer
                 </h3>
               </div>
-              <span className="text-[10px] text-[#F2E3B3] font-mono font-semibold bg-white/10 px-2.5 py-1 rounded-full border border-white/15">
-                Nov 25 · 2:00 PM
+              <span className="hidden min-[420px]:inline text-[10px] text-[#006B66] font-mono font-semibold bg-[#FFF4DC] px-2.5 py-1 rounded-full border border-[#D6A323]/30">
+                {eventDateLabel} · {eventTimeLabel}
               </span>
             </div>
 
@@ -588,7 +570,7 @@ export const IWillBeThereBanner: React.FC<IWillBeThereBannerProps> = ({
             {/* ============================================================== */}
             {/* STEP 1: BETTER & OK NAME INPUT SECTION                        */}
             {/* ============================================================== */}
-            <div className="rounded-2xl bg-[#FFFBF2] p-3.5 sm:p-4 text-[#252A2A] shadow-md border-2 border-[#D6A323]/50 space-y-2.5 relative z-10">
+            <div className="rounded-2xl bg-[#F8FAF9] p-3.5 sm:p-4 text-[#252A2A] border border-[#D6A323]/30 space-y-2.5 relative z-10">
               <div className="flex items-center justify-between">
                 <label
                   htmlFor="rsvp-attendee-name"
@@ -615,7 +597,7 @@ export const IWillBeThereBanner: React.FC<IWillBeThereBannerProps> = ({
                     key={t}
                     type="button"
                     onClick={() => handleApplyTitle(t)}
-                    className="px-2 py-0.5 rounded-md bg-[#FFF4DC] hover:bg-[#008F87] hover:text-white border border-[#D6A323]/40 text-[10px] font-bold text-[#006B66] transition-colors shrink-0 cursor-pointer"
+                    className="px-3 py-1.5 min-h-11 rounded-lg bg-[#FFF4DC] hover:bg-[#008F87] hover:text-white border border-[#D6A323]/40 text-[10px] font-bold text-[#006B66] transition-colors shrink-0 cursor-pointer"
                   >
                     {t}
                   </button>
@@ -632,7 +614,7 @@ export const IWillBeThereBanner: React.FC<IWillBeThereBannerProps> = ({
                   required
                   value={attendeeName}
                   onChange={(e) => handleNameChange(e.target.value)}
-                  className="w-full pl-9 pr-8 py-2.5 rounded-xl border-2 border-[#D6A323]/30 bg-white text-sm sm:text-base font-serif-luxury font-bold text-[#252A2A] placeholder-gray-400 focus:outline-hidden focus:border-[#008F87] focus:bg-white focus:ring-2 focus:ring-[#008F87]/20 transition-all shadow-inner"
+                  className="w-full min-h-11 pl-9 pr-8 py-2.5 rounded-xl border-2 border-[#D6A323]/30 bg-white text-sm sm:text-base font-serif-luxury font-bold text-[#252A2A] placeholder-gray-400 focus:outline-hidden focus:border-[#008F87] focus:bg-white focus:ring-2 focus:ring-[#008F87]/20 transition-all shadow-inner"
                   placeholder="e.g. Prof. Sa'adatu Hassan Liman"
                   autoComplete="name"
                 />
@@ -668,18 +650,18 @@ export const IWillBeThereBanner: React.FC<IWillBeThereBannerProps> = ({
             {/* ============================================================== */}
             <div className="space-y-3 relative z-10">
               <div className="flex items-center justify-between">
-                <label className="text-xs font-semibold text-[#FFF4DC] flex items-center gap-1.5">
+                <label className="text-xs font-semibold text-[#006B66] flex items-center gap-1.5">
                   <span className="w-5 h-5 rounded-full bg-[#D6A323] text-[#003330] text-[10px] font-extrabold flex items-center justify-center">
                     2
                   </span>
                   <span>Your Photo</span>
-                  <span className="text-[10px] text-white/60 font-normal lowercase">(optional)</span>
+                  <span className="text-[10px] text-[#6B7B73] font-normal lowercase">(optional)</span>
                 </label>
                 {guestPhoto && (
                   <button
                     type="button"
                     onClick={removePhoto}
-                    className="text-[10px] text-red-300 hover:text-red-200 underline font-medium cursor-pointer"
+                    className="min-h-10 px-2 text-[10px] text-red-600 hover:text-red-700 underline font-medium cursor-pointer"
                   >
                     Remove photo
                   </button>
@@ -687,38 +669,91 @@ export const IWillBeThereBanner: React.FC<IWillBeThereBannerProps> = ({
               </div>
 
               {/* Upload button & current thumbnail */}
-              <div className="flex flex-wrap items-center gap-2.5 p-3 rounded-2xl bg-black/35 border border-white/15">
+              <div className="min-h-[180px] flex flex-col items-center justify-center gap-3 p-5 rounded-3xl bg-[#F8FAF9] border-2 border-dashed border-[#008F87]/30 text-center hover:border-[#008F87]/60 transition-colors">
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="px-4 py-2.5 rounded-full bg-gradient-to-r from-[#D6A323] via-[#FFF4DC] to-[#D6A323] text-[#003330] font-extrabold text-xs uppercase tracking-wider shadow-md hover:brightness-110 active:scale-95 transition-all inline-flex items-center gap-2 cursor-pointer min-h-[44px]"
+                  disabled={isPhotoProcessing}
+                  className="px-5 py-3 rounded-xl bg-[#006B66] hover:bg-[#004D49] text-white font-bold text-xs tracking-wide shadow-sm active:scale-95 transition-all inline-flex items-center gap-2 cursor-pointer min-h-[48px]"
                 >
-                  <Upload className="w-4 h-4 stroke-[2.5]" />
-                  <span>{guestPhoto ? 'Change Photo' : 'Upload Photo / Selfie'}</span>
+                  {isPhotoProcessing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4 stroke-[2.5]" />}
+                  <span>{isPhotoProcessing ? 'Preparing Photo…' : guestPhoto ? 'Change Photo' : 'Upload Photo / Selfie'}</span>
                 </button>
 
                 {guestPhoto ? (
                   <div className="flex items-center gap-2">
-                    <div className="w-10 h-10 rounded-full overflow-hidden ring-2 ring-[#D6A323] shrink-0 bg-black/40">
+                    <div className="w-14 h-14 rounded-2xl overflow-hidden ring-2 ring-[#D6A323] shrink-0 bg-[#FFF4DC]">
                       <img src={guestPhoto} alt="Guest" className="w-full h-full object-cover object-top" />
                     </div>
-                    <span className="text-[11px] text-white/80 font-medium">Photo attached ✓</span>
+                    <span className="text-[11px] text-[#006B66] font-medium">Photo attached ✓</span>
                   </div>
                 ) : (
-                  <span className="text-[11px] text-white/60">
-                    PNG, JPG, or WEBP portrait
+                  <span className="text-[11px] text-[#6B7B73]">
+                    JPG, PNG, or WEBP · up to 15 MB
                   </span>
                 )}
               </div>
+
+              {guestPhoto && (
+                <div className="grid grid-cols-1 gap-2.5 rounded-xl bg-[#F8FAF9] border border-[#D6A323]/20 px-3 py-2.5 sm:grid-cols-2">
+                  <label className="text-[10px] text-[#5B6B63]">
+                    <span className="flex justify-between"><span>Zoom</span><span>{Math.round(photoScale * 100)}%</span></span>
+                    <input
+                      type="range"
+                      min="1"
+                      max="1.5"
+                      step="0.01"
+                      value={photoScale}
+                      onChange={(e) => setPhotoScale(Number(e.target.value))}
+                      className="w-full accent-[#D6A323]"
+                    />
+                  </label>
+                  <label className="text-[10px] text-[#5B6B63]">
+                    <span className="flex justify-between"><span>Left / right</span><span>{photoOffsetX > 0 ? '+' : ''}{photoOffsetX}%</span></span>
+                    <input
+                      type="range"
+                      min="-12"
+                      max="12"
+                      step="1"
+                      value={photoOffsetX}
+                      onChange={(e) => setPhotoOffsetX(Number(e.target.value))}
+                      className="w-full accent-[#D6A323]"
+                    />
+                  </label>
+                  <label className="text-[10px] text-[#5B6B63]">
+                    <span className="flex justify-between"><span>Up / down</span><span>{photoOffsetY > 0 ? '+' : ''}{photoOffsetY}%</span></span>
+                    <input
+                      type="range"
+                      min="-12"
+                      max="12"
+                      step="1"
+                      value={photoOffsetY}
+                      onChange={(e) => setPhotoOffsetY(Number(e.target.value))}
+                      className="w-full accent-[#D6A323]"
+                    />
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setPhotoScale(1);
+                      setPhotoOffsetX(0);
+                      setPhotoOffsetY(0);
+                    }}
+                    className="self-end min-h-10 px-3 py-1.5 rounded-lg border border-[#D6A323]/30 text-[10px] font-semibold text-[#006B66] hover:bg-[#FFF4DC]"
+                  >
+                    Reset crop
+                  </button>
+                </div>
+              )}
             </div>
 
             {/* Primary Submit Button */}
             <div className="pt-2 relative z-10">
               <button
                 type="submit"
-                className="w-full py-3.5 px-6 rounded-full bg-gradient-to-r from-[#D6A323] via-[#FFF4DC] to-[#D6A323] text-[#003330] font-extrabold text-xs sm:text-sm uppercase tracking-wider shadow-xl hover:brightness-110 active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer min-h-[50px]"
+                className="w-full py-3.5 px-6 rounded-xl bg-[#006B66] hover:bg-[#004D49] text-white font-bold text-xs sm:text-sm tracking-wide shadow-md active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer min-h-[50px]"
               >
-                <CheckCircle2 className="w-5 h-5 text-[#003330]" />
+                <CheckCircle2 className="w-5 h-5 text-[#D6A323]" />
                 <span>{isConfirmed ? 'Update My RSVP Plaque' : 'Confirm RSVP & Get Attending Flyer'}</span>
               </button>
             </div>
@@ -737,7 +772,8 @@ export const IWillBeThereBanner: React.FC<IWillBeThereBannerProps> = ({
               <button
                 type="button"
                 onClick={handleDownloadBanner}
-                disabled={isDownloading}
+                disabled={isDownloading || !isConfirmed}
+                title={isConfirmed ? 'Download your personalized flyer' : 'Confirm your RSVP first'}
                 className="w-full py-2.5 px-4 rounded-xl bg-[#008F87] hover:bg-[#006B66] text-white font-bold text-xs uppercase tracking-wider shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 min-h-[44px]"
               >
                 {isDownloading ? (
@@ -767,8 +803,9 @@ export const IWillBeThereBanner: React.FC<IWillBeThereBannerProps> = ({
               <button
                 type="button"
                 onClick={handleCopyImage}
-                disabled={isCopying}
-                className="inline-flex items-center gap-1 text-[#008F87] hover:text-[#006B66] font-semibold py-1 px-2 rounded-lg hover:bg-[#FFF4DC] transition-colors cursor-pointer"
+                disabled={isCopying || !isConfirmed}
+                title={isConfirmed ? 'Copy flyer image' : 'Confirm your RSVP first'}
+                className="inline-flex items-center gap-1 text-[#008F87] hover:text-[#006B66] font-semibold min-h-10 py-2 px-2.5 rounded-lg hover:bg-[#FFF4DC] transition-colors cursor-pointer disabled:opacity-45 disabled:cursor-not-allowed"
               >
                 {copiedImage ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
                 <span>{copiedImage ? 'Copied to Clipboard' : 'Copy Image'}</span>
@@ -779,7 +816,7 @@ export const IWillBeThereBanner: React.FC<IWillBeThereBannerProps> = ({
                   href={generateGoogleCalendarUrl(event)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-[#008F87] hover:text-[#006B66] font-semibold py-1 px-2 rounded-lg hover:bg-[#FFF4DC] transition-colors"
+                  className="inline-flex items-center gap-1 text-[#008F87] hover:text-[#006B66] font-semibold min-h-10 py-2 px-2.5 rounded-lg hover:bg-[#FFF4DC] transition-colors"
                   title="Add to Google Calendar"
                 >
                   <Calendar className="w-3.5 h-3.5 text-[#D6A323]" />
@@ -788,7 +825,7 @@ export const IWillBeThereBanner: React.FC<IWillBeThereBannerProps> = ({
                 <button
                   type="button"
                   onClick={() => downloadIcsFile(event)}
-                  className="inline-flex items-center gap-1 text-[#008F87] hover:text-[#006B66] font-semibold py-1 px-2 rounded-lg hover:bg-[#FFF4DC] transition-colors cursor-pointer"
+                  className="inline-flex items-center gap-1 text-[#008F87] hover:text-[#006B66] font-semibold min-h-10 py-2 px-2.5 rounded-lg hover:bg-[#FFF4DC] transition-colors cursor-pointer"
                   title="Download iCal file"
                 >
                   <span>iCal (.ics)</span>
@@ -802,7 +839,7 @@ export const IWillBeThereBanner: React.FC<IWillBeThereBannerProps> = ({
         {/* ============================================================== */}
         {/* COLUMN 2: LIVE FLYER PREVIEW WITH GILDED PLAQUE                */}
         {/* ============================================================== */}
-        <div className="lg:col-span-6 w-full flex flex-col items-center">
+        <div className="order-2 lg:col-span-6 w-full flex flex-col items-center lg:sticky lg:top-24">
           
           <div className="w-full max-w-[360px] sm:max-w-[420px] space-y-3">
             
@@ -825,57 +862,86 @@ export const IWillBeThereBanner: React.FC<IWillBeThereBannerProps> = ({
                 ref={bannerRef}
                 data-i-will-be-there-card
                 className="relative w-full rounded-2xl overflow-hidden shadow-2xl bg-[#FFFBF2] select-none border-2 border-[#D6A323]/50"
-                style={{ aspectRatio: `${FLYER_W} / ${FLYER_H}` }}
+                style={{ aspectRatio: `${RSVP_POSTER_WIDTH} / ${RSVP_POSTER_HEIGHT}` }}
               >
                 {/* Base flyer artwork */}
                 <img
-                  src={FLYER_SRC}
+                  src={RSVP_POSTER_SRC}
                   alt="I Will Be Attending — Official RSVP Flyer"
                   className="absolute inset-0 w-full h-full object-cover pointer-events-none z-0"
                   crossOrigin="anonymous"
                   draggable={false}
                 />
 
-                {/* Default Studio Background + Guest Photo clipped into gold oval */}
+                {/* Guest photo placed into the supplied artwork's gold oval */}
                 <div
                   className="absolute overflow-hidden cursor-pointer group/photo z-10"
                   style={{
-                    left: `${OVAL.left * 100}%`,
-                    top: `${OVAL.top * 100}%`,
-                    width: `${OVAL.width * 100}%`,
-                    height: `${OVAL.height * 100}%`,
+                    left: `${RSVP_PHOTO_OVAL.left * 100}%`,
+                    top: `${RSVP_PHOTO_OVAL.top * 100}%`,
+                    width: `${RSVP_PHOTO_OVAL.width * 100}%`,
+                    height: `${RSVP_PHOTO_OVAL.height * 100}%`,
                     borderRadius: '50%',
-                    boxShadow: 'inset 0 0 0 2px rgba(184, 134, 11, 0.75)',
+                    boxShadow: 'inset 0 0 0 2px rgba(181, 126, 4, 0.9)',
                   }}
                   onClick={() => fileInputRef.current?.click()}
                   title="Tap to upload/change photo"
                 >
-                  {/* Default Studio Background Layer */}
-                  <div
-                    className={`absolute inset-0 bg-gradient-to-br ${
-                      STUDIO_BACKGROUNDS.find((b) => b.id === studioBg)?.previewClass || 'from-[#006B66] via-[#004D49] to-[#003330]'
-                    }`}
-                  />
-
                   {guestPhoto ? (
-                    <img
-                      src={guestPhoto}
-                      alt={attendeeName || 'Attendee'}
-                      className="relative w-full h-full object-cover"
-                      style={{ transform: `scale(${photoScale}) translateY(${photoOffsetY}px)` }}
-                      crossOrigin="anonymous"
-                      draggable={false}
-                    />
-                  ) : (
-                    /* Bespoke Monogram Preview */
-                    <div className="relative w-full h-full flex flex-col items-center justify-center gap-1 text-[#F2E3B3] p-2 select-none">
+                    <>
+                      <div
+                        className={`absolute inset-0 bg-gradient-to-br ${
+                          STUDIO_BACKGROUNDS.find((b) => b.id === studioBg)?.previewClass || 'from-[#006B66] via-[#004D49] to-[#003330]'
+                        }`}
+                      />
+                      <img
+                        src={guestPhoto}
+                        alt={attendeeName || 'Attendee'}
+                        className="relative w-full h-full object-cover"
+                        style={{
+                          objectPosition: `50% ${RSVP_PHOTO_FOCUS_Y * 100}%`,
+                          transformOrigin: `50% ${RSVP_PHOTO_FOCUS_Y * 100}%`,
+                          transform: `translate(${photoOffsetX}%, ${photoOffsetY}%) scale(${safePhotoScale})`
+                        }}
+                        crossOrigin="anonymous"
+                        draggable={false}
+                      />
+                    </>
+                  ) : nameplateName ? (
+                    <div className={`relative w-full h-full flex flex-col items-center justify-center gap-1 bg-gradient-to-br ${
+                      STUDIO_BACKGROUNDS.find((b) => b.id === studioBg)?.previewClass || 'from-[#006B66] via-[#004D49] to-[#003330]'
+                    } text-[#F2E3B3] p-2 select-none`}>
                       <span className="font-serif-luxury text-2xl sm:text-3xl font-bold tracking-wider drop-shadow-md text-[#F9F2DC]">
-                        {initials || 'VIP'}
+                        {initials || 'YOU'}
                       </span>
                       <div className="flex items-center gap-1 text-[8px] sm:text-[9px] font-bold uppercase tracking-wider text-[#D6A323] px-2 py-0.5 rounded-full bg-black/35 border border-[#D6A323]/40">
                         <Camera className="w-2.5 h-2.5 text-[#D6A323]" />
                         <span>Tap to add photo</span>
                       </div>
+                    </div>
+                  ) : (
+                    <div className="relative flex h-full w-full items-center justify-center">
+                      <div className="flex items-center gap-1 rounded-full border border-[#D6A323]/50 bg-white/85 px-2 py-1 text-[8px] font-bold uppercase tracking-wider text-[#006B66] shadow-sm sm:text-[9px]">
+                        <Camera className="h-2.5 w-2.5" />
+                        <span>Add photo</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {nameplateName && (
+                    <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 flex h-[30%] flex-col items-center justify-center bg-gradient-to-t from-[#003330] via-[#004D49]/90 to-transparent px-[8%] pt-[6%] text-center">
+                      <span className="text-[4px] font-bold uppercase tracking-[0.12em] text-[#D6A323] sm:text-[5px]">
+                        Confirmed Attendee
+                      </span>
+                      <span className={`mt-[2%] w-full truncate font-serif-luxury font-bold leading-none text-white ${
+                        nameplateName.length > 30
+                          ? 'text-[6px] sm:text-[8px]'
+                          : nameplateName.length > 22
+                            ? 'text-[7px] sm:text-[9px]'
+                            : 'text-[8px] sm:text-[11px]'
+                      }`}>
+                        {nameplateName}
+                      </span>
                     </div>
                   )}
 
@@ -884,94 +950,26 @@ export const IWillBeThereBanner: React.FC<IWillBeThereBannerProps> = ({
                     {guestPhoto ? 'Change Photo' : 'Upload Photo'}
                   </div>
 
-                  {/* Bottom gradient vignette for portrait contrast */}
-                  {nameplateName && (
-                    <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-[34%] bg-gradient-to-t from-[#002624]/95 via-[#003330]/75 to-transparent" />
-                  )}
                 </div>
 
-                {/* Curved Attendee Name around the frame */}
-                {nameplateName && (
-                  <svg
-                    viewBox="0 0 819 1024"
-                    className="pointer-events-none absolute inset-0 z-20 h-full w-full select-none"
-                    aria-hidden="true"
-                  >
-                    <defs>
-                      <path
-                        id="rsvp-curved-name-path"
-                        d="M 515.2 637.6 A 142 218 0 0 0 732.8 637.6"
-                        fill="none"
-                      />
-                      <path
-                        id="rsvp-curved-kicker-path"
-                        d="M 527.5 622.2 A 126 194 0 0 0 720.5 622.2"
-                        fill="none"
-                      />
-                      <filter id="rsvp-curved-shadow" x="-20%" y="-20%" width="140%" height="140%">
-                        <feDropShadow dx="0" dy="2" stdDeviation="3.5" floodColor="#000000" floodOpacity="0.95" />
-                      </filter>
-                    </defs>
-
-                    {/* Gold Hairline Arc framing the curve */}
-                    <path
-                      d="M 522 648 A 148 226 0 0 0 726 648"
-                      fill="none"
-                      stroke="rgba(201, 162, 39, 0.85)"
-                      strokeWidth="1.5"
-                    />
-
-                    {/* Subtitle / Fellowship Kicker */}
-                    <text
-                      fill="#DFC79B"
-                      fontFamily="system-ui, -apple-system, sans-serif"
-                      fontWeight="bold"
-                      fontSize={kickerTitle.length > 38 ? 6.8 : kickerTitle.length > 26 ? 7.5 : 8.5}
-                      letterSpacing="0.12em"
-                      filter="url(#rsvp-curved-shadow)"
-                    >
-                      <textPath
-                        href="#rsvp-curved-kicker-path"
-                        startOffset="50%"
-                        textAnchor="middle"
-                      >
-                        ✦ {kickerTitle.toUpperCase()} ✦
-                      </textPath>
-                    </text>
-
-                    {/* Attendee Name curved around the frame */}
-                    <text
-                      fill="#FFFDF5"
-                      fontFamily="Georgia, 'Times New Roman', serif"
-                      fontWeight="bold"
-                      fontSize={nameplateName.length > 32 ? 12 : nameplateName.length > 24 ? 13.5 : 16}
-                      letterSpacing="0.03em"
-                      filter="url(#rsvp-curved-shadow)"
-                    >
-                      <textPath
-                        href="#rsvp-curved-name-path"
-                        startOffset="50%"
-                        textAnchor="middle"
-                      >
-                        {nameplateName}
-                      </textPath>
-                    </text>
-                  </svg>
-                )}
               </div>
             </div>
 
             {/* Quick Caption under preview */}
             <div className="flex items-center justify-between text-[11px] text-[#252A2A]/70 px-1">
-              <span>HD 819 × 1024 (Retina Ready)</span>
-              <button
-                type="button"
-                onClick={() => setShowQrModal(true)}
-                className="text-[#008F87] hover:underline font-semibold flex items-center gap-1 cursor-pointer"
-              >
-                <QrCode className="w-3.5 h-3.5 text-[#D6A323]" />
-                <span>View Digital Pass</span>
-              </button>
+              <span>Portrait HD export · 1500 × 2000</span>
+              {isConfirmed && ticketCode ? (
+                <button
+                  type="button"
+                  onClick={() => setShowQrModal(true)}
+                  className="text-[#008F87] hover:underline font-semibold flex items-center gap-1 cursor-pointer"
+                >
+                  <QrCode className="w-3.5 h-3.5 text-[#D6A323]" />
+                  <span>View Digital Pass</span>
+                </button>
+              ) : (
+                <span className="text-[#9AA8A0]">Digital pass appears after confirmation</span>
+              )}
             </div>
 
           </div>
@@ -980,11 +978,11 @@ export const IWillBeThereBanner: React.FC<IWillBeThereBannerProps> = ({
       </div>
 
       {/* ============================================================== */}
-      {/* MODAL: DIGITAL QR SEAT PASS                                     */}
+      {/* MODAL: DIGITAL QR GUEST PASS                                    */}
       {/* ============================================================== */}
-      {showQrModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in">
-          <div className="bg-[#FFF4DC] rounded-3xl border border-[#D6A323]/50 shadow-2xl max-w-sm w-full overflow-hidden text-[#252A2A] relative">
+      {showQrModal && isConfirmed && ticketCode && (
+        <div className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-3 sm:p-4 overflow-y-auto bg-black/70 backdrop-blur-sm animate-fade-in">
+          <div className="my-auto bg-[#FFF4DC] rounded-2xl sm:rounded-3xl border border-[#D6A323]/50 shadow-2xl max-w-sm w-full max-h-[calc(100dvh-1.5rem)] overflow-y-auto text-[#252A2A] relative">
             
             {/* Header */}
             <div className="p-4 bg-gradient-to-r from-[#003330] via-[#006B66] to-[#003330] text-white flex items-center justify-between border-b border-[#D6A323]/30">
@@ -1010,10 +1008,10 @@ export const IWillBeThereBanner: React.FC<IWillBeThereBannerProps> = ({
                   65th Inaugural Lecture
                 </div>
                 <h4 className="font-serif-luxury text-lg font-bold text-[#252A2A] leading-tight">
-                  Professor Rashidah Funke Olanrewaju
+                  {event.title}
                 </h4>
                 <p className="text-xs text-[#252A2A]/70">
-                  Assembly Hall, Main Campus, NSUK Keffi
+                  {event.venueName}
                 </p>
               </div>
 
@@ -1042,11 +1040,11 @@ export const IWillBeThereBanner: React.FC<IWillBeThereBannerProps> = ({
                 </div>
                 <div className="flex justify-between">
                   <span className="text-[#252A2A]/70">Date:</span>
-                  <span className="font-semibold text-[#252A2A]">Wed, 25 Nov 2026</span>
+                  <span className="font-semibold text-[#252A2A]">{eventDateLabel}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-[#252A2A]/70">Seating Time:</span>
-                  <span className="font-semibold text-[#008F87]">01:45 PM prompt</span>
+                  <span className="text-[#252A2A]/70">Arrival Time:</span>
+                  <span className="font-semibold text-[#008F87]">{arrivalTimeLabel}</span>
                 </div>
               </div>
 

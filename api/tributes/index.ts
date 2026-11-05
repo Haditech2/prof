@@ -5,15 +5,27 @@ import { clientIp, getAdminEmail } from '../_lib/auth';
 
 const MAX_MESSAGE_LENGTH = 8000;
 const MAX_IDENTITY_LENGTH = 200;
+// Base64 JPEG avatars (~150 KB) plus headroom; only image data URLs and plain
+// web URLs are accepted, so nothing arbitrary can be smuggled into the column.
+const MAX_PHOTO_LENGTH = 140_000;
 
 function clean(value: unknown): string | undefined {
   return typeof value === 'string' ? value.trim().slice(0, MAX_IDENTITY_LENGTH) || undefined : undefined;
 }
 
+function readPhotoUrl(value: unknown): string | undefined {
+  if (typeof value !== 'string') return undefined;
+  const url = value.trim();
+  if (!url) return undefined;
+  if (url.startsWith('data:image/') && url.length <= MAX_PHOTO_LENGTH) return url;
+  if (/^https:\/\//.test(url) && url.length <= 2000) return url;
+  return undefined;
+}
+
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     await ensureSchema();
-  } catch (error) {
+  } catch {
     return res.status(503).json({ error: 'Tribute storage is not reachable yet.' });
   }
 
@@ -23,7 +35,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const wantAll = req.query.all === '1';
     const status = wantAll && isAdmin ? ['pending', 'published'] : ['published'];
     const { rows } = await getPool().query(
-      `SELECT * FROM tributes WHERE status = ANY($1::text[]) ORDER BY created_at DESC LIMIT 500`,
+      `SELECT * FROM tributes WHERE status = ANY($1::text[]) ORDER BY created_at DESC LIMIT 100`,
       [status]
     );
     return res.status(200).json({
@@ -62,7 +74,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         clean(body.role) ?? null,
         clean(body.affiliation) ?? null,
         clean(body.title) ?? null,
-        clean(body.photoUrl) ?? null,
+        readPhotoUrl(body.photoUrl) ?? null,
         message.slice(0, MAX_MESSAGE_LENGTH),
         typeof body.fullText === 'string' && body.fullText.trim()
           ? body.fullText.trim().slice(0, 40_000)

@@ -9,6 +9,7 @@ interface InvitationCardProps {
   showRsvpCta?: boolean;
   onRsvpClick?: () => void;
   guestPreviewName?: string;
+  variant?: 'default' | 'event-pass';
 }
 
 export const InvitationCard: React.FC<InvitationCardProps> = ({
@@ -17,7 +18,8 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({
   className = '',
   showRsvpCta = false,
   onRsvpClick,
-  guestPreviewName
+  guestPreviewName,
+  variant = 'default'
 }) => {
   // Determine aspect ratio class
   const getAspectRatioClasses = () => {
@@ -110,6 +112,100 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({
                  event.backgroundColor.toLowerCase() === '#0d2e24' || 
                  event.backgroundColor.toLowerCase() === '#0e1726';
 
+  const nameMatch = event.celebrants.match(/^([^()]+?)(?:\s*\((.*)\))?$/);
+  const celebrantName = nameMatch?.[1]?.trim() || event.celebrants;
+  const credentialSummary = (nameMatch?.[2] || '')
+    .split('|')[0]
+    .split(',')
+    .map((item) => item.trim())
+    .filter(Boolean)
+    .slice(0, 4)
+    .join(' · ');
+  const lectureTopic = event.description.match(/["“]([^"”]+)["”]/)?.[1] || 'Intentional Intelligence: From Digital Trust to Human Flourishing';
+  const formatTimePretty = (time: string) => {
+    const [hourText, minute = '00'] = time.split(':');
+    const hour = Number(hourText);
+    return `${hour % 12 || 12}:${minute} ${hour >= 12 ? 'PM' : 'AM'}`;
+  };
+
+  if (variant === 'event-pass' && event.category === 'inaugural') {
+    return (
+      <div
+        data-invitation-card
+        className={`relative w-full mx-auto overflow-hidden shadow-2xl ${getAspectRatioClasses()} ${className}`}
+        style={{ backgroundColor: event.backgroundColor, color: event.textColor }}
+      >
+        <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_50%_12%,rgba(255,244,220,0.14),transparent_38%),radial-gradient(circle_at_50%_85%,rgba(214,163,35,0.12),transparent_42%)]" />
+        <div className="absolute inset-3 rounded-xl border border-[#D6A323]/55 pointer-events-none">
+          <div className="absolute inset-1.5 rounded-lg border border-[#D6A323]/20" />
+          <span className="absolute top-0 left-0 w-7 h-7 border-t-2 border-l-2 border-[#D6A323]" />
+          <span className="absolute top-0 right-0 w-7 h-7 border-t-2 border-r-2 border-[#D6A323]" />
+          <span className="absolute bottom-0 left-0 w-7 h-7 border-b-2 border-l-2 border-[#D6A323]" />
+          <span className="absolute bottom-0 right-0 w-7 h-7 border-b-2 border-r-2 border-[#D6A323]" />
+        </div>
+
+        <div className="relative z-10 h-full px-6 py-5 sm:px-8 sm:py-6 flex flex-col items-center text-center">
+          <img
+            src="/images/nsuk-crest.png"
+            alt="Nasarawa State University crest"
+            className="w-10 h-10 sm:w-12 sm:h-12 object-contain shrink-0"
+          />
+          <p className="mt-1 text-[8px] sm:text-[9px] uppercase tracking-[0.2em] text-[#F8E7BE] font-semibold">
+            Nasarawa State University, Keffi
+          </p>
+          <p className="mt-1 text-[8px] sm:text-[9px] text-white/70 font-serif-luxury italic">
+            The Vice-Chancellor &amp; University Senate cordially invite you to
+          </p>
+
+          <div className="mt-2 flex items-center gap-2 text-[#D6A323]">
+            <span className="h-px w-8 bg-[#D6A323]/55" />
+            <span className="text-[8px] sm:text-[9px] uppercase tracking-[0.24em] font-bold">The 65th Inaugural Lecture</span>
+            <span className="h-px w-8 bg-[#D6A323]/55" />
+          </div>
+
+          <h2 className="mt-2 max-w-[92%] font-serif-luxury text-xl sm:text-2xl font-semibold leading-[1.05] text-white">
+            {celebrantName}
+          </h2>
+          {credentialSummary && (
+            <p className="mt-1 text-[7px] sm:text-[8px] uppercase tracking-[0.12em] text-[#F8E7BE]/85">
+              {credentialSummary}
+            </p>
+          )}
+          <p className="mt-1 text-[8px] sm:text-[9px] text-white/72">
+            Professor of Computer Science &amp; Artificial Intelligence
+          </p>
+
+          <div className="mt-2.5 relative shrink-0">
+            <div className="absolute -inset-1.5 rounded-t-[70px] rounded-b-2xl border border-[#D6A323]/35" />
+            <div className="relative w-24 h-28 sm:w-28 sm:h-32 rounded-t-[70px] rounded-b-2xl overflow-hidden border-2 border-[#D6A323] bg-[#003330] shadow-lg">
+              <img
+                src={event.photoUrl}
+                alt={celebrantName}
+                className="w-full h-full object-cover object-top"
+              />
+            </div>
+          </div>
+
+          <div className="mt-2.5 max-w-[95%]">
+            <p className="text-[7px] sm:text-[8px] uppercase tracking-[0.2em] text-[#D6A323] font-bold">Lecture Theme</p>
+            <p className="mt-0.5 font-serif-luxury text-[11px] sm:text-xs leading-tight text-white">
+              “{lectureTopic}”
+            </p>
+          </div>
+
+          <div className="mt-auto w-full pt-2 border-t border-[#D6A323]/30 text-[#FFF4DC]">
+            <p className="font-serif-luxury text-[10px] sm:text-xs font-semibold text-[#F8E7BE]">
+              {formatDatePretty(event.date)} · {formatTimePretty(event.startTime)}
+            </p>
+            <p className="mt-0.5 text-[8px] sm:text-[9px] leading-tight text-white/78 line-clamp-2">
+              {event.venueName}
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div
       data-invitation-card
@@ -195,7 +291,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({
 
           {/* Hosts / Welcoming line */}
           <p className="text-[11px] md:text-xs uppercase tracking-[0.22em] opacity-80 max-w-[85%] leading-relaxed font-sans-modern">
-            {event.hosts}
+            {event.category === 'inaugural' ? 'The Vice-Chancellor & University Senate, NSUK' : event.hosts}
           </p>
 
           <p className="text-[10px] md:text-[11px] italic font-serif-luxury opacity-75 mt-0.5">
@@ -210,8 +306,14 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({
             textShadow: isDark ? '0 2px 10px rgba(0,0,0,0.5)' : 'none'
           }}
           >
-            {event.celebrants}
+            {celebrantName}
           </h1>
+
+          {event.category === 'inaugural' && credentialSummary && (
+            <p className="text-[8px] md:text-[9px] uppercase tracking-[0.12em] text-[#F8E7BE]/80">
+              {credentialSummary}
+            </p>
+          )}
 
           {/* Event Sub-headline */}
           <div className="flex items-center justify-center space-x-3 my-1">
@@ -220,7 +322,8 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({
               {event.category === 'fatiha' ? 'Wedding Fatiha & Solemnization' : 
                event.category === 'wedding' ? 'Holy Matrimony & Reception' :
                event.category === 'birthday' ? 'Milestone Celebration' :
-               event.category === 'corporate' ? 'Annual Gala & Honors' : event.title}
+               event.category === 'corporate' ? 'Annual Gala & Honors' :
+               event.category === 'inaugural' ? 'The 65th Inaugural Lecture' : event.title}
             </span>
             <span className="h-[1px] w-8 bg-[#D6A323]/60" />
           </div>

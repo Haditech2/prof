@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { EventData, AspectRatioType } from '../types';
 import { InvitationCard } from './InvitationCard';
 import { exportInvitation, ExportFormat } from '../utils/exportImage';
+import { RSVP_POSTER_SRC } from '../lib/posterLayout';
 import { X, Download, FileImage, FileText, CheckCircle2, Sparkles, Loader2 } from 'lucide-react';
 
 interface DownloadModalProps {
@@ -67,20 +68,20 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in">
-      <div className="bg-[#FFF4DC] rounded-3xl border border-[#D6A323]/40 shadow-2xl max-w-4xl w-full max-h-[92vh] overflow-y-auto flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-2 sm:p-4 overflow-y-auto bg-black/70 backdrop-blur-sm animate-fade-in">
+      <div className="my-auto bg-[#FFF4DC] rounded-2xl sm:rounded-3xl border border-[#D6A323]/40 shadow-2xl max-w-4xl w-full max-h-[calc(100dvh-1rem)] sm:max-h-[92vh] overflow-y-auto flex flex-col">
         
         {/* Modal Header */}
-        <div className="p-6 border-b border-[#D6A323]/25 flex items-center justify-between bg-[#FFFBF2]/90 sticky top-0 z-20 backdrop-blur-md">
-          <div className="flex items-center space-x-3">
+        <div className="p-4 sm:p-6 border-b border-[#D6A323]/25 flex items-center justify-between gap-3 bg-[#FFFBF2]/90 sticky top-0 z-20 backdrop-blur-md">
+          <div className="flex items-center space-x-3 min-w-0">
             <div className="w-10 h-10 rounded-xl bg-[#008F87]/15 border border-[#D6A323]/30 flex items-center justify-center text-[#008F87]">
               <Download className="w-5 h-5 text-[#D6A323]" />
             </div>
-            <div>
-              <h3 className="text-xl font-serif-luxury font-bold text-[#252A2A]">
+            <div className="min-w-0">
+              <h3 className="text-base sm:text-xl font-serif-luxury font-bold text-[#252A2A] truncate">
                 Download Invitation Card
               </h3>
-              <p className="text-xs text-[#252A2A]/70 font-sans-modern">
+              <p className="hidden sm:block text-xs text-[#252A2A]/70 font-sans-modern">
                 Generate sharp, watermark-free cards for WhatsApp, social media, or high-res printing.
               </p>
             </div>
@@ -88,15 +89,15 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
 
           <button
             onClick={onClose}
-            className="w-9 h-9 rounded-full bg-[#FFFBF2] hover:bg-[#FFECC2] text-[#252A2A] border border-[#D6A323]/30 flex items-center justify-center transition-colors"
+            className="w-11 h-11 shrink-0 rounded-full bg-[#FFFBF2] hover:bg-[#FFECC2] text-[#252A2A] border border-[#D6A323]/30 flex items-center justify-center transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Quick Direct Download of Official Print Assets */}
-        <div className="mx-6 mt-6 p-4 rounded-2xl bg-[#FFFBF2] border border-[#D6A323]/40 shadow-xs">
-          <div className="flex items-center justify-between mb-3">
+        <div className="mx-3 sm:mx-6 mt-4 sm:mt-6 p-3 sm:p-4 rounded-2xl bg-[#FFFBF2] border border-[#D6A323]/40 shadow-xs">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 mb-3">
             <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#008F87]">
               <Sparkles className="w-4 h-4 text-[#D6A323]" />
               <span>Official University Proclamation Assets</span>
@@ -106,12 +107,12 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             <a
-              href="/images/i-will-be-attending-rsvp.jpg"
+              href={RSVP_POSTER_SRC}
               download="nsuk-65th-inaugural-i-will-be-attending.jpg"
               className="p-3 rounded-xl border border-[#D6A323]/40 hover:border-[#008F87] bg-[#FFFBF2] transition-all flex items-center gap-3 group shadow-xs"
             >
               <img
-                src="/images/i-will-be-attending-rsvp.jpg"
+                src={RSVP_POSTER_SRC}
                 alt="I Will Be Attending RSVP Flyer"
                 className="w-10 h-12 object-cover rounded-md border shrink-0"
               />
@@ -184,7 +185,7 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
         </div>
 
         {/* Modal Body: Split Controls & Live Preview */}
-        <div className="p-6 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <div className="p-3 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-8 items-start">
           
           {/* Left Column: Format & Resolution Controls */}
           <div className="lg:col-span-5 space-y-6">
@@ -204,7 +205,7 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
                   <button
                     key={r.id}
                     onClick={() => setAspectRatio(r.id as AspectRatioType)}
-                    className={`p-3 rounded-2xl border text-left transition-all ${
+                    className={`p-3 min-h-16 rounded-2xl border text-left transition-all ${
                       aspectRatio === r.id
                         ? 'border-[#008F87] bg-[#FFFBF2] ring-2 ring-[#D6A323]/40 shadow-xs'
                         : 'border-[#D6A323]/30 bg-[#FFFBF2]/70 hover:bg-[#FFFBF2] text-[#252A2A]'
@@ -233,7 +234,7 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
                     <button
                       key={fmt.id}
                       onClick={() => setFormat(fmt.id as ExportFormat)}
-                      className={`p-3 rounded-2xl border text-center transition-all flex flex-col items-center ${
+                      className={`p-2 sm:p-3 min-h-20 rounded-2xl border text-center transition-all flex flex-col items-center justify-center ${
                         format === fmt.id
                           ? 'border-[#008F87] bg-[#008F87] text-white shadow-md'
                           : 'border-[#D6A323]/30 bg-[#FFFBF2] text-[#252A2A]/80 hover:border-[#D6A323]'
@@ -262,7 +263,7 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
                   <button
                     key={sc.scale}
                     onClick={() => setScale(sc.scale)}
-                    className={`flex-1 py-2 px-2 text-xs rounded-xl border text-center font-medium transition-all ${
+                    className={`flex-1 min-h-11 py-2 px-1 sm:px-2 text-[10px] sm:text-xs rounded-xl border text-center font-medium transition-all ${
                       scale === sc.scale
                         ? 'border-[#008F87] bg-[#FFFBF2] font-bold text-[#008F87] shadow-xs'
                         : 'border-[#D6A323]/30 bg-[#FFFBF2]/70 text-[#252A2A]/70 hover:bg-[#FFFBF2]'
@@ -316,7 +317,7 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
           </div>
 
           {/* Right Column: Live Export Preview Canvas Container */}
-          <div className="lg:col-span-7 flex flex-col items-center justify-center bg-[#FFFBF2]/60 p-6 rounded-3xl border border-[#D6A323]/30 min-h-[460px] relative overflow-hidden">
+          <div className="lg:col-span-7 flex flex-col items-center justify-center bg-[#FFFBF2]/60 p-3 sm:p-6 rounded-2xl sm:rounded-3xl border border-[#D6A323]/30 min-h-[360px] sm:min-h-[460px] relative overflow-hidden">
             <span className="absolute top-3 left-4 text-[10px] uppercase tracking-widest text-gray-500 font-semibold font-mono">
               Live Capture Viewport ({aspectRatio})
             </span>

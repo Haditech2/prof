@@ -17,6 +17,7 @@ import {
 interface AdminTributesViewProps {
   onSuccessToast?: (message: string) => void;
   onPublishedCountChange?: (published: GuestWish[]) => void;
+  onAuthChange?: (authenticated: boolean) => void;
 }
 
 interface EditState {
@@ -33,7 +34,8 @@ type Tab = 'pending' | 'published';
 
 export const AdminTributesView: React.FC<AdminTributesViewProps> = ({
   onSuccessToast,
-  onPublishedCountChange
+  onPublishedCountChange,
+  onAuthChange
 }) => {
   const [checkingSession, setCheckingSession] = useState(true);
   const [authenticated, setAuthenticated] = useState(false);
@@ -52,10 +54,16 @@ export const AdminTributesView: React.FC<AdminTributesViewProps> = ({
   useEffect(() => {
     tributesApi
       .session()
-      .then((session) => setAuthenticated(session.authenticated))
-      .catch(() => setAuthenticated(false))
+      .then((session) => {
+        setAuthenticated(session.authenticated);
+        onAuthChange?.(session.authenticated);
+      })
+      .catch(() => {
+        setAuthenticated(false);
+        onAuthChange?.(false);
+      })
       .finally(() => setCheckingSession(false));
-  }, []);
+  }, [onAuthChange]);
 
   const refresh = React.useCallback(async () => {
     setLoading(true);
@@ -85,6 +93,7 @@ export const AdminTributesView: React.FC<AdminTributesViewProps> = ({
     try {
       await tributesApi.login(email, password);
       setAuthenticated(true);
+      onAuthChange?.(true);
       setPassword('');
     } catch (error) {
       setLoginError(error instanceof Error ? error.message : 'Sign-in failed.');
@@ -98,6 +107,7 @@ export const AdminTributesView: React.FC<AdminTributesViewProps> = ({
       await tributesApi.logout();
     } finally {
       setAuthenticated(false);
+      onAuthChange?.(false);
       setTributes([]);
     }
   };
@@ -173,7 +183,7 @@ export const AdminTributesView: React.FC<AdminTributesViewProps> = ({
       <div className="min-h-screen bg-[#FFF4DC] pt-28 md:pt-36 pb-20 px-4">
         <form
           onSubmit={handleLogin}
-          className="max-w-sm mx-auto p-6 sm:p-8 rounded-2xl bg-[#FFFBF2] border border-[#D6A323]/40 shadow-md space-y-4"
+          className="max-w-sm mx-auto p-5 sm:p-8 rounded-2xl bg-[#FFFBF2] border border-[#D6A323]/40 shadow-md space-y-4"
         >
           <div className="text-center">
             <span className="w-11 h-11 mx-auto rounded-full bg-[#008F87]/15 border border-[#D6A323]/40 flex items-center justify-center">
@@ -192,7 +202,7 @@ export const AdminTributesView: React.FC<AdminTributesViewProps> = ({
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="admin@nsuk.edu.ng"
-            className="w-full px-3 py-2.5 rounded-xl border border-[#D6A323]/30 bg-white text-sm focus:outline-none focus:border-[#008F87]"
+            className="w-full min-h-11 px-3 py-2.5 rounded-xl border border-[#D6A323]/30 bg-white text-sm focus:outline-none focus:border-[#008F87]"
           />
           <input
             type="password"
@@ -201,7 +211,7 @@ export const AdminTributesView: React.FC<AdminTributesViewProps> = ({
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
-            className="w-full px-3 py-2.5 rounded-xl border border-[#D6A323]/30 bg-white text-sm focus:outline-none focus:border-[#008F87]"
+            className="w-full min-h-11 px-3 py-2.5 rounded-xl border border-[#D6A323]/30 bg-white text-sm focus:outline-none focus:border-[#008F87]"
           />
 
           {loginError && <p className="text-xs text-red-600">{loginError}</p>}
@@ -209,7 +219,7 @@ export const AdminTributesView: React.FC<AdminTributesViewProps> = ({
           <button
             type="submit"
             disabled={loggingIn}
-            className="w-full py-2.5 rounded-full bg-[#008F87] hover:bg-[#006B66] text-white text-sm font-medium shadow-md transition-colors disabled:opacity-60"
+            className="w-full min-h-11 py-2.5 rounded-full bg-[#008F87] hover:bg-[#006B66] text-white text-sm font-medium shadow-md transition-colors disabled:opacity-60"
           >
             {loggingIn ? 'Signing in…' : 'Sign In'}
           </button>
@@ -249,7 +259,7 @@ export const AdminTributesView: React.FC<AdminTributesViewProps> = ({
         </div>
 
         {/* Tabs */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           {([
             { id: 'pending', label: 'Pending review', icon: Clock, count: pendingCount },
             { id: 'published', label: 'Published', icon: CheckCircle2, count: publishedCount }
@@ -283,14 +293,27 @@ export const AdminTributesView: React.FC<AdminTributesViewProps> = ({
                 key={tribute.id}
                 className="p-4 sm:p-5 rounded-2xl bg-[#FFFBF2] border border-[#D6A323]/30 shadow-xs space-y-3"
               >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <h3 className="font-serif-luxury font-bold text-sm text-[#252A2A] truncate">
-                      {tribute.author}
-                    </h3>
-                    <p className="text-[11px] text-[#A97912] truncate">{tribute.role || 'Well-wisher'}</p>
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+                  <div className="min-w-0 flex items-center gap-3">
+                    {tribute.photoUrl ? (
+                      <img
+                        src={tribute.photoUrl}
+                        alt={tribute.author}
+                        className="w-11 h-11 rounded-full object-cover object-top border-2 border-[#D6A323] shrink-0"
+                      />
+                    ) : (
+                      <div className="w-11 h-11 rounded-full bg-[#008F87]/10 border-2 border-[#D6A323] flex items-center justify-center text-[11px] font-bold text-[#006B66] shrink-0">
+                        {tribute.author.slice(0, 2).toUpperCase()}
+                      </div>
+                    )}
+                    <div className="min-w-0">
+                      <h3 className="font-serif-luxury font-bold text-sm text-[#252A2A] truncate">
+                        {tribute.author}
+                      </h3>
+                      <p className="text-[11px] text-[#A97912] truncate">{tribute.role || 'Well-wisher'}</p>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-1.5 shrink-0">
+                  <div className="flex items-center gap-1.5 shrink-0 self-end sm:self-auto">
                     <button
                       onClick={() =>
                         setEdit({
@@ -303,7 +326,7 @@ export const AdminTributesView: React.FC<AdminTributesViewProps> = ({
                           status: tribute.status
                         })
                       }
-                      className="w-8 h-8 rounded-lg bg-[#FFF4DC] border border-[#D6A323]/40 flex items-center justify-center text-[#006B66] hover:border-[#008F87]"
+                      className="w-10 h-10 rounded-lg bg-[#FFF4DC] border border-[#D6A323]/40 flex items-center justify-center text-[#006B66] hover:border-[#008F87]"
                       title="Edit"
                       aria-label={`Edit tribute by ${tribute.author}`}
                     >
@@ -311,7 +334,7 @@ export const AdminTributesView: React.FC<AdminTributesViewProps> = ({
                     </button>
                     <button
                       onClick={() => handleToggleStatus(tribute)}
-                      className={`inline-flex items-center gap-1 px-3 h-8 rounded-lg text-[11px] font-semibold border transition-colors ${
+                      className={`inline-flex items-center gap-1 px-3 h-10 rounded-lg text-[11px] font-semibold border transition-colors ${
                         tribute.status === 'published'
                           ? 'bg-[#FFF4DC] border-[#D6A323]/40 text-[#A97912] hover:text-[#B45309]'
                           : 'bg-[#008F87] border-[#008F87] text-white hover:bg-[#006B66]'
@@ -327,7 +350,7 @@ export const AdminTributesView: React.FC<AdminTributesViewProps> = ({
                     <button
                       onClick={() => handleDelete(tribute)}
                       disabled={deletingId === tribute.id}
-                      className="w-8 h-8 rounded-lg bg-[#FEF2F2] border border-red-200 flex items-center justify-center text-red-500 hover:bg-red-600 hover:text-white transition-colors disabled:opacity-50"
+                      className="w-10 h-10 rounded-lg bg-[#FEF2F2] border border-red-200 flex items-center justify-center text-red-500 hover:bg-red-600 hover:text-white transition-colors disabled:opacity-50"
                       title="Delete"
                       aria-label={`Delete tribute by ${tribute.author}`}
                     >
@@ -360,12 +383,12 @@ export const AdminTributesView: React.FC<AdminTributesViewProps> = ({
             if (e.target === e.currentTarget) setEdit(null);
           }}
         >
-          <div className="w-full max-w-lg p-6 rounded-2xl bg-[#FFFBF2] border border-[#D6A323]/40 shadow-2xl space-y-3 animate-scale-up max-h-[90vh] overflow-y-auto">
+          <div className="w-full max-w-lg p-4 sm:p-6 rounded-2xl bg-[#FFFBF2] border border-[#D6A323]/40 shadow-2xl space-y-3 animate-scale-up max-h-[calc(100dvh-2rem)] overflow-y-auto">
             <div className="flex items-center justify-between">
               <h3 className="font-serif-luxury text-lg font-bold text-[#252A2A]">Edit Tribute</h3>
               <button
                 onClick={() => setEdit(null)}
-                className="w-8 h-8 rounded-full bg-[#FFF4DC] border border-[#D6A323]/40 flex items-center justify-center text-[#5B6B63]"
+                className="w-11 h-11 rounded-full bg-[#FFF4DC] border border-[#D6A323]/40 flex items-center justify-center text-[#5B6B63]"
                 aria-label="Close editor"
               >
                 <X className="w-4 h-4" />
@@ -376,31 +399,31 @@ export const AdminTributesView: React.FC<AdminTributesViewProps> = ({
               value={edit.author}
               onChange={(e) => setEdit({ ...edit, author: e.target.value })}
               placeholder="Author name"
-              className="w-full px-3 py-2 rounded-xl border border-[#D6A323]/30 bg-white text-sm focus:outline-none focus:border-[#008F87]"
+              className="w-full min-h-11 px-3 py-2 rounded-xl border border-[#D6A323]/30 bg-white text-sm focus:outline-none focus:border-[#008F87]"
             />
             <input
               value={edit.role}
               onChange={(e) => setEdit({ ...edit, role: e.target.value })}
               placeholder="Role / description"
-              className="w-full px-3 py-2 rounded-xl border border-[#D6A323]/30 bg-white text-sm focus:outline-none focus:border-[#008F87]"
+              className="w-full min-h-11 px-3 py-2 rounded-xl border border-[#D6A323]/30 bg-white text-sm focus:outline-none focus:border-[#008F87]"
             />
             <input
               value={edit.affiliation}
               onChange={(e) => setEdit({ ...edit, affiliation: e.target.value })}
               placeholder="Affiliation"
-              className="w-full px-3 py-2 rounded-xl border border-[#D6A323]/30 bg-white text-sm focus:outline-none focus:border-[#008F87]"
+              className="w-full min-h-11 px-3 py-2 rounded-xl border border-[#D6A323]/30 bg-white text-sm focus:outline-none focus:border-[#008F87]"
             />
             <input
               value={edit.title}
               onChange={(e) => setEdit({ ...edit, title: e.target.value })}
               placeholder="Tribute title (optional)"
-              className="w-full px-3 py-2 rounded-xl border border-[#D6A323]/30 bg-white text-sm focus:outline-none focus:border-[#008F87]"
+              className="w-full min-h-11 px-3 py-2 rounded-xl border border-[#D6A323]/30 bg-white text-sm focus:outline-none focus:border-[#008F87]"
             />
             <textarea
               value={edit.message}
               onChange={(e) => setEdit({ ...edit, message: e.target.value })}
               rows={5}
-              className="w-full px-3 py-2 rounded-xl border border-[#D6A323]/30 bg-white text-sm focus:outline-none focus:border-[#008F87]"
+              className="w-full min-h-24 px-3 py-2 rounded-xl border border-[#D6A323]/30 bg-white text-sm focus:outline-none focus:border-[#008F87]"
             />
 
             <label className="flex items-center gap-2 text-xs text-[#5B6B63]">
