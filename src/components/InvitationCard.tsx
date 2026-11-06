@@ -187,7 +187,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({
           </div>
 
           <div className="mt-2.5 max-w-[95%]">
-            <p className="text-[7px] sm:text-[8px] uppercase tracking-[0.2em] text-[#D6A323] font-bold">Lecture Theme</p>
+            <p className="text-[7px] sm:text-[8px] uppercase tracking-[0.2em] text-[#D6A323] font-bold">Lecture Topic</p>
             <p className="mt-0.5 font-serif-luxury text-[11px] sm:text-xs leading-tight text-white">
               “{lectureTopic}”
             </p>

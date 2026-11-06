@@ -246,7 +246,7 @@ export function RsvpApp() {
               </p>
 
               <div className="mx-auto mt-5 max-w-xl rounded-2xl border border-[#D6A323]/35 bg-white/8 px-4 py-3 lg:mx-0">
-                <p className="text-[9px] font-bold uppercase tracking-[0.18em] text-[#D6A323]">Lecture theme</p>
+                <p className="text-[9px] font-bold uppercase tracking-[0.18em] text-[#D6A323]">Lecture topic</p>
                 <p className="mt-1 font-serif-luxury text-sm font-semibold leading-snug text-white sm:text-base">
                   “Intentional Intelligence: From Digital Trust to Human Flourishing”
                 </p>

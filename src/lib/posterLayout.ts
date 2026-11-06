@@ -1,14 +1,17 @@
 export const RSVP_POSTER_SRC = '/images/rsvp-poster-purple.jpg';
-export const RSVP_POSTER_WIDTH = 1500;
-export const RSVP_POSTER_HEIGHT = 2000;
+export const RSVP_POSTER_WIDTH = 1920;
+export const RSVP_POSTER_HEIGHT = 2560;
 export const RSVP_POSTER_EXPORT_SCALE = 1;
 
-/** Measured inner bounds of the gold portrait oval in the RSVP artwork. */
+/**
+ * Measured inner bounds of the gold portrait oval in the supplied artwork.
+ * A small inset keeps the guest photo behind the original gold border.
+ */
 export const RSVP_PHOTO_OVAL = {
-  left: 0.5709,
-  top: 0.247,
-  width: 0.3819,
-  height: 0.432,
+  left: 0.5526,
+  top: 0.2516,
+  width: 0.3896,
+  height: 0.3941,
 };
 
 /** Keeps faces slightly above centre while retaining the shoulders. */

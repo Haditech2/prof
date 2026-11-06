@@ -17,7 +17,7 @@ localStorage as an offline/local-development fallback.
 - Confirmed/generated RSVP posters are published immediately to the public poster wall. Re-generating
   with the same digital pass updates the existing wall card instead of creating a duplicate.
 - Poster portraits are reduced to lightweight wall thumbnails before upload; the full-quality portrait
-  stays in the visitor's browser for the 1500 × 2000 download.
+  stays in the visitor's browser for the 1920 × 2560 download.
 - Spam defences: honeypot field, message length cap, per-instance login throttle
   (5 failed attempts → 10 min block), HMAC-signed HttpOnly session cookie (7-day TTL).
 

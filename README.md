@@ -4,9 +4,9 @@ Official RSVP and personalized attendee-poster portal for the 65th Inaugural Lec
 
 ## Features
 
-- Concise event introduction with date, time, venue, and lecture theme
+- Concise event introduction with date, time, venue, and lecture topic
 - RSVP confirmation with optional guest portrait
-- Live 1500 × 2000 attendee-poster preview and download
+- Live 1920 × 2560 attendee-poster preview and download
 - Oval portrait crop controls for zoom and positioning
 - Public generated-poster wall with cross-device PostgreSQL persistence
 - Digital QR guest pass and administrator check-in tools

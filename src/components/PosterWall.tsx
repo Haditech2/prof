@@ -17,14 +17,6 @@ interface PosterWallProps {
   onClose: () => void;
 }
 
-const initialsOf = (name: string) => name
-  .replace(/^(prof\.?|dr\.?|engr\.?|mr\.?|mrs\.?|ms\.?|chief|alhaji|hajiya)\s+/i, '')
-  .split(/\s+/)
-  .filter(Boolean)
-  .slice(0, 2)
-  .map((part) => part[0]?.toUpperCase() || '')
-  .join('') || 'G';
-
 const formatGeneratedDate = (value: string) => {
   try {
     return new Intl.DateTimeFormat('en-NG', {
@@ -73,12 +65,12 @@ export const PosterWall: React.FC<PosterWallProps> = ({
       <div className="mx-auto my-2 min-h-[calc(100dvh-1rem)] w-full max-w-7xl overflow-hidden rounded-3xl border border-[#D6A323]/35 bg-[#F7F8F5] shadow-2xl sm:my-4 sm:min-h-0">
         <header className="sticky top-0 z-40 flex items-center justify-between gap-4 border-b border-[#D6A323]/25 bg-white/95 px-4 py-4 backdrop-blur-xl sm:px-7">
           <div className="min-w-0">
-            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#A97912]">Public RSVP Gallery</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#A97912]">Public RSVP Wall</p>
             <h2 id="poster-wall-title" className="truncate text-xl font-bold text-[#003F3C] sm:text-3xl">
-              Everyone Who Generated a Poster
+              Everyone Who RSVP’d
             </h2>
             <p className="mt-0.5 text-[11px] text-[#5B6B63] sm:text-xs">
-              {posters.length} {posters.length === 1 ? 'poster' : 'posters'} shared
+              {posters.length} {posters.length === 1 ? 'guest' : 'guests'} confirmed
             </p>
           </div>
           <button
@@ -125,19 +117,19 @@ export const PosterWall: React.FC<PosterWallProps> = ({
                         decoding="async"
                       />
 
-                      <div
-                        className="absolute z-10 overflow-hidden rounded-[50%] bg-gradient-to-br from-[#008F87] via-[#006B66] to-[#003330] shadow-[inset_0_0_0_2px_rgba(181,126,4,0.9)]"
-                        style={{
-                          left: `${RSVP_PHOTO_OVAL.left * 100}%`,
-                          top: `${RSVP_PHOTO_OVAL.top * 100}%`,
-                          width: `${RSVP_PHOTO_OVAL.width * 100}%`,
-                          height: `${RSVP_PHOTO_OVAL.height * 100}%`
-                        }}
-                      >
-                        {poster.photoUrl ? (
+                      {poster.photoUrl && (
+                        <div
+                          className="absolute z-10 overflow-hidden rounded-[50%]"
+                          style={{
+                            left: `${RSVP_PHOTO_OVAL.left * 100}%`,
+                            top: `${RSVP_PHOTO_OVAL.top * 100}%`,
+                            width: `${RSVP_PHOTO_OVAL.width * 100}%`,
+                            height: `${RSVP_PHOTO_OVAL.height * 100}%`
+                          }}
+                        >
                           <img
                             src={poster.photoUrl}
-                            alt={poster.fullName}
+                            alt="Guest portrait"
                             loading="lazy"
                             decoding="async"
                             className="h-full w-full object-cover"
@@ -147,25 +139,8 @@ export const PosterWall: React.FC<PosterWallProps> = ({
                               transform: `translate(${poster.photoOffsetX}%, ${poster.photoOffsetY}%) scale(${safeScale})`
                             }}
                           />
-                        ) : (
-                          <div className="flex h-full w-full items-center justify-center font-serif-luxury text-2xl font-bold tracking-wider text-[#FFF4DC] sm:text-3xl">
-                            {initialsOf(poster.fullName)}
-                          </div>
-                        )}
-
-                        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 flex h-[30%] flex-col items-center justify-center bg-gradient-to-t from-[#003330] via-[#004D49]/90 to-transparent px-[8%] pt-[6%] text-center">
-                          <span className="text-[4px] font-bold uppercase tracking-[0.12em] text-[#D6A323] sm:text-[5px]">Confirmed Attendee</span>
-                          <span className={`mt-[2%] w-full truncate font-serif-luxury font-bold leading-none text-white ${
-                            poster.fullName.length > 30
-                              ? 'text-[6px] sm:text-[7px]'
-                              : poster.fullName.length > 22
-                                ? 'text-[7px] sm:text-[8px]'
-                                : 'text-[8px] sm:text-[10px]'
-                          }`}>
-                            {poster.fullName}
-                          </span>
                         </div>
-                      </div>
+                      )}
                     </div>
 
                     <div className="flex items-center justify-between gap-2 px-1 pb-1 pt-3">
@@ -183,7 +158,7 @@ export const PosterWall: React.FC<PosterWallProps> = ({
 
         <footer className="flex items-center justify-center gap-2 border-t border-[#D6A323]/20 bg-[#FFF4DC]/55 px-4 py-4 text-center text-[11px] text-[#5B6B63]">
           <Users className="h-4 w-4 text-[#008F87]" />
-          Posters are added when guests confirm their RSVP.
+          Guests are added when they confirm their RSVP.
         </footer>
       </div>
     </div>
