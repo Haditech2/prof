@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { ArrowDown, CalendarDays, Clock3, Images, MapPin } from 'lucide-react';
 import { IWillBeThereBanner } from './components/IWillBeThereBanner';
 import { PosterWall } from './components/PosterWall';
@@ -61,6 +61,47 @@ export function RsvpApp() {
     }
   });
 
+  const refreshPosterWall = useCallback(async () => {
+    setIsPosterWallLoading(true);
+    try {
+      const sharedPosters = await postersApi.list(EVENT.id);
+      setPosters((current) => mergePosters(sharedPosters, current));
+    } catch {
+      /* Local posters remain available when the shared API is offline. */
+    } finally {
+      setIsPosterWallLoading(false);
+    }
+  }, []);
+
+  const publishSavedLocalPosters = useCallback(async () => {
+    const savedRsvps = loadSavedRsvps();
+    const localPosters = loadSavedPosters().filter((poster) => poster.id.startsWith('local-poster-'));
+
+    for (const localPoster of localPosters) {
+      const rsvpId = localPoster.id.slice('local-poster-'.length);
+      const savedRsvp = savedRsvps.find((rsvp) => rsvp.id === rsvpId);
+      if (!savedRsvp?.qrTicketCode || !localPoster.fullName.trim()) continue;
+
+      try {
+        const sharedPoster = await postersApi.save({
+          eventId: EVENT.id,
+          clientKey: savedRsvp.qrTicketCode,
+          fullName: localPoster.fullName,
+          photoUrl: localPoster.photoUrl,
+          photoScale: localPoster.photoScale,
+          photoOffsetX: localPoster.photoOffsetX,
+          photoOffsetY: localPoster.photoOffsetY
+        });
+        setPosters((current) => mergePosters(
+          [sharedPoster],
+          current.filter((poster) => poster.id !== localPoster.id && poster.id !== sharedPoster.id)
+        ));
+      } catch {
+        /* Retry on the next visit if shared storage is still unavailable. */
+      }
+    }
+  }, []);
+
   useEffect(() => {
     try {
       localStorage.setItem('prof_rashidah_rsvps', JSON.stringify(rsvps));
@@ -78,23 +119,9 @@ export function RsvpApp() {
   }, [posters]);
 
   useEffect(() => {
-    let active = true;
-    postersApi
-      .list(EVENT.id)
-      .then((sharedPosters) => {
-        if (active) setPosters((current) => mergePosters(sharedPosters, current));
-      })
-      .catch(() => {
-        /* Local posters remain available when the shared API is offline. */
-      })
-      .finally(() => {
-        if (active) setIsPosterWallLoading(false);
-      });
-
-    return () => {
-      active = false;
-    };
-  }, []);
+    void refreshPosterWall();
+    void publishSavedLocalPosters();
+  }, [publishSavedLocalPosters, refreshPosterWall]);
 
   const updateDraft = (changes: Partial<RSVPResponse>) => {
     setActiveRsvp((current) => ({ ...current, ...changes }));
@@ -287,7 +314,10 @@ export function RsvpApp() {
             </p>
             <button
               type="button"
-              onClick={() => setIsPosterWallOpen(true)}
+              onClick={() => {
+                setIsPosterWallOpen(true);
+                void refreshPosterWall();
+              }}
               className="mx-auto mt-4 inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-[#D6A323]/45 bg-[#FFF4DC] px-5 text-xs font-bold text-[#006B66] shadow-sm transition-all hover:border-[#008F87] hover:bg-[#DDF7F5]"
             >
               <Images className="h-4 w-4 text-[#A97912]" />

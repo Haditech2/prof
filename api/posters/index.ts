@@ -6,8 +6,8 @@ import {
   hashIp,
   hashPosterClientKey,
   rowToPoster
-} from '../_lib/db';
-import { clientIp } from '../_lib/auth';
+} from '../_lib/db.js';
+import { clientIp } from '../_lib/auth.js';
 
 const DEFAULT_EVENT_ID = 'event-prof-rashidah-inaugural';
 const MAX_NAME_LENGTH = 160;
@@ -49,7 +49,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       `SELECT * FROM rsvp_posters WHERE event_id = $1 ORDER BY updated_at DESC LIMIT 200`,
       [eventId]
     );
-    res.setHeader('Cache-Control', 'public, max-age=15, stale-while-revalidate=60');
+    res.setHeader('Cache-Control', 'private, no-store');
     return res.status(200).json({ posters: rows.map(rowToPoster) });
   }
 

@@ -36,7 +36,9 @@ export interface PosterSubmission {
 export const postersApi = {
   async list(eventId: string): Promise<GeneratedPoster[]> {
     const query = new URLSearchParams({ eventId });
-    const data = await request<{ posters: GeneratedPoster[] }>(`/posters?${query.toString()}`);
+    const data = await request<{ posters: GeneratedPoster[] }>(`/posters?${query.toString()}`, {
+      cache: 'no-store'
+    });
     return data.posters;
   },
 

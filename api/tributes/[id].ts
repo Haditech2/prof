@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { ensureSchema, getPool, rowToWish } from '../_lib/db';
-import { getAdminEmail } from '../_lib/auth';
+import { ensureSchema, getPool, rowToWish } from '../_lib/db.js';
+import { getAdminEmail } from '../_lib/auth.js';
 
 function requireAdmin(req: VercelRequest): string | null {
   return getAdminEmail(req);

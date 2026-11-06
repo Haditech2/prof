@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { ensureSchema, getPool, hashIp, rowToWish } from '../_lib/db';
-import { clientIp, getAdminEmail } from '../_lib/auth';
+import { ensureSchema, getPool, hashIp, rowToWish } from '../_lib/db.js';
+import { clientIp, getAdminEmail } from '../_lib/auth.js';
 
 const MAX_MESSAGE_LENGTH = 8000;
 const MAX_IDENTITY_LENGTH = 200;

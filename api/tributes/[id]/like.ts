@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { ensureSchema, getPool, hashIp } from '../../_lib/db';
-import { clientIp } from '../../_lib/auth';
+import { ensureSchema, getPool, hashIp } from '../../_lib/db.js';
+import { clientIp } from '../../_lib/auth.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {

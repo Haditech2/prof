@@ -8,7 +8,7 @@ import {
   recordLoginSuccess,
   setSessionCookie,
   verifyAdminCredentials
-} from '../_lib/auth';
+} from '../_lib/auth.js';
 
 export default function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
