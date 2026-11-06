@@ -46,6 +46,9 @@ localStorage as an offline/local-development fallback.
    and in `.env` locally (see `.env.example`):
    - `DATABASE_URL` — the Postgres connection string. Existing Vercel Postgres/Neon
      integrations may provide `POSTGRES_URL` automatically instead.
+   - `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, and `CLOUDINARY_API_SECRET` — optional
+     but recommended for storing guest portraits outside PostgreSQL. `CLOUDINARY_URL`
+     can be used instead of these three values.
    - `ADMIN_EMAIL` — the admin sign-in email
    - `ADMIN_PASSWORD` or (recommended) `ADMIN_PASSWORD_HASH`
      - hash generator command is in `.env.example`

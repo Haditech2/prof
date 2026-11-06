@@ -8,6 +8,11 @@ import {
   rowToPoster
 } from '../_lib/db.js';
 import { clientIp } from '../_lib/auth.js';
+import {
+  isCloudinaryConfigured,
+  removePosterPhoto,
+  uploadPosterPhoto
+} from '../_lib/cloudinary.js';
 
 const DEFAULT_EVENT_ID = 'event-prof-rashidah-inaugural';
 const MAX_NAME_LENGTH = 160;
@@ -75,7 +80,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Prevent automated creation of large public walls while allowing updates
     // to an existing visitor poster at any time.
     const existing = await getPool().query(
-      'SELECT id FROM rsvp_posters WHERE event_id = $1 AND client_key_hash = $2 LIMIT 1',
+      'SELECT id, photo_url FROM rsvp_posters WHERE event_id = $1 AND client_key_hash = $2 LIMIT 1',
       [eventId, clientKeyHash]
     );
     if (!existing.rowCount) {
@@ -86,6 +91,22 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       );
       if (Number(recent.rows[0]?.count || 0) >= 20) {
         return res.status(429).json({ error: 'Too many posters were created recently. Please try again later.' });
+      }
+    }
+
+    const submittedPhotoUrl = cleanPhotoUrl(body.photoUrl);
+    let storedPhotoUrl = submittedPhotoUrl;
+    if (submittedPhotoUrl && isCloudinaryConfigured()) {
+      try {
+        storedPhotoUrl = await uploadPosterPhoto(submittedPhotoUrl, eventId, clientKeyHash);
+      } catch (error) {
+        console.error('Cloudinary poster upload failed; using the compact database fallback.', error);
+      }
+    } else if (!submittedPhotoUrl && existing.rows[0]?.photo_url && isCloudinaryConfigured()) {
+      try {
+        await removePosterPhoto(eventId, clientKeyHash);
+      } catch (error) {
+        console.error('Cloudinary poster cleanup failed.', error);
       }
     }
 
@@ -108,7 +129,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         eventId,
         clientKeyHash,
         fullName,
-        cleanPhotoUrl(body.photoUrl) ?? null,
+        storedPhotoUrl ?? null,
         boundedNumber(body.photoScale, 1, 1.5, 1),
         boundedNumber(body.photoOffsetX, -12, 12, 0),
         boundedNumber(body.photoOffsetY, -12, 12, 0),
