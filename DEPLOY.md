@@ -44,7 +44,8 @@ localStorage as an offline/local-development fallback.
    tables are created automatically on the first API request; no manual migration needed.
 2. **Add environment variables** in Vercel (Project → Settings → Environment Variables),
    and in `.env` locally (see `.env.example`):
-   - `DATABASE_URL` — the Postgres connection string
+   - `DATABASE_URL` — the Postgres connection string. Existing Vercel Postgres/Neon
+     integrations may provide `POSTGRES_URL` automatically instead.
    - `ADMIN_EMAIL` — the admin sign-in email
    - `ADMIN_PASSWORD` or (recommended) `ADMIN_PASSWORD_HASH`
      - hash generator command is in `.env.example`
